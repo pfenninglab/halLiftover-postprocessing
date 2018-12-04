@@ -90,8 +90,8 @@ If your assembly is not in the cactus file that you are using for halLiftover, u
 		ortholog_end 
 		summit_position 
 		peakname 
-		original_peak_length 
 		ortholog_length 
+		original_peak_length 
 		summit_to_ortholog_start_length
 		summit_to_ortholog_end_length
 		```
@@ -103,6 +103,13 @@ If your assembly is not in the cactus file that you are using for halLiftover, u
 	* Along with the output file, another file is generated, which has name oFile.failed
 		* Line format is the same as oFile 
 		* oFile.failed would contain all the orthologs that are not valid when judged against the parameters users have entered
+		* Examples:
+		```
+		chr4	76114521	76116294	76116110	peak13	1774	544	1589	184
+		chr4	76477814	76478909	76477950	peak49	1096	459	136	959
+		chr4	76809080	76816154	76816028	peak66	7075	288	6948	126
+		chr6	53443438	53447196	53443500	peak69	3759	750	62	3696
+		```
 
 
 

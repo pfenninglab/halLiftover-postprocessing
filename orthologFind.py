@@ -4,10 +4,10 @@ import matplotlib.pyplot as plt
 import numpy as np
 import subprocess
 
-import orthologFindHelper
-import cleanInputFile
+from orthologFindHelper import *
+from cleanInputFile import preprocess_tFile
 from quickSort import quicksort
-import tupleMergeSort
+from tupleMergeSort import *
 
 
 '''

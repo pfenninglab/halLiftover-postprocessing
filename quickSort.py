@@ -1,6 +1,6 @@
 import argparse
 import sys
-import orthologFindHelper
+from orthologFindHelper import *
 import subprocess
 
 '''

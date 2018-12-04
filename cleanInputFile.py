@@ -1,4 +1,4 @@
-import orthologFindHelper
+from orthologFindHelper import *
 
 
 '''
