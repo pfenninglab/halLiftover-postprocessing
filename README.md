@@ -98,7 +98,7 @@ If your assembly is not in the cactus file that you are using for halLiftover, u
 		chr8	55609305	55610335	55609835	peak0	1031	1019	530	500
 		chr8	55609305	55610335	55609437	peak1	1031	1019	132	898
 		```
-	* Along with the output file, another file would be generated, which has name oFile.failed 
+	* Along with the output file, another file is generated, which has name oFile.failed
 		* Line format is the same as oFile 
 
 
