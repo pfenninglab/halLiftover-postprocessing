@@ -17,7 +17,7 @@ These are the species in the 12-way mammalian cactus file, which is the most com
 * Cow bosTau8
 * Horse equCab3
 
-If your assembly is not one of the above, please use UCSC-Liftover to lift the peaks over to the correct assembly.
+If your assembly is not in the cactus file that you are using for halLiftover, use UCSC-Liftover to lift the peaks over to the correct assembly.
 
 # Running halLiftover 
 * Run halLiftover on tFile 
