@@ -14,6 +14,7 @@ This tool is helpful if you have a bed file of open data, and you want to find o
 * Pig susScr11
 * Cow bosTau8
 * Horse equCab3
+
 If your assembly is not one of the above, please use UCSC-Liftover (or pairwise alignment) to lift the peaks over to the correct assembly. 
 
 # Running halLiftover 
