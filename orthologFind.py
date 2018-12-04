@@ -4,271 +4,21 @@ import matplotlib.pyplot as plt
 import numpy as np
 import subprocess
 
-'''
-def create_halLiftover_sh(slurm_params)
-'''
+import orthologFindHelper
+import cleanInputFile
+from quickSort import quicksort
+import tupleMergeSort
 
-def partition(arr,low,high):
-    resultarr=arr
-    i = ( low-1 )         # index of smaller element
-    pivot = resultarr[high][0]     # pivot
- 
-    for j in range(low , high):
- 
-        # If current element is smaller than or
-        # equal to pivot
-        if resultarr[j][0] <= pivot:
-         
-            # increment index of smaller element
-            i = i+1
-            resultarr[i],resultarr[j] = resultarr[j],resultarr[i]
- 
-    resultarr[i+1],resultarr[high] = resultarr[high],resultarr[i+1]
-    return (resultarr, i+1 )
- 
-# The main function that implements QuickSort
-# arr[] --> Array to be sorted,
-# low  --> Starting index,
-# high  --> Ending index
- 
-# Function to do Quick sort
-def quicksort(arr,low,high):
-    if low < high:
- 
-        # pi is partitioning index, arr[p] is now
-        # at right place
-        pi = partition(arr,low,high)
- 
-        # Separately sort elements before
-        # partition and after partition
-        quicksort(pi[0], low, pi[1]-1)
-        quicksort(pi[0], pi[1]+1, high)
-
-def str_cmp(s1,s2):
-	s1_len=len(s1)
-	s2_len=len(s2)
-	if(s1_len > s2_len):
-		return 1
-	else:
-		if(s1_len < s2_len):
-			return -1
-		else:
-			if(s1 > s2):
-				return 1
-			else:
-				if(s1 < s2):
-					return -1
-				else:
-					return 0
-
-def fromStringListToStr(strL):
-    re = ""
-    num = 0
-    for s in strL:
-        if num == 0:
-            re = re + s
-        else:
-            re = re + "\t" + s
-        num = 1
-    return re + "\n"
-
-def columnChrNameStartEnd(f, f2):
-    f.seek(0)
-    f2.seek(0)
-    index = 0
-    peakName = "peak0"
-    for line in f:
-        peakName = "peak" + str(index)
-        strList = line.split("\t")
-        newStrList = strList[0:3]
-        newStrList.append(peakName)
-        newLine = fromStringListToStr(newStrList)
-        f2.write(newLine)
-        index = index + 1
-    f2.close()
-    f.close()
-
-def summitPlusMinusLength(f, f2, slen, summit):
-    f.seek(0)
-    f2.seek(0)
-    slen = int(slen)
-    index = 0
-    peakName = "peak0"
-    summit_offset = 0
-    if(summit):
-        summit_offset = 1
-    for line in f:
-        peakName = "peak" + str(index)
-        strList = line.split("\t")
-        peakStart = int(strList[1])
-        summitDisFromStart = int(strList[9])
-        summitStart = peakStart + summitDisFromStart - slen + summit_offset
-        summitEnd = peakStart + summitDisFromStart + slen
-
-        newLineList = [strList[0], str(summitStart), str(summitEnd), peakName]
-        newLine = fromStringListToStr(newLineList)
-        f2.write(newLine)
-        index = index + 1
-    f2.close()
-    f.close()
-
-''' preposessing of revtFile if needed
-peakName0
-peakName0
-peakName0
---> 
-peakName0_1
-peakName0_2
-peakName0_3
-'''
-def assignPeakNameSuffix(fname, fname2):
-    f = open(fname, "r+")
-    f2 = open(fname2, "x+")
-    curPeakName = ""
-    acc = 0
-    for line in f:
-        strList = line.split("\t")  # CAUTION: assume always be delimited by tab
-        peakNamePrefix = strList[-1]
-        if(peakNamePrefix != curPeakName):
-            curPeakName = peakNamePrefix
-            acc = 0
-        strList[-1] = peakNamePrefix[:-1] + "_" + str(acc)
-        acc+=1
-        newLine = fromStringListToStr(strList)
-        f2.write(newLine)
-    f2.close()
-    f.close()
-
-
-def preprocess_tFile(tFileH, outf):
-	tFileH.seek(0)
-	outH=open(outf,"w+")
-	index = 0
-	peakName = "peak0"
-	for line in tFileH:
-		peakName = "peak" + str(index)
-		strList=line.split("\t")
-		peak_s=int(strList[1])
-		peak_e=int(strList[2])
-		#
-		newLineList = strList[0:3]
-		newLineList.append(str(peak_e-peak_s+1))
-		newLineList.append(peakName)
-		newLine = fromStringListToStr(newLineList)
-		outH.write(newLine)
-		index = index + 1
-	outH.close()
 
 '''
-assume that is already preprocessed 
-segName is unique e.g. chrName0_0 only appears once  
-look-up dictionary of revtFile
-	key: chrName
-	value: a list: (segStart, segEnd, segName), sorted according to segStart
-		**** ASSUME that there is no overlapping segment
-'''
-def cmp_tuple_b4(t1,t2): #(chr_start,chr_end,chr_name)
-	seg_start = t1[0]
-	chr_name = t1[2]
-	seg_start2 = t2[0]
-	chr_name2 = t2[2]
-	if chr_name < chr_name2:
-		return -1 #t1<t2
-	elif chr_name > chr_name2:
-		return 1 #t1>t2
-	else:
-		if seg_start < seg_start2:
-			return -1
-		elif seg_start > seg_start2:
-			return 1
-		else:
-			return 0
-
-def cmp_tuple(t1,t2): #(chr_start,chr_end,chr_name)
-	seg_start = t1[0]
-	chr_name = t1[2]
-	seg_start2 = t2[0]
-	chr_name2 = t2[2]
-	if(str_cmp(chr_name,chr_name2)==0):
-		if seg_start < seg_start2:
-			return -1
-		elif seg_start > seg_start2:
-			return 1
-		else:
-			return 0
-	else:
-		return str_cmp(chr_name,chr_name2)
-
-
-
-def merge_sort(arr, cmp_func): 
-    if len(arr) >1: 
-        mid = len(arr)//2 #Finding the mid of the array 
-        L = arr[:mid] # Dividing the array elements  
-        R = arr[mid:] # into 2 halves 
-  
-        merge_sort(L, cmp_func) # Sorting the first half 
-        merge_sort(R, cmp_func) # Sorting the second half 
-  
-        i = j = k = 0
-          
-        # Copy data to temp arrays L[] and R[] 
-        while i < len(L) and j < len(R): 
-            # if L[i] < R[j]:
-            if (cmp_func(L[i],R[j]) ==-1):
-                arr[k] = L[i] 
-                i+=1
-            else: 
-                arr[k] = R[j] 
-                j+=1
-            k+=1
-          
-        # Checking if any element was left 
-        while i < len(L): 
-            arr[k] = L[i] 
-            i+=1
-            k+=1
-          
-        while j < len(R): 
-            arr[k] = R[j] 
-            j+=1
-            k+=1
-
-def sortedSeg(L):
-	last_s = L[0][0]
-	last_chr_name = L[0][2]
-	valid=True
-	for (start,end,chr_name) in L:
-		if((str_cmp(chr_name,last_chr_name)==-1)):
-			print("last chr_name is greater than chr_name")
-			print("\t Chr name is "+chr_name)
-			print("\t last_chr_name "+last_chr_name)
-			valid=False
-		else:
-			if(start < last_s and (str_cmp(chr_name,last_chr_name)==0)):
-				print("Start is less than last_s")
-				print("\t Chr name is "+chr_name)
-				print("\t last_chr_name "+last_chr_name)
-				print("\t Start is "+str(start))
-				print("\t last_s is "+str(last_s))
-				valid = False
-		last_s = start
-		last_chr_name = chr_name
-	return valid
-
-def check_qFile_sorted(qdict):
-	not_valid=[]
-	for key,value in qdict.items():
-		if(not sortedSeg(value)):
-			not_valid.append(key)
-	return not_valid
-
-'''
-organizing query file into dictionary
+organizing mapped peak file into dictionary
+key: peakname
+value: [(peak_start,peak_end,chr_name),..., (peak_start,peak_end,chr_name)]
+	sorted list
 '''
 def create_qFile_dict(qFileH): 
 	qFileH.seek(0)
-	qFile_segDict={} #key: seg_name, value: seg_start,seg_end,chr_name
+	qFile_segDict={} 
 	for line in qFileH:
 		strList=line.split("\t")
 		q_chrName=strList[0]
@@ -287,37 +37,6 @@ def create_qFile_dict(qFileH):
 	return qFile_segDict
 
 
-def find_all_peaknames(fileH): #assume last columns are peak names 
-	fileH.seek(0)
-	name_l = {}
-	for line in fileH:
-		strList=line.split("\t")
-		peakname=strList[-1][:-1]
-		peak_times = name_l.get(peakname, 0)
-		peak_times +=1
-		name_l[peakname]  = peak_times
-	peaknames = list(name_l.keys())
-	merge_sort(peaknames, str_cmp)
-	return peaknames
-
-def find_notmapped_peaks_h(qFileName, total_peaks):
-	fileH = open(qFileName,"r+")
-	name_l = find_all_peaknames(fileH)
-	out_text = (subprocess.check_output(['wc','-l',qFileName])).decode('utf-8')
-	total_peaks = int(out_test.split()[0])
-	not_mapped = []
-	last_peaknum=int(name_l[0][4:])
-	for peakname in name_l:
-		peaknum = int(peakname[4:])
-		if peaknum > last_peaknum+1:
-			for not_mapped_num in range(last_peaknum+1,peaknum):
-				not_mapped_name = "peak"+str(not_mapped_num)
-				not_mapped.append(not_mapped_name)
-		last_peaknum = peaknum
-	for peak_num in range(last_peaknum+1,total_peaks):
-		not_mapped_name = "peak"+str(peak_num)
-		not_mapped.append(not_mapped_name)
-	return not_mapped
 
 def num_segments_hist(dict_segqFile):
 	numFragmentsDict={}
@@ -339,12 +58,11 @@ def num_segments_hist(dict_segqFile):
 	
 
 
-
+''' if a summit maps multiple places, see if all segments (peak_start,peak_end,chr_name)
+are adjacent  '''
 def adj_pos(arr):
     n = len(arr)
     quicksort(arr, 0, n - 1)
-    #for i in range(n):
-    #    print ('{0}'.format(arr[i]))
     for i in range(1, n):
         if(i == 0):
             continue
@@ -408,45 +126,11 @@ def create_SFile_dict(FileH):
 	return (peak_summit, multpeak_dict)
 
 
-
-# t1 is the summit tuple, t2 is the other tuples for the peak
-def cmp_tuple_summit(t1,t2): #(seg_start,seg_end,chr_name)
-	s_start = t1[0]
-	s_end = t1[1]
-	s_chr_name = t1[2]
-	#
-	seg_start2 = t2[0]
-	seg_end2 = t2[1]
-	chr_name2 = t2[2]
-	#
-	if str_cmp(s_chr_name,chr_name2)==0:
-		if (s_start >= seg_start2) and (s_end <= seg_end2):
-			return 0
-		elif s_start < seg_start2:
-			return -1
-		else:
-			return 1
-	else:
-		return str_cmp(s_chr_name,chr_name2)
-
-
-def binsearch_summitseg(L,summit_seg,low,high):
-	while(low<=high):
-		mid=low+(high-low)//2
-		t2 = L[mid]
-		cmp_res = cmp_tuple_summit(summit_seg,t2)
-		# print("low is"+str(low)+" high is "+str(high))
-		# print("comparing "+str(summit_seg)+" and "+str(t2))
-		# print("\t result is:"+str(cmp_res))
-		if (cmp_res==0):
-			return mid
-		else:
-			if (cmp_res==-1): #summit_seg<t2
-				high=mid-1
-			else:
-				low=mid+1
-	return -1
-
+'''
+The sorted list of (peak_start,peak_end,chr_name) for each peak
+might not be contiguous, so we fill in the gaps between adjacent
+segments on the same chromosome
+'''
 def process_search_seg(L):
 	last_seg_s = L[0][0]
 	last_seg_e = L[0][1]
@@ -466,7 +150,12 @@ def process_search_seg(L):
 		last_chrname = seg_chrname
 	return res
 
-
+'''
+locate where the mapped-summit is in the sorted
+list of (peak_start,peak_end,chr_name) of a given peak,
+and extend left and right to incldue all segments on the
+same chromosome
+'''
 def extend_summit(q_peak_list,summit_seg):
 	q_peak_list_proc = process_search_seg(q_peak_list)
 	n=len(q_peak_list_proc)
@@ -514,6 +203,9 @@ def extend_summit(q_peak_list,summit_seg):
 	r_len += summit_e - summit_q_pos 
 	return(summit_ortho_s,summit_q_pos,summit_ortho_e,sum_len,l_len,r_len)
 
+'''
+test if a ortholog is valid against the user parameters
+'''
 def validOrtholog(summit_ortho_info,max_len,min_len,proct_dist, peak_name):
 	#summit_ortho_info:
 	## summit_ortho_s,summit_q_pos, summit_ortho_e,sum_len,l_len,r_len
@@ -581,14 +273,6 @@ def make_hist_peaks(oFile,outname,bin_max):
 	plt.close()
 	oFileH.close()
 
-'''
-def double_valid(oFile,fixedFile,max_len,alen,min_len,blen,proct_dist):
-	oFileH = open(oFile,"r")
-	fixedH = open(fixedFile,"r")
-	for line in oFileH:
-		strList=line.split("\t")
-'''
-
 def ortholog_find(file_H,max_len,alen,min_len,blen,proct_dist):
 	tFileH = open(file_H[0],"r+")
 	qFileH = open(file_H[1],"r+")
@@ -611,7 +295,6 @@ def ortholog_find(file_H,max_len,alen,min_len,blen,proct_dist):
 		return 1
 	dict_summit = create_SFile_dict(sFileH)[0]
 	#
-	# test_trial=1000
 	for line in tFileH:
 		# if(test_trial == 0):
 		# 	break
@@ -634,12 +317,10 @@ def ortholog_find(file_H,max_len,alen,min_len,blen,proct_dist):
 		q_peak_list = dict_segqFile.get(peak_name,[]) #q_segStart,q_segEnd,q_chrName
 		summit_seg = dict_summit.get(peak_name,()) #mapped_summit_start, end, chr_name
 		if(q_peak_list==[] or summit_seg==()):
-			# test_trial = test_trial-1
 			continue
 		#
 		q_extent=extend_summit(q_peak_list,summit_seg)
 		if(q_extent == ()):
-			# test_trial = test_trial-1
 			continue
 		# summit_ortho_s,summit_q_pos,summit_ortho_e,sum_len,l_len,r_len
 		ortho_s=q_extent[0]
@@ -655,7 +336,6 @@ def ortholog_find(file_H,max_len,alen,min_len,blen,proct_dist):
 			oFileH.write(newLine)
 		else:
 			tFile_FH.write(newLine)
-		# test_trial = test_trial-1
 	tFileH.close()
 	qFileH.close()
 	sFileH.close()
@@ -663,7 +343,6 @@ def ortholog_find(file_H,max_len,alen,min_len,blen,proct_dist):
 	tFile_FH.close()
 	make_hist(file_H[3],file_H[3],2500)
 	return 0
-	# return dict_ortholog
 
 
 
@@ -722,9 +401,6 @@ def main(argv):
 	file_H.append(args.sFile)
 	file_H.append(args.oFile)
 	ortholog_find(file_H,max_len,alen,min_len,blen,int(args.protect_dist))
-
-	'''if max_len is passed in as percentage of original peak, 
-	then first calculate that number and then find ortholog'''
 
 	
 
