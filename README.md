@@ -1,6 +1,8 @@
 ## halLiftover-postprocessing
 
-# Run python orthologFind.py
+# Running Program
+`python orthologFind.py` using python3
+
 
 # Introduction
 This tool is helpful if you have a bed file of open data, and you want to find orthologs of these peaks. Since this tool relies on halLiftover, the assembly of your peak data must be one of the available ones in the cactus file that you are using for halLiftover.
