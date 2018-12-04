@@ -3,6 +3,9 @@ import sys
 import orthologFindHelper
 import subprocess
 
+'''
+partition the list based on pivot, the first element
+'''
 def partition(arr,low,high):
     resultarr=arr
     i = ( low-1 )         # index of smaller element

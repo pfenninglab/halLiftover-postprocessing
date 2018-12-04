@@ -225,6 +225,11 @@ def validOrtholog(summit_ortho_info,max_len,min_len,proct_dist, peak_name):
 		return False
 	return True
 
+'''
+make a histogram of all the valid orthologs
+x label: ortholog length
+y label: number of orthologs
+'''
 def make_hist(oFile,outname,bin_max):
 	oFileH = open(oFile,"r")
 	plt.figure(1)
@@ -273,6 +278,9 @@ def make_hist_peaks(oFile,outname,bin_max):
 	plt.close()
 	oFileH.close()
 
+'''
+finding valid orthologs and then plot the histogram
+'''
 def ortholog_find(file_H,max_len,alen,min_len,blen,proct_dist):
 	tFileH = open(file_H[0],"r+")
 	qFileH = open(file_H[1],"r+")

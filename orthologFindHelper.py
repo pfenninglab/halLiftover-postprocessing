@@ -1,3 +1,5 @@
+import subprocess
+
 
 ''' comparison functions for 2 strings '''
 def str_cmp(s1,s2):
@@ -74,7 +76,11 @@ def cmp_tuple_summit(t1,t2): #(seg_start,seg_end,chr_name)
 	else:
 		return str_cmp(s_chr_name,chr_name)
 
-
+'''
+search for the segment (peak_start,peak_end,chr_name)
+in a list for a given peak that contains
+the (mapped_summit_start,mapped_summit_end,mapped_summit_chr_name)
+'''
 def binsearch_summitseg(L,summit_seg,low,high):
 	while(low<=high):
 		mid=low+(high-low)//2
@@ -92,6 +98,9 @@ def binsearch_summitseg(L,summit_seg,low,high):
 				low=mid+1
 	return -1
 
+'''
+collect a list of peaksnames from a file
+'''
 def find_all_peaknames(fileH): #assume last columns are peak names 
 	fileH.seek(0)
 	name_l = {}
@@ -105,6 +114,9 @@ def find_all_peaknames(fileH): #assume last columns are peak names
 	merge_sort(peaknames, str_cmp)
 	return peaknames
 
+'''
+find peaks that are not mapped by hal-liftover
+'''
 def find_notmapped_peaks_h(qFileName, total_peaks):
 	fileH = open(qFileName,"r+")
 	name_l = find_all_peaknames(fileH)

@@ -1,5 +1,10 @@
 import orthologFindHelper
 
+'''
+mergesort a list of (peak_start,peak_end,chr_name)
+for a given peak
+first by chr_name, and then by peak_start 
+'''
 def merge_sort(arr, cmp_func): 
     if len(arr) >1: 
         mid = len(arr)//2 #Finding the mid of the array 
@@ -32,7 +37,10 @@ def merge_sort(arr, cmp_func):
             arr[k] = R[j] 
             j+=1
             k+=1
-
+'''
+Check if all the segments (peak_start,peak_end,chr_name)
+in a list for a peak are sorted
+'''
 def sortedSeg(L):
 	last_s = L[0][0]
 	last_chr_name = L[0][2]
@@ -54,7 +62,9 @@ def sortedSeg(L):
 		last_s = start
 		last_chr_name = chr_name
 	return valid
-
+'''
+collecting a list of peaks that are not sorted
+'''
 def check_qFile_sorted(qdict):
 	not_valid=[]
 	for key,value in qdict.items():
