@@ -49,7 +49,7 @@ If your assembly is not in the cactus file that you are using for halLiftover, u
 * min_len: ortholog length must be greater or equal to min_len
 * min_frac: ortholog length must be greater or equal to min_frac * peak length 
 	* provide either min_len or min_frac
-* proct_dist: the ortholog length in each direction from the ortholog of the summit must be at least proct_dist 
+* protect_dist: the ortholog length in each direction from the ortholog of the summit must be at least proct_dist 
 			![alt text](https://github.com/pfenninglab/multiple_alignment-python/blob/master/min_proct_dist.png)
 
 * tFile: the original bed file containing information on (at least): chromosome_name, start, end, distance_to_summit

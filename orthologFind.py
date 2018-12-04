@@ -356,19 +356,19 @@ def ortholog_find(file_H,max_len,alen,min_len,blen,proct_dist):
 
 def main(argv):
 	parser = argparse.ArgumentParser(description='Ortholog Find')
-	parser.add_argument('--max_len',
+	parser.add_argument('-max_len',
 		help='maximum number of base pairs of the ortholog')
 	
-	parser.add_argument('--max_frac',
+	parser.add_argument('-max_frac',
 		help='maximum percentage of original peak of the ortholog')
 	
-	parser.add_argument('--protect_dist',help='summit protection distance',
+	parser.add_argument('-protect_dist',help='summit protection distance',
 	default=50)
 	
-	parser.add_argument('--min_len',
+	parser.add_argument('-min_len',
 		help='minimum number of base pairs of the ortholog')
 	
-	parser.add_argument('--min_frac',
+	parser.add_argument('-min_frac',
 		help='minimum percentage of original peak of the ortholog')
 	
 	parser.add_argument('-tFile', help='input bed file', 
