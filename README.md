@@ -102,6 +102,7 @@ If your assembly is not in the cactus file that you are using for halLiftover, u
 		```
 	* Along with the output file, another file is generated, which has name oFile.failed
 		* Line format is the same as oFile 
+		* oFile.failed would contain all the orthologs that are not valid when judged against the parameters users have entered
 
 
 
