@@ -1,7 +1,9 @@
 ## halLiftover-postprocessing
 
 # Introduction
-This tool is helpful if you have a bed file of open data, and you want to find orthologs of these peaks. Since this tool relies on halLiftover, in order to use the cactus alignment file we have, the assembly of your peak data must be one of the available ones in the cactus file. These are the species:
+This tool is helpful if you have a bed file of open data, and you want to find orthologs of these peaks. Since this tool relies on halLiftover, the assembly of your peak data must be one of the available ones in the cactus file that you are using for halLiftover.
+
+These are the species in the 12-way mammalian cactus file, which is the most common cactus file used by the Pfenning Lab:
 * Tree_shrew tupChi1
 * Kangaroo_rat dipOrd1
 * Human hg38
@@ -15,7 +17,7 @@ This tool is helpful if you have a bed file of open data, and you want to find o
 * Cow bosTau8
 * Horse equCab3
 
-If your assembly is not one of the above, please use UCSC-Liftover (or pairwise alignment) to lift the peaks over to the correct assembly. 
+If your assembly is not one of the above, please use UCSC-Liftover to lift the peaks over to the correct assembly.
 
 # Running halLiftover 
 * Run halLiftover on tFile 
