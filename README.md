@@ -25,6 +25,7 @@ If your assembly is not in the cactus file that you are using for halLiftover, u
 
 # Dependencies
 Python version 3 (https://www.python.org/downloads/release/python-371/)
+
 matplotlib (https://matplotlib.org/downloads.html)
 
 # Running halLiftover 
