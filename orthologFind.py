@@ -3,6 +3,7 @@ import sys
 import matplotlib.pyplot as plt
 import numpy as np
 import subprocess
+import os
 
 from orthologFindHelper import *
 from cleanInputFile import preprocess_tFile
@@ -408,7 +409,17 @@ def main(argv):
 	file_H.append(args.qFile)
 	file_H.append(args.sFile)
 	file_H.append(args.oFile)
-	ortholog_find(file_H,max_len,alen,min_len,blen,int(args.protect_dist))
+	if(not check_valid_files(args.tFile)):
+		print("Error: tFile is empty")
+		exit(1)
+	if(not check_valid_files(args.qFile)):
+		print("Error: qFile is empty")
+		exit(1)
+	if(not check_valid_files(args.sFile)):
+		print("Error: sFile is empty")
+		exit(1)
+	ortholog_find(file_H,max_len,alen,min_len,blen,int(args.protect_dist));
+		
 
 	
 

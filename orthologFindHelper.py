@@ -1,5 +1,10 @@
 import subprocess
+import os
 
+def check_valid_files(file):
+	if (os.path.getsize(file) <=0):
+		return False 
+	return True
 
 ''' comparison functions for 2 strings '''
 def str_cmp(s1,s2):
