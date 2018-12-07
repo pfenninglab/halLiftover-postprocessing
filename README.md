@@ -1,7 +1,7 @@
 ## halLiftover-postprocessing
 
 # Running Program
-`python orthologFind.py` using python3
+* `python orthologFind.py` using python3
 
 
 # Introduction
@@ -24,9 +24,9 @@ These are the species in the 12-way mammalian cactus file, which is the most com
 If your assembly is not in the cactus file that you are using for halLiftover, use UCSC-Liftover to lift the peaks over to the correct assembly.
 
 # Dependencies
-Python version 3 (https://www.python.org/downloads/release/python-371/)
-
-matplotlib (https://matplotlib.org/downloads.html)
+* Python version 3 (https://www.python.org/downloads/release/python-371/)
+* Must install `matplotlib` and `numpy`
+	* matplotlib (https://matplotlib.org/downloads.html)
 
 # Running halLiftover 
 * Run halLiftover on tFile 
@@ -50,19 +50,19 @@ matplotlib (https://matplotlib.org/downloads.html)
  
 
 # Program Parameters 
-* max_len: ortholog length must be less or equal to max_len
-* max_frac: ortholog length must be less or euqal to max_frac * peak length 
+* -max_len: ortholog length must be less or equal to max_len
+* -max_frac: ortholog length must be less or euqal to max_frac * peak length 
 	* provide either max_len or max_frac
-* min_len: ortholog length must be greater or equal to min_len
-* min_frac: ortholog length must be greater or equal to min_frac * peak length 
+* -min_len: ortholog length must be greater or equal to min_len
+* -min_frac: ortholog length must be greater or equal to min_frac * peak length 
 	* provide either min_len or min_frac
 * protect_dist: the ortholog length in each direction from the ortholog of the summit must be at least proct_dist 
 			![alt text](https://github.com/pfenninglab/multiple_alignment-python/blob/master/min_proct_dist.png)
 
-* tFile: the original bed file containing information on (at least): chromosome_name, start, end, distance_to_summit
+* -tFile: the original bed file containing information on (at least): chromosome_name, start, end, distance_to_summit
 	
 
-* qFile: bed file of the halLiftover-ed result for each peak 
+* -qFile: bed file of the halLiftover-ed result for each peak 
 	* Line format must be: ` chr_name    peak_start    peak_end    peak_name `
 	* Last (3rd) column must be of the format "peak[number]", for example, "peak0"
 	* Examples:
@@ -74,7 +74,7 @@ matplotlib (https://matplotlib.org/downloads.html)
 		chr8	55610183	55610190	peak0 
 		```
 
-* sFile: bed file of the halLiftover-ed result for each peak summit
+* -sFile: bed file of the halLiftover-ed result for each peak summit
 	* Line format must be: ` chr_name    peak_start    peak_end    peak_name`
 	* Last (3rd) column must be of the format "peak[number]", for example, "peak0"
 	* Examples:
@@ -89,7 +89,7 @@ matplotlib (https://matplotlib.org/downloads.html)
 		```
 
 
-* oFile: output file name
+* -oFile: output file name
 	* Line format (from left to right): 
 		```
 		chr_name 
@@ -120,6 +120,10 @@ matplotlib (https://matplotlib.org/downloads.html)
 
 
 
-
+# Example run of the program 
+```
+python orthologFind.py -max_len 1000 -min_len 50 -protect_dist 5 -tFile HumanMiddleFrontalGyrusDNase_ppr.IDR0.1.filt_brainUpEnhancerStrictShort_withPeakOffetsAndNames.bed -qFile HumanMiddleFrontalGyrusDNase_ppr.IDR0.1.filt_brainUpEnhancerStrictShort_mm10Hal.bed -sFile  HumanMiddleFrontalGyrusDNase_ppr.IDR0.1.filt_brainUpEnhancerStrictShort_summits_mm10Hal.bed -oFile HumanMiddleFrontalGyrusDNase_ppr.IDR0.1.filt_brainUpEnhancerStrictShort_mm10Hal_summitExtendedMin50Max1000Protect5.bed
+```
+Note how there is only one '-' (dash) for the parameter name. 
 
 
