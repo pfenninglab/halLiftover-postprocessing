@@ -27,6 +27,7 @@ If your assembly is not in the cactus file that you are using for halLiftover, u
 * Python version 3 (https://www.python.org/downloads/release/python-371/)
 * Must install `matplotlib` and `numpy`
 	* matplotlib (https://matplotlib.org/downloads.html)
+	* numpy (http://www.numpy.org/)
 
 # Running halLiftover 
 * Run halLiftover on tFile 
