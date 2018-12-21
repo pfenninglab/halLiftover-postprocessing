@@ -24,8 +24,8 @@ These are the species in the 12-way mammalian cactus file, which is the most com
 If your assembly is not in the cactus file that you are using for halLiftover, use UCSC-Liftover to lift the peaks over to the correct assembly.
 
 # Dependencies
-* Python version 3 (https://www.python.org/downloads/release/python-371/)
-* Must install `matplotlib` and `numpy`
+* Python version 3.7 (https://www.python.org/downloads/release/python-371/)
+* Python libraries `matplotlib` and `numpy`
 	* matplotlib (https://matplotlib.org/downloads.html)
 	* numpy (http://www.numpy.org/)
 
