@@ -127,4 +127,5 @@ python orthologFind.py -max_len 1000 -min_len 50 -protect_dist 5 -tFile HumanMid
 ```
 Note how there is only one '-' (dash) for the parameter name. 
 
+Note: When running the program on the Lane cluster, submit the job (or open the interactive session in which the program will be run) using the --x11 option.
 
