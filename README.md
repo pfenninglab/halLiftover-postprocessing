@@ -28,6 +28,19 @@ If your assembly is not in the cactus file that you are using for halLiftover, u
 * Python libraries `matplotlib` and `numpy`
 	* matplotlib (https://matplotlib.org/downloads.html)
 	* numpy (http://www.numpy.org/)
+# Tips for installing hal toolkits
+* To install, you can follow the instructions in this website: https://github.com/ComparativeGenomicsToolkit/hal
+* On Lane cluster, load gcc 4.9 module 
+* Have a correct ~/.bashrc is very helpful, here is an example:
+```
+export PATH=/home/xiaoyuz1/multalign/hal/hdf5-1.10.1/hdf5/bin:${PATH}
+export h5prefix=-prefix=/home/xiaoyuz1/multalign/hal/hdf5
+export sonLibRootPath=/home/xiaoyuz1/multalign/hal/sonLib
+export PATH=/home/xiaoyuz1/multalign/hal/bin:${PATH}
+export PYTHONPATH=/home/xiaoyuz1/multalign:${PYTHONPATH}
+export PYTHONPATH=/home/xiaoyuz1/multalign/hal:${PYTHONPATH}
+
+```
 
 # Running halLiftover 
 * Run halLiftover on tFile 
