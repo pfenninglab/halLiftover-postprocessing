@@ -73,7 +73,7 @@ export PYTHONPATH=/home/xiaoyuz1/multalign/hal:${PYTHONPATH}
 * protect_dist: the ortholog length in each direction from the ortholog of the summit must be at least proct_dist 
 			![alt text](https://github.com/pfenninglab/multiple_alignment-python/blob/master/min_proct_dist.png)
 
-* -tFile: the original bed file containing information on (at least): chromosome_name, start, end, distance_to_summit
+* -tFile: the original bed file containing information on (at least): chromosome_name, start, end, peak name (use the same naming convention as -qFile below), distance_to_summit -- In a few days, this will be changed to take files in narrowPeak format.
 	
 
 * -qFile: bed file of the halLiftover-ed result for each peak 
