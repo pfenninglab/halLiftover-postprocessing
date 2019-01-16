@@ -30,7 +30,7 @@ If your assembly is not in the cactus file that you are using for halLiftover, u
 	* numpy (http://www.numpy.org/)
 # Tips for installing hal toolkits
 * To install, follow the instructions in this website: https://github.com/ComparativeGenomicsToolkit/hal
-	* For details about installation on the Lane cluster, follow the instructions in halliftoverInstallationSpecifics.txt
+	* For details about installation on the Lane cluster, follow the instructions in https://github.com/pfenninglab/halLiftover-postprocessing/blob/master/halliftoverInstallationSpecifics.txt
 * On Lane cluster, load gcc 4.9 module 
 * Have a correct ~/.bashrc is very helpful, here is an example:
 ```
