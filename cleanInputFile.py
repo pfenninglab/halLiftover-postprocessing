@@ -11,11 +11,9 @@ enumerated from 0.
 def preprocess_tFile(tFileH, outf):
     tFileH.seek(0)
     outH=open(outf,"w+")
-    index = 0
-    peakName = "peak0"
     for line in tFileH:
-        peakName = "peak" + str(index)
         strList=line.split("\t")
+        peakName = strList[3]
         peak_s=int(strList[1])
         peak_e=int(strList[2])
         #
@@ -24,7 +22,6 @@ def preprocess_tFile(tFileH, outf):
         newLineList.append(peakName)
         newLine = fromStringListToStr(newLineList)
         outH.write(newLine)
-        index = index + 1
     outH.close()
 
 '''
