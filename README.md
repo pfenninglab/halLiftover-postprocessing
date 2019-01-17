@@ -29,7 +29,8 @@ If your assembly is not in the cactus file that you are using for halLiftover, u
 	* matplotlib (https://matplotlib.org/downloads.html)
 	* numpy (http://www.numpy.org/)
 # Tips for installing hal toolkits
-* To install, you can follow the instructions in this website: https://github.com/ComparativeGenomicsToolkit/hal
+* To install, follow the instructions in this website: https://github.com/ComparativeGenomicsToolkit/hal
+	* For details about installation on the Lane cluster, follow the instructions in https://github.com/pfenninglab/halLiftover-postprocessing/blob/master/halliftoverInstallationSpecifics.txt
 * On Lane cluster, load gcc 4.9 module 
 * Have a correct ~/.bashrc is very helpful, here is an example:
 ```
@@ -73,7 +74,7 @@ export PYTHONPATH=/home/xiaoyuz1/multalign/hal:${PYTHONPATH}
 * protect_dist: the ortholog length in each direction from the ortholog of the summit must be at least proct_dist 
 			![alt text](https://github.com/pfenninglab/multiple_alignment-python/blob/master/min_proct_dist.png)
 
-* -tFile: the original bed file containing information on (at least): chromosome_name, start, end, distance_to_summit
+* -tFile: the original bed file containing information on (at least): chromosome_name, start, end, peak name (use the same naming convention as -qFile below), distance_to_summit -- In a few days, this will be changed to take files in narrowPeak format.
 	
 
 * -qFile: bed file of the halLiftover-ed result for each peak 
