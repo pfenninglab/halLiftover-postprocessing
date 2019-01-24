@@ -6,6 +6,8 @@ from orthologFindHelper import *
 * f2 is a file handler of the output file
 For each line in f, take the first 3 columns, 
 peakName on the 4th column is assigned by the user.
+Each row in the output file will have 5 fields.
+chr_name peak_start peak_end peak_length peak_name 
 '''
 def preprocess_qFile(qFileH, outf):
     qFileH.seek(0)
