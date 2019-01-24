@@ -71,15 +71,15 @@ export PYTHONPATH=/home/xiaoyuz1/multalign/hal:${PYTHONPATH}
 * -min_len: ortholog length must be greater or equal to min_len
 * -min_frac: ortholog length must be greater or equal to min_frac * peak length 
 	* provide either min_len or min_frac
-* protect_dist: the ortholog length in each direction from the ortholog of the summit must be at least proct_dist 
+* -protect_dist: the ortholog length in each direction from the ortholog of the summit must be at least proct_dist 
 			![alt text](https://github.com/pfenninglab/multiple_alignment-python/blob/master/min_proct_dist.png)
 
-* -tFile: the original bed file containing information on (at least): chromosome_name, start, end, peak name -- The 1st 4 columns must be in standard bed format
+* -qFile: the original bed file containing information on (at least): chromosome_name, start, end, peak name -- The 1st 4 columns **MUST** be in standard bed format. 
 	
 
-* -qFile: bed file of the halLiftover-ed result for each peak 
-	* Line format must be: ` chr_name    peak_start    peak_end    peak_name `
-	* Last (3rd) column must be of the format "peak[number]", for example, "peak0"
+* -tFile: bed file of the halLiftover-ed result for each peak 
+	* Line format must be: ` chr_name    peak_start    peak_end    peak_name `. halLiftover should output file conforming to this format. 
+	* Last column must be of the format "peak[number]", for example, "peak0"
 	* Examples:
 		```
 		chr8	55610267	55610335	peak0
@@ -90,8 +90,8 @@ export PYTHONPATH=/home/xiaoyuz1/multalign/hal:${PYTHONPATH}
 		```
 
 * -sFile: bed file of the halLiftover-ed result for each peak summit
-	* Line format must be: ` chr_name    peak_start    peak_end    peak_name`
-	* Last (3rd) column must be of the format "peak[number]", for example, "peak0"
+	* Line format must be: ` chr_name    peak_start    peak_end    peak_name`. halLiftover should output file conforming to this format. 
+	* Last column must be of the format "peak[number]", for example, "peak0"
 	* Examples:
 		```
 		chr8	55609835	55609836	peak0
