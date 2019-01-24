@@ -4,14 +4,13 @@ from orthologFindHelper import *
 '''
 * f is a file handler of the input file
 * f2 is a file handler of the output file
-For each line in f, take the first 3 columns, assign
-a peakname in the form peakx, where x is some integer
-enumerated from 0.
+For each line in f, take the first 3 columns, 
+peakName on the 4th column is assigned by the user.
 '''
-def preprocess_tFile(tFileH, outf):
-    tFileH.seek(0)
+def preprocess_qFile(qFileH, outf):
+    qFileH.seek(0)
     outH=open(outf,"w+")
-    for line in tFileH:
+    for line in qFileH:
         strList=line.split("\t")
         peakName = strList[3]
         peak_s=int(strList[1])

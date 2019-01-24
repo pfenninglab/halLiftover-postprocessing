@@ -6,7 +6,7 @@ import subprocess
 import os
 
 from orthologFindHelper import *
-from cleanInputFile import preprocess_tFile
+from cleanInputFile import preprocess_qFile
 from quickSort import quicksort
 from tupleMergeSort import *
 
@@ -17,33 +17,33 @@ key: peakname
 value: [(peak_start,peak_end,chr_name),..., (peak_start,peak_end,chr_name)]
 	sorted list
 '''
-def create_qFile_dict(qFileH): 
-	qFileH.seek(0)
-	qFile_segDict={} 
-	for line in qFileH:
+def create_tFile_dict(tFileH): 
+	tFileH.seek(0)
+	tFile_segDict={} 
+	for line in tFileH:
 		strList=line.split("\t")
-		q_chrName=strList[0]
-		q_segStart=int(strList[1])
-		q_segEnd=int(strList[2])
-		q_segName=strList[3][:-1]
+		t_chrName=strList[0]
+		t_segStart=int(strList[1])
+		t_segEnd=int(strList[2])
+		t_segName=strList[3][:-1]
 		# 
-		q_segName_list = qFile_segDict.get(q_segName,[])
-		q_segName_list.append((q_segStart,q_segEnd,q_chrName))
-		qFile_segDict[q_segName]=q_segName_list
-	for key, value in qFile_segDict.items():
+		t_segName_list = tFile_segDict.get(t_segName,[])
+		t_segName_list.append((t_segStart,t_segEnd,t_chrName))
+		tFile_segDict[t_segName]=t_segName_list
+	for key, value in tFile_segDict.items():
 		merge_sort(value, cmp_tuple)
 		if(not sortedSeg(value)):
 			print("Fatal Error: list not sorted for "+key)
 			return {}
-	return qFile_segDict
+	return tFile_segDict
 
 
 
-def num_segments_hist(dict_segqFile):
+def num_segments_hist(dict_segtFile):
 	numFragmentsDict={}
 	plt.figure(1)
 	hist_len = []
-	for key, value in dict_segqFile.items():
+	for key, value in dict_segtFile.items():
 		length = len(value)
 		numFragmentsDict[key] = length
 		hist_len.append(length)
@@ -98,6 +98,7 @@ def create_SFile_dict(FileH):
 	last_chrname = first_ln_list[0]
 	firstline=True
 	#
+	FileH.seek(0)
 	for line in FileH:
 		strList = line.split("\t")
 		chr_name = strList[0]
@@ -111,11 +112,11 @@ def create_SFile_dict(FileH):
 				multpeak_dict[last_peak_name] = multpeak_pos_list
 				multpeak_pos_list = []
 			else:
-				if firstline:
-					peak_summit[last_peak_name] = (last_chrstart, last_chrend, last_chrname)
-					firstline = False;
 				peak_summit[peak_name] = (mapped_s, mapped_e, chr_name)
 		else:
+			if firstline:
+				peak_summit[last_peak_name] = (last_chrstart, last_chrend, last_chrname)
+				firstline = False;
 			if(multpeak_pos_list == []):
 				num_multpeak += 1
 				multpeak_pos_list.append((last_chrstart, last_chrend, last_chrname))
@@ -283,28 +284,28 @@ def make_hist_peaks(oFile,outname,bin_max):
 finding valid orthologs and then plot the histogram
 '''
 def ortholog_find(file_H,max_len,alen,min_len,blen,proct_dist):
-	tFileH = open(file_H[0],"r+")
-	qFileH = open(file_H[1],"r+")
+	qFileH = open(file_H[0],"r+")
+	tFileH = open(file_H[1],"r+")
 	sFileH = open(file_H[2],"r+")
 	oFileH = open(file_H[3],"w+")
-	tFileH.seek(0) #tFileH has 5 fields: chr_name, peak_s, peak_e, peak_summit_d, peak_name
-	tFile_fix_name=file_H[0]+".fixed"
-	tFile_failed_name = file_H[3]+".failed"
+	qFileH.seek(0) 
+	qFile_fix_name=file_H[0]+".fixed"
+	qFile_failed_name = file_H[3]+".failed"
 	#
-	tFile_FH = open(tFile_failed_name, "w+")
+	qFile_FH = open(qFile_failed_name, "w+")
 	# chrname, start, end, length, peakname 
-	preprocess_tFile(tFileH,tFile_fix_name)
-	tFileH.close()
-	tFileH = open(tFile_fix_name,"r+")
+	preprocess_qFile(qFileH,qFile_fix_name)
+	qFileH.close()
+	qFileH = open(qFile_fix_name,"r+")
 	dict_ortholog={}
 	# 
-	dict_segqFile = create_qFile_dict(qFileH)
-	if(dict_segqFile=={}):
+	dict_segtFile = create_tFile_dict(tFileH)
+	if(dict_segtFile=={}):
 		print("Fatal Error")
 		return 1
 	dict_summit = create_SFile_dict(sFileH)[0]
 	#
-	for line in tFileH:
+	for line in qFileH: #qFileH has 5 fields: chr_name, peak_s, peak_e, peak_summit_d, peak_name
 		# if(test_trial == 0):
 		# 	break
 		strList=line.split("\t")
@@ -323,7 +324,7 @@ def ortholog_find(file_H,max_len,alen,min_len,blen,proct_dist):
 		else:
 			this_min_len = min_len
 		#key:peak_name, value:list of (s,e,chr_name) sorted wrt s
-		q_peak_list = dict_segqFile.get(peak_name,[]) #q_segStart,q_segEnd,q_chrName
+		q_peak_list = dict_segtFile.get(peak_name,[]) #q_segStart,q_segEnd,q_chrName
 		summit_seg = dict_summit.get(peak_name,()) #mapped_summit_start, end, chr_name
 		if(q_peak_list==[] or summit_seg==()):
 			continue
@@ -341,15 +342,17 @@ def ortholog_find(file_H,max_len,alen,min_len,blen,proct_dist):
 		newLineList.append(str(q_extent[-2]))
 		newLineList.append(str(q_extent[-1]))
 		newLine = fromStringListToStr(newLineList)
+		if(peak_name=="peak92200"):
+			print(newLine)
 		if(validOrtholog(q_extent,this_max_len,this_min_len,proct_dist,peak_name)):
 			oFileH.write(newLine)
 		else:
-			tFile_FH.write(newLine)
+			qFile_FH.write(newLine)
 	tFileH.close()
 	qFileH.close()
 	sFileH.close()
 	oFileH.close()
-	tFile_FH.close()
+	qFile_FH.close()
 	make_hist(file_H[3],file_H[3],2500)
 	return 0
 
@@ -372,10 +375,10 @@ def main(argv):
 	parser.add_argument('-min_frac',
 		help='minimum percentage of original peak of the ortholog')
 	
-	parser.add_argument('-tFile', help='input bed file', 
+	parser.add_argument('-qFile', help='input bed file', 
 		required=True)
 	
-	parser.add_argument('-qFile', help='input mapped bed file',
+	parser.add_argument('-tFile', help='input mapped bed file',
 		required=True)
 	
 	parser.add_argument('-sFile', help='input mapped-summit bed file',
@@ -405,8 +408,8 @@ def main(argv):
 	else:
 		min_len=int(args.min_len)
 	file_H=[]
-	file_H.append(args.tFile)
 	file_H.append(args.qFile)
+	file_H.append(args.tFile)
 	file_H.append(args.sFile)
 	file_H.append(args.oFile)
 	if(not check_valid_files(args.tFile)):
