@@ -76,7 +76,7 @@ This can take a long time (days), and these files take up a few gigabytes, so, i
 ```
 wigToBigWig [alignmentDepthFileName] [chromSizesFileName] [alignmentDepthBigwigFileName]
 ```
-This can require up to 64 gigabytes.
+This can require up to 64 gigabytes.  Note that the chromosome naming conventions might be different from those in the chrom sizes file name.  Some people in the Pfenning Lab have experience converting chromosome names, so ask around for advice if you find that this is an issue.
 
 3.  Convert the alignment depth bigwig file to a bedgraph file:
 ```
@@ -88,7 +88,7 @@ You can gzip the bedgraph file so that it does not take up too much space.
 ```
 python getMaxScorePositionFromBedgraph.py --bedFileName [file with regions you will be getting scores for, will be -qFile for next step] --bedgraphFileName [alignmentDepthBedgraphFileName] --highestScoreLocationFileName [where the positions with the highest scores will be recored, you can map this with hal-liftover to create -sFile for the next step] --gz
 ```
-You should leave out --gz if the file with the regions and the alignment depth bedgraph file are not gzipped.
+This program requires the bed file and the bedgraph file to be sorted.  You should leave out --gz if the file with the regions and the alignment depth bedgraph file are not gzipped.
 
 5.  Use hal-liftover to map the positions where the highest scores are recorded to the target species.  This will create your -sFile for the next step.
 
