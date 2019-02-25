@@ -82,15 +82,20 @@ This can require up to 64 gigabytes.  Note that the chromosome naming convention
 ```
 bigWigToBedGraph [alignmentDepthBigwigFileName] [alignmentDepthBedgraphFileName]
 ```
-You can gzip the bedgraph file so that it does not take up too much space.
 
-4.  Get the file that will be used for starting the ortholog extension for each region using the scores in the bedgraph file:
+4.  Sort the bedgraph file by chromosome, start, end:
 ```
-python getMaxScorePositionFromBedgraph.py --bedFileName [file with regions you will be getting scores for, will be -qFile for next step] --bedgraphFileName [alignmentDepthBedgraphFileName] --highestScoreLocationFileName [where the positions with the highest scores will be recored, you can map this with hal-liftover to create -sFile for the next step] --gz
+sort -u -k1,1 -k2,2n -k3,3n [alignmentDepthBedgraphFileName] > [sortedAlignmentDepthBedgraphFileName]
 ```
-This program requires the bed file and the bedgraph file to be sorted.  You should leave out --gz if the file with the regions and the alignment depth bedgraph file are not gzipped.
+You can gzip the bedgraph files so that they do not take up too much space.
 
-5.  Use hal-liftover to map the positions where the highest scores are recorded to the target species.  This will create your -sFile for the next step.
+5.  Get the file that will be used for starting the ortholog extension for each region using the scores in the bedgraph file:
+```
+python getMaxScorePositionFromBedgraph.py --bedFileName [file with regions you will be getting scores for, will be -qFile for next step] --bedgraphFileName [sortedAlignmentDepthBedgraphFileName] --highestScoreLocationFileName [where the positions with the highest scores will be recored, you can map this with hal-liftover to create -sFile for the next step] --gz
+```
+This program requires the bed file and the bedgraph file to be sorted and not contain duplicated entires.  You should leave out --gz if the file with the regions and the alignment depth bedgraph file are not gzipped.
+
+6.  Use hal-liftover to map the positions where the highest scores are recorded to the target species.  This will create your -sFile for the next step.
 
 # Program Parameters 
 * -max_len: ortholog length must be less or equal to max_len
