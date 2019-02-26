@@ -23,8 +23,8 @@ def getMaxScorePositionFromBedgraph(options):
 	bedgraphFile = None
 	if options.gz == 1:
 		# Open the input files using the gzip library
-		bedFile = gzip.open(options.bedFileName)
-                bedgraphFile = gzip.open(options.bedgraphFileName)
+		bedFile = gzip.open(options.bedFileName, "rt")
+		bedgraphFile = gzip.open(options.bedgraphFileName, "rt")
 	else:
 		# Open the input files normally
 		bedFile = open(options.bedFileName)
@@ -39,7 +39,7 @@ def getMaxScorePositionFromBedgraph(options):
 	lastChrom = "chr0"
 	for line in bedFile:
 		# Iterate through the regions and find the position with the maximum score for each
-		lineElements = line.split("\t")
+		lineElements = line.split()
 		chrom = lineElements[0]
 		if chrom != lastChrom:
 			lastChrom = chrom
@@ -54,7 +54,7 @@ def getMaxScorePositionFromBedgraph(options):
 		while chrom > bedgraphChrom:
 			# At the wrong chromosome, so read through bedgraph file until the next chromosome is reached
 			bedgraphLine = bedgraphFile.readline()
-			bedgraphLineElements = bedgraphLine.split("\t")
+			bedgraphLineElements = bedgraphLine.split()
 			if len(bedgraphLineElements) < 4:
 				# Record the center because there is no score information
 				highestScoreLocationFile.write("\t".join([highestbedgraphScorePosition[0], str(highestbedgraphScorePosition[1]), \
@@ -62,17 +62,17 @@ def getMaxScorePositionFromBedgraph(options):
 					+ "\n")
 				stopReached = True
 				break
-			bedgraphChrom = bedgraphLineElements[0]  
+			bedgraphChrom = bedgraphLineElements[0]
 			bedgraphStart = int(bedgraphLineElements[1])
 			bedgraphEnd = int(bedgraphLineElements[2])
 			bedgraphMid = int(round(float(bedgraphStart + bedgraphEnd)/2.0))
 		while (not stopReached) and ((bedgraphMid < start) and (bedgraphChrom == chrom)):
 			# Go through bases until the start is reached
 			bedgraphLine = bedgraphFile.readline()
-			bedgraphLineElements = bedgraphLine.split("\t")
+			bedgraphLineElements = bedgraphLine.split()
 			if len(bedgraphLineElements) < 4:
                                 # Record the center because there is no score information
-                                highestScoreLocationFile.write("\t".join([highestbedgraphScorePosition[0], str(highestbedgraphScorePosition[1]), \
+				highestScoreLocationFile.write("\t".join([highestbedgraphScorePosition[0], str(highestbedgraphScorePosition[1]), \
 					str(highestbedgraphScorePosition[2]), highestbedgraphScorePosition[3], str(highestbedgraphScorePosition[4])])\
 					+ "\n")
 				stopReached = True
@@ -80,7 +80,7 @@ def getMaxScorePositionFromBedgraph(options):
 			bedgraphChrom = bedgraphLineElements[0]
 			bedgraphStart = int(bedgraphLineElements[1])
 			bedgraphEnd = int(bedgraphLineElements[2])
-                        bedgraphMid = int(round(float(bedgraphStart + bedgraphEnd)/2.0))
+			bedgraphMid = int(round(float(bedgraphStart + bedgraphEnd)/2.0))
 			bgs = float(bedgraphLineElements[3])
 		if (not stopReached) and ((bedgraphChrom > chrom) or (bedgraphMid >= end)):
                         # Record the center because there is no score information
@@ -102,18 +102,18 @@ def getMaxScorePositionFromBedgraph(options):
 					# The current position is closer to the center, so change highest bedgraph score position to current poistion
 					highestbedgraphScorePosition = (chrom, bedgraphMid, bedgraphMid + 1, peakName, bgs)
 			bedgraphLine = bedgraphFile.readline()
-			bedgraphLineElements = bedgraphLine.split("\t")
+			bedgraphLineElements = bedgraphLine.split()
 			if len(bedgraphLineElements) < 4:
                                 # Record the center because score information is not available for the entire region
-                                highestScoreLocationFile.write("\t".join([highestbedgraphScorePosition[0], str(highestbedgraphScorePosition[1]), \
+				highestScoreLocationFile.write("\t".join([highestbedgraphScorePosition[0], str(highestbedgraphScorePosition[1]), \
                                         str(highestbedgraphScorePosition[2]), highestbedgraphScorePosition[3], str(highestbedgraphScorePosition[4])])\
-                                        + "\n")
+					+ "\n")
 				stopReached = True
 				break
 			bedgraphChrom = bedgraphLineElements[0]
 			bedgraphStart = int(bedgraphLineElements[1])
 			bedgraphEnd = int(bedgraphLineElements[2])
-                        bedgraphMid = int(round(float(bedgraphStart + bedgraphEnd)/2.0))
+			bedgraphMid = int(round(float(bedgraphStart + bedgraphEnd)/2.0))
 			bgs = float(bedgraphLineElements[3])
 		if (len(bedgraphScores) > 0) and (not stopReached):
 			# Scores are available for the entire region, so record the position with the highest score
