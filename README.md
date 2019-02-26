@@ -93,7 +93,7 @@ You can gzip the bedgraph files so that they do not take up too much space.
 ```
 python getMaxScorePositionFromBedgraph.py --bedFileName [file with regions you will be getting scores for, will be -qFile for next step] --bedgraphFileName [sortedAlignmentDepthBedgraphFileName] --highestScoreLocationFileName [where the positions with the highest scores will be recored, you can map this with hal-liftover to create -sFile for the next step] --gz
 ```
-This program requires the bed file and the bedgraph file to be sorted and not contain duplicated entires.  You should leave out --gz if the file with the regions and the alignment depth bedgraph file are not gzipped.  Note that this program was made using python version 2 while orthologFind.py was made using python verison 3.
+This program requires the bed file and the bedgraph file to be sorted and not contain duplicated entires.  You should leave out --gz if the file with the regions and the alignment depth bedgraph file are not gzipped.  Note that this program is compatible with both python version 2 and python version 3 while orthologFind.py is compatible with only python verison 3.
 
 6.  Use hal-liftover to map the positions where the highest scores are recorded to the target species.  This will create your -sFile for the next step.
 
