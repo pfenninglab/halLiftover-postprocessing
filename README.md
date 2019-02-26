@@ -70,7 +70,7 @@ There are many reasons that starting with the summits is sub-optimal for histone
 ```
 halAlignmentDepth --outWiggle [alignmentDepthFileName] [cactusFileName] [speciesName]
 ```
-This can take a long time (days), and these files take up a few gigabytes, so, if you are in the Pfenning Lab, find out if someone else in the lab has already done this for your species of interest before doing this.
+This can require up to 8 gigabytes.  This can take a long time (days), and these files take up a few gigabytes, so, if you are in the Pfenning Lab, find out if someone else in the lab has already done this for your species of interest before doing this.
 
 2.  Convert the alignment depth file from a wig file to a bigwigh file:
 ```
@@ -85,7 +85,7 @@ bigWigToBedGraph [alignmentDepthBigwigFileName] [alignmentDepthBedgraphFileName]
 
 4.  Sort the bedgraph file by chromosome, start, end:
 ```
-sort -u -k1,1 -k2,2n -k3,3n [alignmentDepthBedgraphFileName] > [sortedAlignmentDepthBedgraphFileName]
+sort -k1,1 -k2,2n -k3,3n [alignmentDepthBedgraphFileName] > [sortedAlignmentDepthBedgraphFileName]
 ```
 You can gzip the bedgraph files so that they do not take up too much space.
 
