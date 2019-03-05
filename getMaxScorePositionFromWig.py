@@ -1,6 +1,7 @@
 import sys
 import gzip
 import argparse
+from argparse import Namespace
 import os
 import pybedtools as bt
 import shutil
