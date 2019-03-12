@@ -30,13 +30,13 @@ def getMaxScorePositionFromBedgraph(options):
 		bedFile = open(options.bedFileName)
 		bedgraphFile = open(options.bedgraphFileName)
 	highestScoreLocationFile = open(options.highestScoreLocationFileName, 'w+')
-	bedgraphChrom = "chr0"
+	bedgraphChrom = "0"
 	bedgraphStart = 0
 	bedgraphEnd = 0
 	bedgraphMid = 0
 	bgs = 0.0
 	bedgraphLine = ""
-	lastChrom = "chr0"
+	lastChrom = "0"
 	for line in bedFile:
 		# Iterate through the regions and find the position with the maximum score for each
 		lineElements = line.split()
