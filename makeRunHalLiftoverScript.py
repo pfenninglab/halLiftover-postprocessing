@@ -13,6 +13,8 @@ def parseArgument():
                         help='Name of the Cactus file')
         parser.add_argument("--halLiftoverPath", required=False, default="/home/ikaplow/RegulatoryElementEvolutionProject/src/hal/bin",\
                         help='Path to hal-Liftover executable')
+	parser.add_argument("--numInputFilePartsToRemoveForOutput", type=int, required=False, default=2,\
+                        help='Number of parts of the input file name to remove from the end when creating the output file name')
 	parser.add_argument("--gz", action="store_true", required=False,\
                         help='The input file is gzipped')
         parser.add_argument("--scriptFileName", required=True,\
@@ -40,7 +42,7 @@ def makeRunHalLiftoverScript(options):
 		# Iterate through the query files and write a line in the script for lifting over each to each target species
 		lineElements = line.strip().split("\t")
 		bedFileNameElements = lineElements[0].split(".")
-		outputFileNamePrefix = ".".join(bedFileNameElements[0:-2])
+		outputFileNamePrefix = ".".join(bedFileNameElements[0:0-options.numInputFilePartsToRemoveForOutput])
 		for species in speciesToLiftDict:
 			# Iterate through the species and write a line in the script for lifting over the query species to each target species
 			if species == lineElements[1]:
