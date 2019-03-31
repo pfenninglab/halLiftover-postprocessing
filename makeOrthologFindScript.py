@@ -23,9 +23,9 @@ def parseArgument():
 		required=True)
 	parser.add_argument('-oFileNameSuffix', help='suffix to add to target file names to create the output file names, should end in .bed', \
 		required=True)
-	parser.add_argument("--codePath", required=True,\
+	parser.add_argument("-codePath", required=True,\
 		help='Path to orthologFind.py')
-	parser.add_argument("--scriptFileName", required=True,\
+	parser.add_argument("-scriptFileName", required=True,\
 		help='Name of the file where the script will be recorded')
 	options = parser.parse_args()
 	return options
