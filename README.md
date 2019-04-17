@@ -62,7 +62,46 @@ export PYTHONPATH=/home/xiaoyuz1/multalign/hal:${PYTHONPATH}
 	"/projects/pfenninggroup/machineLearningForComputationalBiology/alignCactus/Cortex_AgeB_ATAC/Cortex_AgeB_ATAC_out_ppr.IDR0.1.filt.toHuman.narrowPeak.summit"
 	```
 
- 
+
+# Preparing Program for Histone Modification Data
+There are many reasons that starting with the summits is sub-optimal for histone modifcation data.  Unlike for TF ChIP-seq and open chromatin data, where for which the motifs are known to be clustered around motif summits, TFs are thought not to bind where there are large numbers of reads in histone modification datas but in the valleys between the regions with large numbers of reads.  In addition, the summit locations produced by MACS2, a commonly used peak caller for histone modification data, are thought to be unreliable.  A reasonable place to start with histone modification data, therefore, is the location within the region that has the largest number of species in the alignment, as this is likely to be an important part of the region.  If there are multiple such locations, which often happens, then choosing the one closest to the center makes sense because the centers of the histone modification regions tend to be more important than their edges.  Here is how to make an -sFile that contains these locations:
+
+1.  Get the alignment depth for your species of interest:
+```
+halAlignmentDepth --outWiggle [alignmentDepthFileName] [cactusFileName] [speciesName]
+```
+This can require up to 8 gigabytes.  This can take a long time (days), and these files take up a few gigabytes, so, if you are in the Pfenning Lab, find out if someone else in the lab has already done this for your species of interest before doing this.
+
+2.  Convert the alignment depth file from a wig file to a bigwigh file:
+```
+wigToBigWig [alignmentDepthFileName] [chromSizesFileName] [alignmentDepthBigwigFileName]
+```
+This can require up to 64 gigabytes.  Note that the chromosome naming conventions might be different from those in the chrom sizes file name.  Some people in the Pfenning Lab have experience converting chromosome names, so ask around for advice if you find that this is an issue.
+
+3.  Convert the alignment depth bigwig file to a bedgraph file:
+```
+bigWigToBedGraph [alignmentDepthBigwigFileName] [alignmentDepthBedgraphFileName]
+```
+
+4.  Sort the bedgraph file by chromosome, start, end:
+```
+sort -k1,1 -k2,2n -k3,3n [alignmentDepthBedgraphFileName] > [sortedAlignmentDepthBedgraphFileName]
+```
+You can gzip the bedgraph files so that they do not take up too much space.
+
+5.  Get the file that will be used for starting the ortholog extension for each region using the scores in the bedgraph file:
+```
+python getMaxScorePositionFromBedgraph.py --bedFileName [file with regions you will be getting scores for, will be -qFile for next step] --bedgraphFileName [sortedAlignmentDepthBedgraphFileName] --highestScoreLocationFileName [where the positions with the highest scores will be recored, you can map this with hal-liftover to create -sFile for the next step] --gz
+```
+This program requires the bed file and the bedgraph file to be sorted and not contain duplicated entires.  You should leave out --gz if the file with the regions and the alignment depth bedgraph file are not gzipped.  Note that this program is compatible with both python version 2 and python version 3 while orthologFind.py is compatible with only python verison 3.
+
+Alternatively, you can replace steps 2-5 with the following script that combines them:
+```
+python getMaxScorePositionFromWig.py --bedFileName [file with regions you will be getting scores for, will be -qFile for next step] --wigFileName [alignmentDepthFileName] --chromSizesFileName [chromSizesFileName] --highestScoreLocationFileName [where the positions with the highest scores will be recored, you can map this with hal-liftover to create -sFile for the next step] --gz
+```
+This program requires the bed file to be sorted and not contain duplicated entires.  You should leave out --gz if the file with the regions is not gzipped.  This program is compatible with both python version 2 and python version 3.
+
+6.  Use hal-liftover to map the positions where the highest scores are recorded to the target species.  This will create your -sFile for the next step.
 
 # Program Parameters 
 * -max_len: ortholog length must be less or equal to max_len
