@@ -111,7 +111,7 @@ def find_all_peaknames(fileH): #assume last columns are peak names
 	name_l = {}
 	for line in fileH:
 		strList=line.split("\t")
-		peakname=strList[-1][:-1]
+		peakname=strList[-1].strip()
 		peak_times = name_l.get(peakname, 0)
 		peak_times +=1
 		name_l[peakname]  = peak_times

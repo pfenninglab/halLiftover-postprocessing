@@ -17,6 +17,8 @@ key: peakname
 value: [(peak_start,peak_end,chr_name),..., (peak_start,peak_end,chr_name)]
 	sorted list
 '''
+
+#chr8	55610267	55610365	Peak_12452	1000	.	55610267
 def create_tFile_dict(tFileH): 
 	tFileH.seek(0)
 	tFile_segDict={} 
@@ -25,7 +27,9 @@ def create_tFile_dict(tFileH):
 		t_chrName=strList[0]
 		t_segStart=int(strList[1])
 		t_segEnd=int(strList[2])
-		t_segName=strList[3][:-1]
+		t_segName=strList[3].strip()
+		# if(strList[3][-1]=="\n"):
+		# 	t_segName=strList[3][:-1]
 		# 
 		t_segName_list = tFile_segDict.get(t_segName,[])
 		t_segName_list.append((t_segStart,t_segEnd,t_chrName))
@@ -92,7 +96,7 @@ def create_SFile_dict(FileH):
 	num_multpeak_nonad = 0
 	# specially dealing with first line
 	first_ln_list = (FileH.readline()).split("\t")
-	last_peak_name = first_ln_list[3][0:-1]
+	last_peak_name = first_ln_list[3].strip()
 	last_chrstart = int(first_ln_list[1])
 	last_chrend = int(first_ln_list[2])
 	last_chrname = first_ln_list[0]
@@ -104,7 +108,7 @@ def create_SFile_dict(FileH):
 		chr_name = strList[0]
 		mapped_s = int(strList[1])
 		mapped_e = int(strList[2])
-		peak_name = strList[3][0:-1]
+		peak_name = strList[3].strip()
 		if peak_name != last_peak_name:
 			if(multpeak_pos_list != []):
 				if(not adj_pos(multpeak_pos_list)):
@@ -313,7 +317,7 @@ def ortholog_find(file_H,max_len,alen,min_len,blen,proct_dist):
 		peak_s=int(strList[1])
 		peak_e=int(strList[2])
 		peak_len=int(strList[-2])
-		peak_name = strList[-1][0:-1]
+		peak_name = strList[-1].strip()
 		#if given fraction, calculate max_len 
 		if(not alen):
 			this_max_len = max_len*(peak_e-peak_s+1)
