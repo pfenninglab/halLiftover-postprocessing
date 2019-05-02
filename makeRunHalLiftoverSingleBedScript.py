@@ -7,7 +7,7 @@ def parseArgument():
                         "Make a script that will run halLiftover on a single file and map it to a list of species")
         parser.add_argument("--bedFileName", required=True,\
                         help='bed file')
-	parser.add_argument("--querySpecies", required=True,\
+        parser.add_argument("--querySpecies", required=True,\
                         help='Name of species that will be lifted')
         parser.add_argument("--speciesToLiftFileName", required=True,\
                         help='File with target species, add a second column to specifiy a different output suffix than the species name')
@@ -15,16 +15,16 @@ def parseArgument():
                         help='Name of the Cactus file')
         parser.add_argument("--halLiftoverPath", required=False, default="/home/ikaplow/RegulatoryElementEvolutionProject/src/hal/bin",\
                         help='Path to hal-Liftover executable')
-	parser.add_argument("--numInputFilePartsToRemoveForOutput", type=int, required=False, default=2,\
+        parser.add_argument("--numInputFilePartsToRemoveForOutput", type=int, required=False, default=2,\
                         help='Number of parts of the input file name to remove from the end when creating the output file name')
-	parser.add_argument("--gz", action="store_true", required=False,\
+        parser.add_argument("--gz", action="store_true", required=False,\
                         help='The input file is gzipped')
         parser.add_argument("--scriptFileName", required=True,\
                         help='Name of the file where the script will be recorded')
         options = parser.parse_args()
         return options
 
-def makeRunHalLiftoverScript(options):
+def makeRunHalLiftoverSingleBedScript(options):
 	# Make a script that will run halLiftover on a list of files and map each file to a list of species
 	speciesToLiftFile = open(options.speciesToLiftFileName)
 	speciesToLiftDict = {}
@@ -59,4 +59,4 @@ def makeRunHalLiftoverScript(options):
 
 if __name__=="__main__":
         options = parseArgument()
-	makeRunHalLiftoverScript(options)
+        makeRunHalLiftoverSingleBedScript(options)
