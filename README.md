@@ -156,6 +156,7 @@ This program requires the bed file to be sorted and not contain duplicated entir
 		summit_to_ortholog_start_length
 		summit_to_ortholog_end_length
 		```
+	The chromosome name and all positions in oFile are from the target species.
 	* Examples:
 		```
 		chr8	55609305	55610335	55609835	peak0	1031	1019	530	500
