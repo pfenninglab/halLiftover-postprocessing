@@ -44,7 +44,8 @@ export PYTHONPATH=/home/xiaoyuz1/multalign/hal:${PYTHONPATH}
 ```
 
 # Running halLiftover 
-* Run halLiftover on tFile 
+* Run halLiftover on qFile 
+	* Before running halLiftover, make sure that all of the peaks have unique peak names in column 4 of the bed file.  These peak names will be used in the post-processing tool.
 	* To halLiftover, an example sbatch job would be:
 	```
 	#!/bin/bash
