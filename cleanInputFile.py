@@ -22,7 +22,7 @@ def preprocess_qFile(qFileH, outf):
         newLineList.append(str(peak_e-peak_s+1))
         newLineList.append(peakName)
         newLine = fromStringListToStr(newLineList)
-        outH.write(newLine + "\n")
+        outH.write(newLine)
     outH.close()
 
 '''
