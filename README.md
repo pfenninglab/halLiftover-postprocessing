@@ -44,7 +44,8 @@ export PYTHONPATH=/home/xiaoyuz1/multalign/hal:${PYTHONPATH}
 ```
 
 # Running halLiftover 
-* Run halLiftover on tFile 
+* Run halLiftover on qFile 
+	* Before running halLiftover, make sure that all of the peaks have unique peak names in column 4 of the bed file.  These peak names will be used in the post-processing tool.
 	* To halLiftover, an example sbatch job would be:
 	```
 	#!/bin/bash
@@ -99,7 +100,7 @@ Alternatively, you can replace steps 2-5 with the following script that combines
 ```
 python getMaxScorePositionFromWig.py --bedFileName [file with regions you will be getting scores for, will be -qFile for next step] --wigFileName [alignmentDepthFileName] --chromSizesFileName [chromSizesFileName] --highestScoreLocationFileName [where the positions with the highest scores will be recored, you can map this with hal-liftover to create -sFile for the next step] --gz
 ```
-This program requires the bed file to be sorted and not contain duplicated entires.  You should leave out --gz if the file with the regions is not gzipped.  This program is compatible with both python version 2 and python version 3.
+This program requires the bed file to be sorted and not contain duplicated entires.  You should leave out --gz if the file with the regions is not gzipped.  This program is compatible with both python version 2 and python version 3.  Note that this script runs UCSC tools internally that sometimes fail silently; if you are running it, you should check the sorted bedgraph file when it finishes and re-run it with more memory alloted if that file is not large.
 
 6.  Use hal-liftover to map the positions where the highest scores are recorded to the target species.  This will create your -sFile for the next step.
 
@@ -156,6 +157,7 @@ This program requires the bed file to be sorted and not contain duplicated entir
 		summit_to_ortholog_start_length
 		summit_to_ortholog_end_length
 		```
+	The chromosome name and all positions in oFile are from the target species.
 	* Examples:
 		```
 		chr8	55609305	55610335	55609835	peak0	1031	1019	530	500
