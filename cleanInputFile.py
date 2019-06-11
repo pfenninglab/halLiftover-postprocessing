@@ -13,7 +13,7 @@ def preprocess_qFile(qFileH, outf):
     qFileH.seek(0)
     outH=open(outf,"w+")
     for line in qFileH:
-        strList=line.split("\t")
+        strList=line.strip().split("\t")
         peakName = strList[3]
         peak_s=int(strList[1])
         peak_e=int(strList[2])
@@ -22,7 +22,7 @@ def preprocess_qFile(qFileH, outf):
         newLineList.append(str(peak_e-peak_s+1))
         newLineList.append(peakName)
         newLine = fromStringListToStr(newLineList)
-        outH.write(newLine)
+        outH.write(newLine + "\n")
     outH.close()
 
 '''

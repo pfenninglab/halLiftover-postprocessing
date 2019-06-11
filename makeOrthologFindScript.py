@@ -32,7 +32,6 @@ def parseArgument():
 
 def makeOrthologFindScript(options):
 	# Make a script that will run orthologFind.py on a list of target, summit, query file combinations
-	# NOT DEBUGGED
 	qFileListFile = open(options.qFileListFileName)
 	tFileListFile = open(options.tFileListFileName)
 	sFileListFile = open(options.sFileListFileName)

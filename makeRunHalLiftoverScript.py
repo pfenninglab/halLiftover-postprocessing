@@ -13,7 +13,7 @@ def parseArgument():
                         help='Name of the Cactus file')
         parser.add_argument("--halLiftoverPath", required=False, default="/home/ikaplow/RegulatoryElementEvolutionProject/src/hal/bin",\
                         help='Path to hal-Liftover executable')
-        parser.add_argument("--numInputFilePartsToRemoveForOutput", type=int, required=False, default=2,\
+	parser.add_argument("--numInputFilePartsToRemoveForOutput", type=int, required=False, default=2,\
                         help='Number of parts of the input file name to remove from the end when creating the output file name')
         parser.add_argument("--gz", action="store_true", required=False,\
                         help='The input file is gzipped')
@@ -51,8 +51,8 @@ def makeRunHalLiftoverScript(options):
 			outputFileName = outputFileNamePrefix + "_" + speciesToLiftDict[species] + ".bed"
 			if options.gz:
 				# The input bed file is gzipped
-				scriptFile.write(" ".join(["zcat", lineElements[0], "|", halLiftoverCmd, "--inBedVersion 4", options.CactusFileName, \
-					lineElements[1], "stdin", species, outputFileName]) + "\n")
+				scriptFile.write(" ".join(["zcat", lineElements[0], "|", halLiftoverCmd, "--inBedVersion 4", \
+					options.CactusFileName, lineElements[1], "stdin", species, outputFileName]) + "\n")
 			else:
 				# The input bed file is not gzipped
 				scriptFile.write(" ".join([halLiftoverCmd, "--inBedVersion 4", options.CactusFileName, lineElements[1], \
