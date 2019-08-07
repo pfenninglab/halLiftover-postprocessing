@@ -28,9 +28,6 @@ def create_tFile_dict(tFileH):
 		t_segStart=int(strList[1])
 		t_segEnd=int(strList[2])
 		t_segName=strList[3].strip()
-		# if(strList[3][-1]=="\n"):
-		# 	t_segName=strList[3][:-1]
-		# 
 		t_segName_list = tFile_segDict.get(t_segName,[])
 		t_segName_list.append((t_segStart,t_segEnd,t_chrName))
 		tFile_segDict[t_segName]=t_segName_list
@@ -119,8 +116,8 @@ def create_SFile_dict(FileH):
 				peak_summit[peak_name] = (mapped_s, mapped_e, chr_name)
 		else:
 			if firstline:
-				peak_summit[last_peak_name] = (last_chrstart, last_chrend, last_chrname)
-				firstline = False;
+                                peak_summit[last_peak_name] = (last_chrstart, last_chrend, last_chrname)
+                                firstline = False
 			if(multpeak_pos_list == []):
 				num_multpeak += 1
 				multpeak_pos_list.append((last_chrstart, last_chrend, last_chrname))
@@ -167,7 +164,7 @@ def extend_summit(q_peak_list,summit_seg):
 	n=len(q_peak_list_proc)
 	#find in this arr of (summit_start,summit_end,summit_chrname) corresponding
 	s_index = binsearch_summitseg(q_peak_list_proc,summit_seg,0,n-1)	
-	if(s_index==-1): return()
+	if(s_index==-1): return()	
 	############################separately deal with the (s,e,chrname) that includes the summit_seg
 	summit_ortho_s=q_peak_list_proc[s_index][0]
 	summit_ortho_e=q_peak_list_proc[s_index][1]
@@ -310,8 +307,6 @@ def ortholog_find(file_H,max_len,alen,min_len,blen,proct_dist):
 	dict_summit = create_SFile_dict(sFileH)[0]
 	#
 	for line in qFileH: #qFileH has 5 fields: chr_name, peak_s, peak_e, peak_summit_d, peak_name
-		# if(test_trial == 0):
-		# 	break
 		strList=line.split("\t")
 		chr_name=strList[0]
 		peak_s=int(strList[1])
@@ -346,8 +341,6 @@ def ortholog_find(file_H,max_len,alen,min_len,blen,proct_dist):
 		newLineList.append(str(q_extent[-2]))
 		newLineList.append(str(q_extent[-1]))
 		newLine = fromStringListToStr(newLineList)
-		if(peak_name=="peak92200"):
-			print(newLine)
 		if(validOrtholog(q_extent,this_max_len,this_min_len,proct_dist,peak_name)):
 			oFileH.write(newLine)
 		else:

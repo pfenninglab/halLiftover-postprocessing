@@ -64,5 +64,7 @@ def getMaxScorePositionFromWig(options):
 	getMaxScorePositionFromBedgraph(maxScorePositionOptions)
 
 if __name__=="__main__":
+	bt.helpers.set_tempdir("/scratch")
 	options = parseArgument()
 	getMaxScorePositionFromWig(options)
+	bt.helpers.cleanup()
