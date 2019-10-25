@@ -112,16 +112,18 @@ def create_SFile_dict(FileH):
 				    num_multpeak_nonad += 1
 				multpeak_dict[last_peak_name] = multpeak_pos_list
 				multpeak_pos_list = []
-			else:
-				peak_summit[peak_name] = (mapped_s, mapped_e, chr_name)
+			# At a new peak, so add its mapped summit to the list
+			peak_summit[peak_name] = (mapped_s, mapped_e, chr_name)
 		else:
 			if firstline:
+				# Not at the occurrence of a repeated peak because at the first line
                                 peak_summit[last_peak_name] = (last_chrstart, last_chrend, last_chrname)
                                 firstline = False
-			if(multpeak_pos_list == []):
-				num_multpeak += 1
-				multpeak_pos_list.append((last_chrstart, last_chrend, last_chrname))
-			multpeak_pos_list.append((mapped_s, mapped_e, chr_name))
+			else:
+				if(multpeak_pos_list == []):
+					num_multpeak += 1
+					multpeak_pos_list.append((last_chrstart, last_chrend, last_chrname))
+				multpeak_pos_list.append((mapped_s, mapped_e, chr_name))
 		last_peak_name = peak_name
 		last_chrstart = mapped_s
 		last_chrend = mapped_e
