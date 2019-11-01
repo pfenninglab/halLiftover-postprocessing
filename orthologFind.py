@@ -83,7 +83,7 @@ As we go through line by line
 		key: peak_name
 		value: [(mapped_s,mapped_e,chr_name)...]
 '''
-def create_SFile_dict(FileH):
+def create_SFile_dict(FileH,mult_keepone):
 	FileH.seek(0)
 	peak_summit = {}
 	multpeak_dict = {}
@@ -112,6 +112,9 @@ def create_SFile_dict(FileH):
 				    num_multpeak_nonad += 1
 				multpeak_dict[last_peak_name] = multpeak_pos_list
 				multpeak_pos_list = []
+				# Delete the peak whose summit maps to multiple places
+				if not mult_keepone: 
+					peak_summit.pop(last_peak_name, None)
 			# At a new peak, so add its mapped summit to the list
 			peak_summit[peak_name] = (mapped_s, mapped_e, chr_name)
 		else:
@@ -128,6 +131,14 @@ def create_SFile_dict(FileH):
 		last_chrstart = mapped_s
 		last_chrend = mapped_e
 		last_chrname = chr_name
+	# Repeat it one more time in case last line is a peak whose summit maps to multiple places
+	if(multpeak_pos_list != []):
+		if(not adj_pos(multpeak_pos_list)):
+			num_multpeak_nonad += 1
+		multpeak_dict[last_peak_name] = multpeak_pos_list
+		# Delete the peak whose summit maps to multiple places
+		if not mult_keepone: 
+			peak_summit.pop(last_peak_name, None)
 	return (peak_summit, multpeak_dict)
 
 
@@ -286,7 +297,7 @@ def make_hist_peaks(oFile,outname,bin_max):
 '''
 finding valid orthologs and then plot the histogram
 '''
-def ortholog_find(file_H,max_len,alen,min_len,blen,proct_dist):
+def ortholog_find(file_H,max_len,alen,min_len,blen,proct_dist,mult_keepone):
 	qFileH = open(file_H[0],"r+")
 	tFileH = open(file_H[1],"r+")
 	sFileH = open(file_H[2],"r+")
@@ -306,7 +317,7 @@ def ortholog_find(file_H,max_len,alen,min_len,blen,proct_dist):
 	if(dict_segtFile=={}):
 		print("Fatal Error")
 		return 1
-	dict_summit = create_SFile_dict(sFileH)[0]
+	dict_summit = create_SFile_dict(sFileH,mult_keepone)[0]
 	#
 	for line in qFileH: #qFileH has 5 fields: chr_name, peak_s, peak_e, peak_summit_d, peak_name
 		strList=line.split("\t")
@@ -374,6 +385,8 @@ def main(argv):
 	parser.add_argument('-min_frac',
 		help='minimum percentage of original peak of the ortholog')
 	
+	parser.add_argument('-mult_keepone', help='use this flag if want to keep one position to use for a peak whose summit maps to multiple places', action='store_true')
+	
 	parser.add_argument('-qFile', help='input bed file', 
 		required=True)
 	
@@ -386,6 +399,7 @@ def main(argv):
 	parser.add_argument('-oFile', help='out bed file name',
 		required=True)
 	args = parser.parse_args()
+
 
 	if(args.max_len is None and args.max_frac is None):
 		print("Error: Must supply max_len or max_frac")
@@ -420,7 +434,7 @@ def main(argv):
 	if(not check_valid_files(args.sFile)):
 		print("Error: sFile is empty")
 		exit(1)
-	ortholog_find(file_H,max_len,alen,min_len,blen,int(args.protect_dist));
+	ortholog_find(file_H,max_len,alen,min_len,blen,int(args.protect_dist),args.mult_keepone);
 		
 
 	

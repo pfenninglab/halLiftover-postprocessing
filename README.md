@@ -114,6 +114,9 @@ This program requires the bed file to be sorted and not contain duplicated entir
 * -protect_dist: the ortholog length in each direction from the ortholog of the summit must be at least proct_dist 
 			![alt text](https://github.com/pfenninglab/multiple_alignment-python/blob/master/min_proct_dist.png)
 
+* -mult_keepone: a flag that stores true, and we use it when we see a peak whose summit maps to multiple places, and we want to keep one summit mapping 
+	By default, if we do not add this flag, then will discard peaks whose summits map to multiple places
+
 * -qFile: the original bed file containing information on (at least): chromosome_name, start, end, peak name -- The 1st 4 columns **MUST** be in standard bed format. 
 	
 
