@@ -1,11 +1,12 @@
-## halLiftover-postprocessing
+## HALPER
 
-# Running Program
+
+# Running HALPER
 * `python orthologFind.py` using python3
 
 
 # Introduction
-This tool is designed for constructing coherent orthologs from the outputs of halLiftover.  While it was originally designed for contructing orthologs of transcription factor ChIP-seq and open chromatin peaks, it can be applied to any genomic regions of interest. Since this tool relies on halLiftover, the assembly of the genomic regions and the assembly of the regions you are mapping to must be in a Cactus alginment hal file.  (If the assemblies are not in a Cactus alignment that you are using for halLiftover, use UCSC-Liftover can be used to map regions to the closest available assembly in a Cactus alignment.)
+HALPER is designed for constructing coherent orthologs from the outputs of halLiftover.  While it was originally designed for contructing orthologs of transcription factor ChIP-seq and open chromatin peaks, it can be applied to any genomic regions of interest. Since HALPER relies on halLiftover, the assembly of the query and target genomic regions must be in a Cactus alginment hal file.  (If the assemblies are not in a Cactus alignment, liftOver can be used to map regions to the closest available assembly in a Cactus alignment.)
 
 
 # Dependencies
@@ -15,32 +16,19 @@ This tool is designed for constructing coherent orthologs from the outputs of ha
 	* numpy (http://www.numpy.org/)
 
 
-# Tips for installing hal toolkit
+# Tips for Installing hal toolkit
 * To install, follow the instructions in this website: https://github.com/ComparativeGenomicsToolkit/hal
 	* For detailed installation tips, follow the instructions in https://github.com/pfenninglab/halLiftover-postprocessing/blob/master/halliftoverInstallationSpecifics.txt
 * hal toolkit requires gcc >= 4.9 
 
 
-# Running halLiftover 
-* Run halLiftover on qFile 
-	* Before running halLiftover, make sure that all of the genomic regions have unique names in column 4 of the bed file.  Thesee names will be used in the post-processing tool.
-
-
 # Program Parameters 
-* -max_len: ortholog length must be less or equal to max_len
-* -max_frac: ortholog length must be less or euqal to max_frac * peak length 
-	* provide either max_len or max_frac
-* -min_len: ortholog length must be greater or equal to min_len
-* -min_frac: ortholog length must be greater or equal to min_frac * peak length 
-	* provide either min_len or min_frac
-* -protect_dist: the ortholog length in each direction from the ortholog of the summit must be at least proct_dist 
-			![alt text](https://github.com/pfenninglab/multiple_alignment-python/blob/master/min_proct_dist.png)
-
-* -qFile: the original bed file containing information on (at least): chromosome_name, start, end, peak name -- The 1st 4 columns **MUST** be in standard bed format. 
+* -qFile: the query bed file (used as input to halLiftover) containing information on (at least): chromosome_name, start, end, region name
+	* The 1st 4 columns **MUST** be in standard bed format
+	* The names in column 4 must be unique -- these names will be used in HALPER
 	
-* -tFile: bed file of the halLiftover-ed result for each peak 
-	* Line format must be: ` chr_name    peak_start    peak_end    peak_name `. halLiftover should output file conforming to this format. 
-	* Last column must be of the format "peak[number]", for example, "peak0"
+* -tFile: bed file of the file specified in -qFile mapped to the target species using halLiftover 
+	* Line format must be: ` chr_name    peak_start    peak_end    peak_name ` (halLiftover should output file conforming to this format)
 	* Examples:
 		```
 		chr8	55610267	55610335	peak0
@@ -50,9 +38,8 @@ This tool is designed for constructing coherent orthologs from the outputs of ha
 		chr8	55610183	55610190	peak0 
 		```
 
-* -sFile: bed file of the halLiftover-ed result for each peak summit
+* -sFile: bed file of the peak summits file specified in -qFile mapped to the target species using halLiftover
 	* Line format must be: ` chr_name    peak_start    peak_end    peak_name`. halLiftover should output file conforming to this format. 
-	* Last column must be of the format "peak[number]", for example, "peak0"
 	* Examples:
 		```
 		chr8	55609835	55609836	peak0
@@ -63,7 +50,7 @@ This tool is designed for constructing coherent orthologs from the outputs of ha
 		chr8	55499203	55499204	peak8
 		chr8	55473539	55473540	peak9 
 		```
-	* See below for instructions for how to create the sFile if you are using this program with histone modification ChIP-seq peaks or peaks without summits
+	* See Preparing Histone Modification Data for HALPER below for instructions for how to create the sFile if you are using this program with histone modification ChIP-seq peaks or regions without peak summits
 
 * -oFile: output file name
 	* Line format (from left to right): 
@@ -84,26 +71,26 @@ This tool is designed for constructing coherent orthologs from the outputs of ha
 		chr8	55609305	55610335	55609835	peak0	1031	1019	530	500
 		chr8	55609305	55610335	55609437	peak1	1031	1019	132	898
 		```
-	* Along with the output file, another file is generated, which has name oFile.failed
-		* Line format is the same as oFile 
-		* oFile.failed would contain all the orthologs that are not valid when judged against the parameters users have entered
-		* Examples:
-		```
-		chr4	76114521	76116294	76116110	peak13	1774	544	1589	184
-		chr4	76477814	76478909	76477950	peak49	1096	459	136	959
-		chr4	76809080	76816154	76816028	peak66	7075	288	6948	126
-		chr6	53443438	53447196	53443500	peak69	3759	750	62	3696
-		```
 
 
-# Example run of the program 
+* -max_len: ortholog length must be less or equal to max_len
+* -max_frac: ortholog length must be less or euqal to max_frac * peak length 
+	* provide either max_len or max_frac
+* -min_len: ortholog length must be greater or equal to min_len
+* -min_frac: ortholog length must be greater or equal to min_frac * peak length 
+	* provide either min_len or min_frac
+* -protect_dist: the ortholog length in each direction from the ortholog of the summit must be at least proct_dist 
+			![alt text](https://github.com/pfenninglab/multiple_alignment-python/blob/master/min_proct_dist.png)
+
+
+# Example Run of HALPER
 ```
-python orthologFind.py -max_len 1000 -min_len 50 -protect_dist 5 -tFile HumanMiddleFrontalGyrusDNase_ppr.IDR0.1.filt_brainUpEnhancerStrictShort_withPeakOffetsAndNames.bed -qFile HumanMiddleFrontalGyrusDNase_ppr.IDR0.1.filt_brainUpEnhancerStrictShort_mm10Hal.bed -sFile  HumanMiddleFrontalGyrusDNase_ppr.IDR0.1.filt_brainUpEnhancerStrictShort_summits_mm10Hal.bed -oFile HumanMiddleFrontalGyrusDNase_ppr.IDR0.1.filt_brainUpEnhancerStrictShort_mm10Hal_summitExtendedMin50Max1000Protect5.bed
+python orthologFind.py -max_len 1000 -min_len 50 -protect_dist 5 -qFile hg38Peaks.bed -tFile hg38Peaks_halLiftovermm10.bed -sFile  hg38Peaks_summits_halLiftovermm10.bed -oFile hg38Peaks_halLiftovermm10_summitExtendedMin50Max1000Protect5.bed
 ```
 Note how there is only one '-' (dash) for the parameter name. 
 
 
-# Output files produced by program
+# Output Files Produced by HALPER
 * File with coherent orhtologs (name specified in -oFile)
 * File with orthologs that did not meet all of the criteria specified by the user (name is the name specified in -oFile + ".failed")
 * File with histogram of ortholog lengths of all orthologs, including those that did not meet the criteria specified by the user (name is the name specified in -oFile + ".png")
@@ -111,7 +98,7 @@ Note how there is only one '-' (dash) for the parameter name.
 	* Note: To obtain ortholog length histograms when running orthologFind.py on a cluster, submit the job (or open the interactive session in which the program will be run) using the --x11 option.
 
 
-# Preparing Program for Histone Modification Data
+# Preparing Histone Modification Data for HALPER
 There are many reasons that starting with the summits is sub-optimal for histone modifcation data.  Unlike for TF ChIP-seq and open chromatin data, where for which the motifs are known to be clustered around motif summits, TFs are thought not to bind where there are large numbers of reads in histone modification datas but in the valleys between the regions with large numbers of reads.  In addition, the summit locations produced by MACS2, a commonly used peak caller for histone modification data, are thought to be unreliable.  A reasonable place to start with histone modification data, therefore, is the location within the region that has the largest number of species in the alignment, as this is likely to be an important part of the region.  If there are multiple such locations, which often happens, then choosing the one closest to the center makes sense because the centers of the histone modification regions tend to be more important than their edges.  Here is how to make an -sFile that contains these locations:
 
 1.  Get the alignment depth for your species of interest:
