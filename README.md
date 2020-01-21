@@ -13,31 +13,17 @@ This tool is designed for constructing coherent orthologs from the outputs of ha
 * Python libraries `matplotlib` and `numpy`
 	* matplotlib (https://matplotlib.org/downloads.html)
 	* numpy (http://www.numpy.org/)
-# Tips for installing hal toolkits
+
+
+# Tips for installing hal toolkit
 * To install, follow the instructions in this website: https://github.com/ComparativeGenomicsToolkit/hal
 	* For detailed installation tips, follow the instructions in https://github.com/pfenninglab/halLiftover-postprocessing/blob/master/halliftoverInstallationSpecifics.txt
-* gcc >= 4.9 
+* hal toolkit requires gcc >= 4.9 
 
 
 # Running halLiftover 
 * Run halLiftover on qFile 
-	* Before running halLiftover, make sure that all of the peaks have unique peak names in column 4 of the bed file.  These peak names will be used in the post-processing tool.
-	* To halLiftover, an example sbatch job would be:
-	```
-	#!/bin/bash
-	#SBATCH -e mappingHal.err
-	#SBATCH -o mappingHal.out
-	#SBATCH -t 48:00:00
-	#SBATCH -n 1
-	#SBATCH -p pfen1
-	#SBATCH -c 2
-	#SBATCH --mem=8G
-	halLiftover /projects/pfenninggroup/machineLearningForComputationalBiology/alignCactus/10plusway-master.hal \
-	Mouse \
-	"/projects/pfenninggroup/machineLearningForComputationalBiology/alignCactus/Cortex_AgeB_ATAC/Cortex_AgeB_ATAC_out_ppr.IDR0.1.filt.narrowPeak.summit" \
-	Human \
-	"/projects/pfenninggroup/machineLearningForComputationalBiology/alignCactus/Cortex_AgeB_ATAC/Cortex_AgeB_ATAC_out_ppr.IDR0.1.filt.toHuman.narrowPeak.summit"
-	```
+	* Before running halLiftover, make sure that all of the genomic regions have unique names in column 4 of the bed file.  Thesee names will be used in the post-processing tool.
 
 
 # Program Parameters 
@@ -52,7 +38,6 @@ This tool is designed for constructing coherent orthologs from the outputs of ha
 
 * -qFile: the original bed file containing information on (at least): chromosome_name, start, end, peak name -- The 1st 4 columns **MUST** be in standard bed format. 
 	
-
 * -tFile: bed file of the halLiftover-ed result for each peak 
 	* Line format must be: ` chr_name    peak_start    peak_end    peak_name `. halLiftover should output file conforming to this format. 
 	* Last column must be of the format "peak[number]", for example, "peak0"
@@ -79,7 +64,6 @@ This tool is designed for constructing coherent orthologs from the outputs of ha
 		chr8	55473539	55473540	peak9 
 		```
 	* See below for instructions for how to create the sFile if you are using this program with histone modification ChIP-seq peaks or peaks without summits
-
 
 * -oFile: output file name
 	* Line format (from left to right): 
@@ -118,7 +102,13 @@ python orthologFind.py -max_len 1000 -min_len 50 -protect_dist 5 -tFile HumanMid
 ```
 Note how there is only one '-' (dash) for the parameter name. 
 
-Note: To obtain ortholog length histograms, submit the job (or open the interactive session in which the program will be run) using the --x11 option.
+
+# Output files produced by program
+* File with coherent orhtologs (name specified in -oFile)
+* File with orthologs that did not meet all of the criteria specified by the user (name is the name specified in -oFile + ".failed")
+* File with histogram of ortholog lengths of all orthologs, including those that did not meet the criteria specified by the user (name is the name specified in -oFile + ".png")
+* File with historgram of ortholog lengths of coherent orthologs (name is the name specified in -oFile + "-peak.png")
+	* Note: To obtain ortholog length histograms when running orthologFind.py on a cluster, submit the job (or open the interactive session in which the program will be run) using the --x11 option.
 
 
 # Preparing Program for Histone Modification Data
