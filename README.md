@@ -1,28 +1,28 @@
-## HALPER
+# HALPER
 
 
-# Running HALPER
+## Running HALPER
 * `python orthologFind.py` using python3
 
 
-# Introduction
+## Introduction
 HALPER is designed for constructing coherent orthologs from the outputs of halLiftover.  While it was originally designed for contructing orthologs of transcription factor ChIP-seq and open chromatin peaks, it can be applied to any genomic regions of interest. Since HALPER relies on halLiftover, the assembly of the query and target genomic regions must be in a Cactus alginment hal file.  (If the assemblies are not in a Cactus alignment, liftOver can be used to map regions to the closest available assembly in a Cactus alignment.)
 
 
-# Dependencies
+## Dependencies
 * Python version 3.7 (https://www.python.org/downloads/release/python-371/)
 * Python libraries `matplotlib` and `numpy`
 	* matplotlib (https://matplotlib.org/downloads.html)
 	* numpy (http://www.numpy.org/)
 
 
-# Tips for Installing hal toolkit
+## Tips for Installing hal toolkit
 * To install, follow the instructions in this website: https://github.com/ComparativeGenomicsToolkit/hal
 	* For detailed installation tips, follow the instructions in https://github.com/pfenninglab/halLiftover-postprocessing/blob/master/halliftoverInstallationSpecifics.txt
 * hal toolkit requires gcc >= 4.9 
 
 
-# Program Parameters 
+## Program Parameters 
 * -qFile: the query bed file (used as input to halLiftover) containing information on (at least): chromosome_name, start, end, region name
 	* The 1st 4 columns **MUST** be in standard bed format
 	* The names in column 4 must be unique -- these names will be used in HALPER
@@ -83,14 +83,14 @@ HALPER is designed for constructing coherent orthologs from the outputs of halLi
 			![alt text](https://github.com/pfenninglab/multiple_alignment-python/blob/master/min_proct_dist.png)
 
 
-# Example Run of HALPER
+## Example Run of HALPER
 ```
 python orthologFind.py -max_len 1000 -min_len 50 -protect_dist 5 -qFile hg38Peaks.bed -tFile hg38Peaks_halLiftovermm10.bed -sFile  hg38Peaks_summits_halLiftovermm10.bed -oFile hg38Peaks_halLiftovermm10_summitExtendedMin50Max1000Protect5.bed
 ```
 Note how there is only one '-' (dash) for the parameter name. 
 
 
-# Output Files Produced by HALPER
+## Output Files Produced by HALPER
 * File with coherent orhtologs (name specified in -oFile)
 * File with orthologs that did not meet all of the criteria specified by the user (name is the name specified in -oFile + ".failed")
 * File with histogram of ortholog lengths of all orthologs, including those that did not meet the criteria specified by the user (name is the name specified in -oFile + ".png")
@@ -98,7 +98,7 @@ Note how there is only one '-' (dash) for the parameter name.
 	* Note: To obtain ortholog length histograms when running orthologFind.py on a cluster, submit the job (or open the interactive session in which the program will be run) using the --x11 option.
 
 
-# Preparing Histone Modification Data for HALPER
+## Preparing Histone Modification Data for HALPER
 There are many reasons that starting with the summits is sub-optimal for histone modifcation data.  Unlike for TF ChIP-seq and open chromatin data, where for which the motifs are known to be clustered around motif summits, TFs are thought not to bind where there are large numbers of reads in histone modification datas but in the valleys between the regions with large numbers of reads.  In addition, the summit locations produced by MACS2, a commonly used peak caller for histone modification data, are thought to be unreliable.  A reasonable place to start with histone modification data, therefore, is the location within the region that has the largest number of species in the alignment, as this is likely to be an important part of the region.  If there are multiple such locations, which often happens, then choosing the one closest to the center makes sense because the centers of the histone modification regions tend to be more important than their edges.  Here is how to make an -sFile that contains these locations:
 
 1.  Get the alignment depth for your species of interest:
