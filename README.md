@@ -67,17 +67,17 @@ HALPER is designed for constructing coherent orthologs from the outputs of halLi
 		summit_to_ortholog_start_length
 		summit_to_ortholog_end_length
 ```
-	The chromosome name and all positions in oFile are from the target species.
+The chromosome name and all positions in the file name specified in -oFile are from the target species.
 	* Examples without -narrowPeak option:
-```
+	```
 		chr8	55609305	55610335	55609835	peak0	1031	1019	530	500
 		chr8	55609305	55610335	55609437	peak1	1031	1019	132	898
-```
+	```
 	* Examples with -narrowPeak option (columns 5-9 do not have meaningful values):
-```
+	```
 		chr8	55609305	55610335	peak0	-1	.	-1	-1	-1	530
 		chr8	55609305	55610335	peak1	-1	.	-1	-1	-1	132
-```
+	```
 
 
 * -max_len: ortholog length must be less or equal to max_len
