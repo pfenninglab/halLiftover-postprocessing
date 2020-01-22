@@ -1,4 +1,4 @@
-# HALPER (**hal**Liftover **P**ostprocessing for **E**volution of **R**egulatory Elements)
+# HALPER (***hal***Liftover ***P***ostprocessing for ***E***volution of ***R***egulatory Elements)
 
 
 ## Running HALPER
@@ -6,7 +6,7 @@
 
 
 ## Introduction
-HALPER is designed for constructing coherent orthologs from the outputs of halLiftover.  While it was originally designed for contructing orthologs of transcription factor ChIP-seq and open chromatin peaks, it can be applied to any genomic regions of interest. Since HALPER relies on halLiftover, the assembly of the query and target genomic regions must be in a Cactus alginment hal file.  (If the assemblies are not in a Cactus alignment, liftOver can be used to map regions to the closest available assembly in a Cactus alignment.)
+HALPER is designed for constructing coherent orthologs from the outputs of halLiftover.  While it was originally designed for contructing orthologs of transcription factor ChIP-seq and open chromatin peaks, it can be applied to any genomic regions of interest. Since HALPER relies on halLiftover, the assembly of the query and target genomic regions must be in a Cactus alginment hal file.  (If the assemblies are not in a Cactus alignment, liftOver (http://hgdownload.cse.ucsc.edu/admin/exe/linux.x86_64/) can be used to map regions to the closest available assembly in a Cactus alignment.)
 
 
 ## Dependencies
