@@ -286,7 +286,7 @@ def make_hist_peaks(oFile,outname,bin_max):
 '''
 finding valid orthologs and then plot the histogram
 '''
-def ortholog_find(file_H,max_len,alen,min_len,blen,proct_dist):
+def ortholog_find(file_H,max_len,alen,min_len,blen,proct_dist,narrowPeak=False):
 	qFileH = open(file_H[0],"r+")
 	tFileH = open(file_H[1],"r+")
 	sFileH = open(file_H[2],"r+")
@@ -308,6 +308,7 @@ def ortholog_find(file_H,max_len,alen,min_len,blen,proct_dist):
 		return 1
 	dict_summit = create_SFile_dict(sFileH)[0]
 	#
+	print("Dictionaries created!")
 	for line in qFileH: #qFileH has 5 fields: chr_name, peak_s, peak_e, peak_summit_d, peak_name
 		strList=line.split("\t")
 		chr_name=strList[0]
@@ -338,15 +339,22 @@ def ortholog_find(file_H,max_len,alen,min_len,blen,proct_dist):
 		ortho_e=q_extent[2]
 		ortho_len = q_extent[3]
 		summit_q_pos = q_extent[1]
-		newLineList = [summit_seg[2],str(ortho_s),str(ortho_e),str(summit_q_pos),peak_name,str(ortho_len)]
-		newLineList.append(str(peak_len))
-		newLineList.append(str(q_extent[-2]))
-		newLineList.append(str(q_extent[-1]))
+		newLineList = []
+		if not narrowPeak:
+			# Format the output line in the original format for orthologFind.py
+			newLineList = [summit_seg[2],str(ortho_s),str(ortho_e),str(summit_q_pos),peak_name,str(ortho_len)]
+			newLineList.append(str(peak_len))
+			newLineList.append(str(q_extent[-2]))
+			newLineList.append(str(q_extent[-1]))
+		else:
+			# Format the output line in narrowPeak format
+			newLineList = [summit_seg[2],str(ortho_s),str(ortho_e),peak_name,"-1",".","-1","-1","-1",str(q_extent[-2])]
 		newLine = fromStringListToStr(newLineList)
 		if(validOrtholog(q_extent,this_max_len,this_min_len,proct_dist,peak_name)):
 			oFileH.write(newLine)
 		else:
 			qFile_FH.write(newLine)
+	print("Orthologs found!")
 	tFileH.close()
 	qFileH.close()
 	sFileH.close()
@@ -385,6 +393,9 @@ def main(argv):
 
 	parser.add_argument('-oFile', help='out bed file name',
 		required=True)
+	parser.add_argument('-narrowPeak', action="store_true", \
+		help='output file in narrowPeak format, string columns other than 1-4 and 10 will be ., number columns other than 1-4 and 10 will be -1',
+                required=False)
 	args = parser.parse_args()
 
 	if(args.max_len is None and args.max_frac is None):
@@ -420,7 +431,7 @@ def main(argv):
 	if(not check_valid_files(args.sFile)):
 		print("Error: sFile is empty")
 		exit(1)
-	ortholog_find(file_H,max_len,alen,min_len,blen,int(args.protect_dist));
+	ortholog_find(file_H,max_len,alen,min_len,blen,int(args.protect_dist),narrowPeak=args.narrowPeak);
 		
 
 	
