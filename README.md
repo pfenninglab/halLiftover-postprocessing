@@ -1,4 +1,4 @@
-# HALPER
+# HALPER (**hal**Liftover **P**ostprocessing for **E**volution of **R**egulatory Elements)
 
 
 ## Running HALPER
@@ -111,13 +111,13 @@ There are many reasons that starting with the summits is sub-optimal for histone
 ```
 halAlignmentDepth --outWiggle [alignmentDepthFileName] [cactusFileName] [speciesName]
 ```
-This can require up to 8 gigabytes.  This can take a long time (days), and these files take up a few gigabytes, so, if you are in the Pfenning Lab, find out if someone else in the lab has already done this for your species of interest before doing this.
+This can require up to 8 gigabytes for a hal file with 35 species.  Running this on 35 species can take over a week, and the output files can be at least a few gigabytes.  For a larger hal file with more than 35 species, run halAlignmentDepth on each genomic region instead of on the entire genome.
 
 2.  Convert the alignment depth file from a wig file to a bigwigh file:
 ```
 wigToBigWig [alignmentDepthFileName] [chromSizesFileName] [alignmentDepthBigwigFileName]
 ```
-This can require up to 64 gigabytes.  Note that the chromosome naming conventions might be different from those in the chrom sizes file name.  Some people in the Pfenning Lab have experience converting chromosome names, so ask around for advice if you find that this is an issue.
+This can require up to 64 gigabytes for the alignment depth file produced from a hal file with 35 species.  Note that the chromosome naming conventions might be different from those in the chrom sizes file name.
 
 3.  Convert the alignment depth bigwig file to a bedgraph file:
 ```
@@ -128,19 +128,25 @@ bigWigToBedGraph [alignmentDepthBigwigFileName] [alignmentDepthBedgraphFileName]
 ```
 sort -k1,1 -k2,2n -k3,3n [alignmentDepthBedgraphFileName] > [sortedAlignmentDepthBedgraphFileName]
 ```
-You can gzip the bedgraph files so that they do not take up too much space.
+The bedgraph files can be gzipped so that they take up less space.
 
 5.  Get the file that will be used for starting the ortholog extension for each region using the scores in the bedgraph file:
 ```
 python getMaxScorePositionFromBedgraph.py --bedFileName [file with regions you will be getting scores for, will be -qFile for next step] --bedgraphFileName [sortedAlignmentDepthBedgraphFileName] --highestScoreLocationFileName [where the positions with the highest scores will be recored, you can map this with hal-liftover to create -sFile for the next step] --gz
 ```
-This program requires the bed file and the bedgraph file to be sorted and not contain duplicated entires.  You should leave out --gz if the file with the regions and the alignment depth bedgraph file are not gzipped.  Note that this program is compatible with both python version 2 and python version 3 while orthologFind.py is compatible with only python verison 3.
+This program requires the bed file and the bedgraph file to be sorted and not contain duplicated entires.  Leave out --gz if the file with the regions and the alignment depth bedgraph file are not gzipped.  Note that this program is compatible with both python version 2 and python version 3 while orthologFind.py is compatible with only python verison 3.
 
-Alternatively, you can replace steps 2-5 with the following script that combines them:
+Alternatively, steps 2-5 can be replaced with the following script that combines them:
 ```
 python getMaxScorePositionFromWig.py --bedFileName [file with regions you will be getting scores for, will be -qFile for next step] --wigFileName [alignmentDepthFileName] --chromSizesFileName [chromSizesFileName] --highestScoreLocationFileName [where the positions with the highest scores will be recored, you can map this with hal-liftover to create -sFile for the next step] --gz
 ```
-This program requires the bed file to be sorted and not contain duplicated entires.  You should leave out --gz if the file with the regions is not gzipped.  This program is compatible with both python version 2 and python version 3.  Note that this script runs UCSC tools internally that sometimes fail silently; if you are running it, you should check the sorted bedgraph file when it finishes and re-run it with more memory alloted if that file is not large.
+This program requires the bed file to be sorted and not contain duplicated entires.  You should leave out --gz if the file with the regions is not gzipped.  This program is compatible with both python version 2 and python version 3.  Note that this script runs UCSC tools internally that sometimes fail silently; therefore, check the sorted bedgraph file when it finishes and re-run it with more memory alloted if that file is not large.
 
 6.  Use hal-liftover to map the positions where the highest scores are recorded to the target species.  This will create your -sFile for the program.
 
+
+## Additional Utilities
+* makeRunHalLiftoverSingleBedScript.py: Makes a script that will run halLiftover on a single file and map the regions in it to a list of species
+* makeRunHalLiftoverScript.py: Makes a script that will run halLiftover on a list of files and map the regions each file to a list of species
+* makeOrthologFindSingleBedScript.py: Makes a script that will run orthologFind.py on a list of target, summit file combinations for a single query file
+* makeOrthologFindScript.py: Makes a script that will run orthologFind.py on a list of target, summit, query file combinations
