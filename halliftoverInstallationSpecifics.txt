@@ -66,6 +66,8 @@ wget https://support.hdfgroup.org/ftp/HDF5/releases/hdf5-1.10/hdf5-1.10.1/src/hd
 				[[username]@[node-name] hdf5-1.10.1]$ cd [your home directory]/bin/hal/hdf5
 				[[username]@[node-name] hdf5]$ ls
 				bin  include  lib  share
+				
+* hal toolkit requires gcc >= 4.9
 
 
 ### Load GCC 
