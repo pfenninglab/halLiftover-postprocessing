@@ -6,7 +6,6 @@ import subprocess
 import os
 
 from orthologFindHelper import *
-from cleanInputFile import preprocess_qFile
 from quickSort import quicksort
 from tupleMergeSort import *
 
@@ -235,17 +234,19 @@ make a histogram of all the valid orthologs
 x label: ortholog length
 y label: number of orthologs
 '''
-def make_hist(oFile,outname,bin_max):
+def make_hist(oFile,outname,bin_max,narrowPeak=False):
 	oFileH = open(oFile,"r")
 	plt.figure(1)
 	hist_len = []
 	peaks_len = []
 	for line in oFileH:
 		strList=line.split("\t")
-		ortholog_len = int(strList[5])
-		peak_len = int(strList[6])
+		ortholog_len = int(strList[2]) - int(strList[1])
 		hist_len.append(ortholog_len)
-		peaks_len.append(peak_len)
+		if not narrowPeak:
+			# The output file is not in narrowPeak format, so get the query species region length
+			peak_len = int(strList[6])
+			peaks_len.append(peak_len)
 	binwidth=np.linspace(0, bin_max, num=20)
 	fig=plt.hist(hist_len, edgecolor='black',bins=binwidth)
 	title="Orthologs"
@@ -254,15 +255,17 @@ def make_hist(oFile,outname,bin_max):
 	plt.ylabel('Count')
 	plt.savefig(outname+".png")
 	plt.close()
-	plt.figure(2)
-	binwidth=np.linspace(0, bin_max, num=20)
-	fig=plt.hist(peaks_len, edgecolor='black',bins=binwidth)
-	title="Peaks"
-	plt.title(title)
-	plt.xlabel('Length')
-	plt.ylabel('Count')
-	plt.savefig(outname+"-peak.png")
-	plt.close()
+	if not narrowPeak:
+		# The output file is not in narrowPeak format, so plot the query species region lengths
+		plt.figure(2)
+		binwidth=np.linspace(0, bin_max, num=20)
+		fig=plt.hist(peaks_len, edgecolor='black',bins=binwidth)
+		title="Peaks"
+		plt.title(title)
+		plt.xlabel('Length')
+		plt.ylabel('Count')
+		plt.savefig(outname+"-peak.png")
+		plt.close()
 	oFileH.close()
 
 def make_hist_peaks(oFile,outname,bin_max):
@@ -296,10 +299,6 @@ def ortholog_find(file_H,max_len,alen,min_len,blen,proct_dist,narrowPeak=False):
 	qFile_failed_name = file_H[3]+".failed"
 	#
 	qFile_FH = open(qFile_failed_name, "w+")
-	# chrname, start, end, length, peakname 
-	preprocess_qFile(qFileH,qFile_fix_name)
-	qFileH.close()
-	qFileH = open(qFile_fix_name,"r+")
 	dict_ortholog={}
 	# 
 	dict_segtFile = create_tFile_dict(tFileH)
@@ -308,14 +307,14 @@ def ortholog_find(file_H,max_len,alen,min_len,blen,proct_dist,narrowPeak=False):
 		return 1
 	dict_summit = create_SFile_dict(sFileH)[0]
 	#
-	print("Dictionaries created!")
-	for line in qFileH: #qFileH has 5 fields: chr_name, peak_s, peak_e, peak_summit_d, peak_name
-		strList=line.split("\t")
+	for line in qFileH: # qFileH's first four columns are chromosome name, region start, region end, region name
+		# Iterate through the query peaks and construct coherent orthologs of their corresponding target peaks if possible
+		strList=line.strip().split("\t")
 		chr_name=strList[0]
 		peak_s=int(strList[1])
 		peak_e=int(strList[2])
-		peak_len=int(strList[-2])
-		peak_name = strList[-1].strip()
+		peak_len=peak_e-peak_s
+		peak_name=strList[3]
 		#if given fraction, calculate max_len 
 		if(not alen):
 			this_max_len = max_len*(peak_e-peak_s+1)
@@ -354,13 +353,12 @@ def ortholog_find(file_H,max_len,alen,min_len,blen,proct_dist,narrowPeak=False):
 			oFileH.write(newLine)
 		else:
 			qFile_FH.write(newLine)
-	print("Orthologs found!")
 	tFileH.close()
 	qFileH.close()
 	sFileH.close()
 	oFileH.close()
 	qFile_FH.close()
-	make_hist(file_H[3],file_H[3],2500)
+	make_hist(file_H[3],file_H[3],2500,narrowPeak=narrowPeak)
 	return 0
 
 

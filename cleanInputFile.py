@@ -4,30 +4,6 @@ from orthologFindHelper import *
 '''
 * f is a file handler of the input file
 * f2 is a file handler of the output file
-For each line in f, take the first 3 columns, 
-peakName on the 4th column is assigned by the user.
-Each row in the output file will have 5 fields.
-chr_name peak_start peak_end peak_length peak_name 
-'''
-def preprocess_qFile(qFileH, outf):
-    qFileH.seek(0)
-    outH=open(outf,"w+")
-    for line in qFileH:
-        strList=line.strip().split("\t")
-        peakName = strList[3]
-        peak_s=int(strList[1])
-        peak_e=int(strList[2])
-        #
-        newLineList = strList[0:3]
-        newLineList.append(str(peak_e-peak_s+1))
-        newLineList.append(peakName)
-        newLine = fromStringListToStr(newLineList)
-        outH.write(newLine)
-    outH.close()
-
-'''
-* f is a file handler of the input file
-* f2 is a file handler of the output file
 For each line in f, take the first 3 columns, assign
 a peakname in the form peakx, where x is some integer
 enumerated from 0.
