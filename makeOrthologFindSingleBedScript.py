@@ -24,7 +24,7 @@ def parseArgument():
 	parser.add_argument('-oFileNameSuffix', help='suffix to add to target file names to create the output file names, should end in .bed', \
 		required=True)
 	parser.add_argument('-mult_keepone', action="store_true", \
-                help='keep one position to use for a peak whose summit maps to multiple places; otherwise, such a peak is discarded', \
+                help='if a region\'s summit maps to multiple positions in the target species, use the first position in file specified in -sFile', \
                 required=True)
 	parser.add_argument('-narrowPeak', action="store_true", help='output files in narrowPeak format', \
                 required=True)
