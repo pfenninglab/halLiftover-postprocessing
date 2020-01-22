@@ -29,18 +29,20 @@ HALPER is designed for constructing coherent orthologs from the outputs of halLi
 * -tFile: bed file of the file specified in -qFile mapped to the target species using halLiftover 
 	* Line format must be: ` chr_name    peak_start    peak_end    peak_name ` (halLiftover should output file conforming to this format)
 	* Examples:
-		```
+```
 		chr8	55610267	55610335	peak0
 		chr8	55610240	55610267	peak0
 		chr8	55610220	55610240	peak0
 		chr8	55610191	55610220	peak0
 		chr8	55610183	55610190	peak0 
-		```
+```
 
 * -sFile: bed file of the peak summits file specified in -qFile mapped to the target species using halLiftover
 	* Line format must be: ` chr_name    peak_start    peak_end    peak_name`. halLiftover should output file conforming to this format. 
+
+	* See "Preparing Histone Modification Data for HALPER" below for instructions for how to create the sFile if you are using this program with histone modification ChIP-seq peaks or regions without peak summits
 	* Examples:
-		```
+```
 		chr8	55609835	55609836	peak0
 		chr8	55609437	55609438	peak1
 		chr8	55591653	55591654	peak2
@@ -48,14 +50,13 @@ HALPER is designed for constructing coherent orthologs from the outputs of halLi
 		chr8	55536703	55536704	peak6
 		chr8	55499203	55499204	peak8
 		chr8	55473539	55473540	peak9 
-		```
-	* See Preparing Histone Modification Data for HALPER below for instructions for how to create the sFile if you are using this program with histone modification ChIP-seq peaks or regions without peak summits
+```
 	
 * -narrowPeak: output files in narrowPeak format (optional argument)
 
 * -oFile: output file name
 	* Line format (from left to right, if -narrowPeak option is not used): 
-		```
+```
 		chr_name 
 		ortholog_start 
 		ortholog_end 
@@ -65,18 +66,18 @@ HALPER is designed for constructing coherent orthologs from the outputs of halLi
 		original_peak_length 
 		summit_to_ortholog_start_length
 		summit_to_ortholog_end_length
-		```
+```
 	The chromosome name and all positions in oFile are from the target species.
 	* Examples without -narrowPeak option:
-		```
+```
 		chr8	55609305	55610335	55609835	peak0	1031	1019	530	500
 		chr8	55609305	55610335	55609437	peak1	1031	1019	132	898
-		```
+```
 	* Examples with -narrowPeak option (columns 5-9 do not have meaningful values):
-		```
+```
 		chr8	55609305	55610335	peak0	-1	.	-1	-1	-1	530
 		chr8	55609305	55610335	peak1	-1	.	-1	-1	-1	132
-		```
+```
 
 
 * -max_len: ortholog length must be less or equal to max_len
@@ -90,10 +91,24 @@ HALPER is designed for constructing coherent orthologs from the outputs of halLi
 
 
 ## Example Run of HALPER
+Running these examples requires the files in the examples directory and 10plusway-master.hal, a Cactus alignment with 12 mammals that can be obtained from the authors of the paper describing Cactus (see "Relevant Publications" below).
+1.  Run halLiftover on the file from the query species to obtain the regions' orthologs in the target species:
 ```
-python orthologFind.py -max_len 1000 -min_len 50 -protect_dist 5 -qFile hg38Peaks.bed -tFile hg38Peaks_halLiftovermm10.bed -sFile  hg38Peaks_summits_halLiftovermm10.bed -oFile hg38Peaks_halLiftovermm10_summitExtendedMin50Max1000Protect5.bed
+	halLiftover --inBedVersion 4 10plusway-master.hal Human hg38Peaks.bed Mouse hg38Peaks_halLiftovermm10.bed
 ```
-Note how there is only one '-' (dash) for the parameter name. 
+2.  Get the peak summits (example is for narrowPeak file, see "Preparing Histone Modification Data for HALPER" below for how to do this for histone modification ChIP-seq or genomic regions without summits):
+```
+	awk 'BEGIN{OFS="\t"}{print $1, $2+$10, $2+$10+1, $4}' hg38Peaks.bed > hg38Peaks_summits.bed
+```
+3.  Run halLiftover on the peak summits to obtain their orthologs in the target species:
+```
+	halLiftover --inBedVersion 4 10plusway-master.hal Human hg38Peaks_summits.bed Mouse hg38Peaks_summits_halLiftovermm10.bed
+```
+4.  Run HALPER:
+```
+	python orthologFind.py -max_len 1000 -min_len 50 -protect_dist 5 -qFile hg38Peaks.bed -tFile hg38Peaks_halLiftovermm10.bed -sFile  hg38Peaks_summits_halLiftovermm10.bed -oFile hg38Peaks_halLiftovermm10_summitExtendedMin50Max1000Protect5.bed
+```
+* Note how there is only one '-' (dash) for the parameter name. 
 
 
 ## Output Files Produced by HALPER
@@ -150,6 +165,13 @@ This program requires the bed file to be sorted and not contain duplicated entir
 * makeRunHalLiftoverScript.py: Makes a script that will run halLiftover on a list of files and map the regions each file to a list of species
 * makeOrthologFindSingleBedScript.py: Makes a script that will run orthologFind.py on a list of target, summit file combinations for a single query file
 * makeOrthologFindScript.py: Makes a script that will run orthologFind.py on a list of target, summit, query file combinations
+
+
+## Relevant Publications
+* Manuscript describing Cactus alignment method: 
+* Manuscript describing creation of Cactus alignment for hundreds of species:
+* Manuscript describing hal toolkit: Glenn Hickey, Benedict Paten, Dent Earl, Daniel Zerbino, and David Haussler. HAL: A Hierarchical Format for Storing and Analyzing Multiple Genome Alignments. Bioinformatics, Volume 29, Issue 10, 15 May 2013, Pages 1341–1342.
+
 
 ## Contributors
 * Erin Zhang (xiaoyuz1@andrew.cmu.edu)
