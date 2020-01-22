@@ -54,7 +54,7 @@ HALPER is designed for constructing coherent orthologs from the outputs of halLi
 	
 * -narrowPeak: output files in narrowPeak format (optional argument)
 
-* -oFile: output file name
+* -oFile: output file name (the chromosome name and all positions in the file name specified in -oFile are from the target species)
 	* Line format (from left to right, if -narrowPeak option is not used): 
 ```
 		chr_name 
@@ -66,17 +66,6 @@ HALPER is designed for constructing coherent orthologs from the outputs of halLi
 		original_peak_length 
 		summit_to_ortholog_start_length
 		summit_to_ortholog_end_length
-```
-	The chromosome name and all positions in oFile are from the target species.
-	* Examples without -narrowPeak option:
-```
-		chr8	55609305	55610335	55609835	peak0	1031	1019	530	500
-		chr8	55609305	55610335	55609437	peak1	1031	1019	132	898
-```
-	* Examples with -narrowPeak option (columns 5-9 do not have meaningful values):
-```
-		chr8	55609305	55610335	peak0	-1	.	-1	-1	-1	530
-		chr8	55609305	55610335	peak1	-1	.	-1	-1	-1	132
 ```
 
 
@@ -104,11 +93,20 @@ Running these examples requires the files in the examples directory and 10pluswa
 ```
 	halLiftover --inBedVersion 4 10plusway-master.hal Human hg38Peaks_summits.bed Mouse hg38Peaks_summits_halLiftovermm10.bed
 ```
-4.  Run HALPER:
+4.  Run HALPER (note that there is only one '-' for the parameter names):
 ```
 	python orthologFind.py -max_len 1000 -min_len 50 -protect_dist 5 -qFile hg38Peaks.bed -tFile hg38Peaks_halLiftovermm10.bed -sFile  hg38Peaks_summits_halLiftovermm10.bed -oFile hg38Peaks_halLiftovermm10_summitExtendedMin50Max1000Protect5.bed
 ```
-* Note how there is only one '-' (dash) for the parameter name. 
+* Examples of output without -narrowPeak option:
+```
+		chr8	55609305	55610335	55609835	peak0	1031	1019	530	500
+		chr8	55609305	55610335	55609437	peak1	1031	1019	132	898
+```
+* Examples of output with -narrowPeak option (columns 5-9 do not have meaningful values):
+```
+		chr8	55609305	55610335	peak0	-1	.	-1	-1	-1	530
+		chr8	55609305	55610335	peak1	-1	.	-1	-1	-1	132
+```
 
 
 ## Output Files Produced by HALPER
