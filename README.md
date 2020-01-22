@@ -19,7 +19,6 @@ HALPER is designed for constructing coherent orthologs from the outputs of halLi
 ## Tips for Installing hal toolkit
 * To install, follow the instructions in this website: https://github.com/ComparativeGenomicsToolkit/hal
 	* For detailed installation tips, follow the instructions in https://github.com/pfenninglab/halLiftover-postprocessing/blob/master/halliftoverInstallationSpecifics.txt
-* hal toolkit requires gcc >= 4.9 
 
 
 ## Program Parameters 
@@ -51,9 +50,11 @@ HALPER is designed for constructing coherent orthologs from the outputs of halLi
 		chr8	55473539	55473540	peak9 
 		```
 	* See Preparing Histone Modification Data for HALPER below for instructions for how to create the sFile if you are using this program with histone modification ChIP-seq peaks or regions without peak summits
+	
+* -narrowPeak: output files in narrowPeak format (optional argument)
 
 * -oFile: output file name
-	* Line format (from left to right): 
+	* Line format (from left to right, if -narrowPeak option is not used): 
 		```
 		chr_name 
 		ortholog_start 
@@ -66,10 +67,15 @@ HALPER is designed for constructing coherent orthologs from the outputs of halLi
 		summit_to_ortholog_end_length
 		```
 	The chromosome name and all positions in oFile are from the target species.
-	* Examples:
+	* Examples without -narrowPeak option:
 		```
 		chr8	55609305	55610335	55609835	peak0	1031	1019	530	500
 		chr8	55609305	55610335	55609437	peak1	1031	1019	132	898
+		```
+	* Examples with -narrowPeak option (columns 5-9 do not have meaningful values):
+		```
+		chr8	55609305	55610335	peak0	-1	.	-1	-1	-1	530
+		chr8	55609305	55610335	peak1	-1	.	-1	-1	-1	132
 		```
 
 
