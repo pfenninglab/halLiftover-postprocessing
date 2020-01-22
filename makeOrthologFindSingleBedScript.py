@@ -23,6 +23,9 @@ def parseArgument():
 		required=True)
 	parser.add_argument('-oFileNameSuffix', help='suffix to add to target file names to create the output file names, should end in .bed', \
 		required=True)
+	parser.add_argument('-mult_keepone', action="store_true", \
+                help='keep one position to use for a peak whose summit maps to multiple places; otherwise, such a peak is discarded', \
+                required=True)
 	parser.add_argument('-narrowPeak', action="store_true", help='output files in narrowPeak format', \
                 required=True)
 	parser.add_argument("-codePath", required=True,\
@@ -59,6 +62,9 @@ def makeOrthologFindSingleBedScript(options):
 		if options.min_frac != None:
 			# Add the min_frac option
 			scriptFile.write(" -min_frac " + options.min_frac)
+		if options.mult_keepone:
+                        # Add the min_frac option
+                        scriptFile.write(" -mult_keepone ")
 		if options.narrowPeak:
                         # Add the narrowPeak option
                         scriptFile.write(" -narrowPeak")

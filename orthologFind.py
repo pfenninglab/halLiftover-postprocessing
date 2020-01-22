@@ -82,7 +82,7 @@ As we go through line by line
 		key: peak_name
 		value: [(mapped_s,mapped_e,chr_name)...]
 '''
-def create_SFile_dict(FileH):
+def create_SFile_dict(FileH,mult_keepone):
 	FileH.seek(0)
 	peak_summit = {}
 	multpeak_dict = {}
@@ -111,6 +111,9 @@ def create_SFile_dict(FileH):
 				    num_multpeak_nonad += 1
 				multpeak_dict[last_peak_name] = multpeak_pos_list
 				multpeak_pos_list = []
+				# Delete the peak whose summit maps to multiple places
+				if not mult_keepone: 
+					peak_summit.pop(last_peak_name, None)
 			# At a new peak, so add its mapped summit to the list
 			peak_summit[peak_name] = (mapped_s, mapped_e, chr_name)
 		else:
@@ -127,6 +130,14 @@ def create_SFile_dict(FileH):
 		last_chrstart = mapped_s
 		last_chrend = mapped_e
 		last_chrname = chr_name
+	# Repeat it one more time in case last line is a peak whose summit maps to multiple places
+	if(multpeak_pos_list != []):
+		if(not adj_pos(multpeak_pos_list)):
+			num_multpeak_nonad += 1
+		multpeak_dict[last_peak_name] = multpeak_pos_list
+		# Delete the peak whose summit maps to multiple places
+		if not mult_keepone: 
+			peak_summit.pop(last_peak_name, None)
 	return (peak_summit, multpeak_dict)
 
 
@@ -289,7 +300,7 @@ def make_hist_peaks(oFile,outname,bin_max):
 '''
 finding valid orthologs and then plot the histogram
 '''
-def ortholog_find(file_H,max_len,alen,min_len,blen,proct_dist,narrowPeak=False):
+def ortholog_find(file_H,max_len,alen,min_len,blen,proct_dist,mult_keepone=False,narrowPeak=False):
 	qFileH = open(file_H[0],"r+")
 	tFileH = open(file_H[1],"r+")
 	sFileH = open(file_H[2],"r+")
@@ -305,7 +316,7 @@ def ortholog_find(file_H,max_len,alen,min_len,blen,proct_dist,narrowPeak=False):
 	if(dict_segtFile=={}):
 		print("Fatal Error")
 		return 1
-	dict_summit = create_SFile_dict(sFileH)[0]
+	dict_summit = create_SFile_dict(sFileH,mult_keepone)[0]
 	#
 	for line in qFileH: # qFileH's first four columns are chromosome name, region start, region end, region name
 		# Iterate through the query peaks and construct coherent orthologs of their corresponding target peaks if possible
@@ -391,6 +402,9 @@ def main(argv):
 
 	parser.add_argument('-oFile', help='out bed file name',
 		required=True)
+	parser.add_argument('-mult_keepone', action="store_true", \
+		help='keep one position to use for a peak whose summit maps to multiple places; otherwise, such a peak is discarded', \
+		required=False)
 	parser.add_argument('-narrowPeak', action="store_true", \
 		help='output file in narrowPeak format, string columns other than 1-4 and 10 will be ., number columns other than 1-4 and 10 will be -1',
                 required=False)
@@ -429,7 +443,7 @@ def main(argv):
 	if(not check_valid_files(args.sFile)):
 		print("Error: sFile is empty")
 		exit(1)
-	ortholog_find(file_H,max_len,alen,min_len,blen,int(args.protect_dist),narrowPeak=args.narrowPeak);
+	ortholog_find(file_H,max_len,alen,min_len,blen,int(args.protect_dist),mult_keepone=args.mult_keepone,narrowPeak=args.narrowPeak);
 		
 
 	
