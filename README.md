@@ -168,9 +168,9 @@ This program requires the bed file to be sorted and not contain duplicated entir
 
 
 ## Relevant Publications
-* Manuscript describing Cactus alignment method: 
-* Manuscript describing creation of Cactus alignment for hundreds of species:
-* Manuscript describing hal toolkit: Glenn Hickey, Benedict Paten, Dent Earl, Daniel Zerbino, and David Haussler. HAL: A Hierarchical Format for Storing and Analyzing Multiple Genome Alignments. Bioinformatics, Volume 29, Issue 10, 15 May 2013, Pages 1341–1342.
+* Manuscript describing Cactus alignment method: Benedict Paten, Dent Earl, Ngan Nguyen, Mark Diekhans, Daniel Zerbino and David Haussler. Cactus: Algorithms for genome multiple sequence alignment. ***Genome Research***, Volume 21, Issue 9, 10 June 2011, Pages 1512-1528.
+* Manuscript describing creation of Cactus alignment for hundreds of species: Joel Armstrong, Glenn Hickey, Mark Diekhans, Alden Deran, Qi Fang, Duo Xie, ***et al***. Progressive alignment with Cactus: a multiple-genome aligner for the thousand-genome era. ***bioR\\chiiv***, 9 August 2019.
+* Manuscript describing hal toolkit: Glenn Hickey, Benedict Paten, Dent Earl, Daniel Zerbino, and David Haussler. HAL: A Hierarchical Format for Storing and Analyzing Multiple Genome Alignments. ***Bioinformatics***, Volume 29, Issue 10, 15 May 2013, Pages 1341–1342.
 
 
 ## Contributors
