@@ -150,3 +150,9 @@ This program requires the bed file to be sorted and not contain duplicated entir
 * makeRunHalLiftoverScript.py: Makes a script that will run halLiftover on a list of files and map the regions each file to a list of species
 * makeOrthologFindSingleBedScript.py: Makes a script that will run orthologFind.py on a list of target, summit file combinations for a single query file
 * makeOrthologFindScript.py: Makes a script that will run orthologFind.py on a list of target, summit, query file combinations
+
+## Contributors
+* Erin Zhang (xiaoyuz1@andrew.cmu.edu)
+* Irene Kaplow (ikaplow@cs.cmu.edu)
+* Morgan Wirthlin (mwirthlin@cmu.edu)
+* Andreas Pfenning (apfenning@cmu.edu)
