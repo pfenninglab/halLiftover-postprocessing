@@ -23,6 +23,8 @@ def parseArgument():
 		required=True)
 	parser.add_argument('-oFileNameSuffix', help='suffix to add to target file names to create the output file names, should end in .bed', \
 		required=True)
+	parser.add_argument('-narrowPeak', action="store_true", help='output files in narrowPeak format', \
+                required=True)
 	parser.add_argument("-codePath", required=True,\
 		help='Path to orthologFind.py')
 	parser.add_argument("-scriptFileName", required=True,\
@@ -59,6 +61,9 @@ def makeOrthologFindScript(options):
 		if options.min_frac != None:
 			# Add the min_frac option
 			scriptFile.write(" -min_frac " + options.min_frac)
+		if options.narrowPeak:
+			# Add the narrowPeak option
+			scriptFile.write(" -narrowPeak")
 		scriptFile.write("\n")
 	qFileListFile.close()
 	tFileListFile.close()
