@@ -67,6 +67,7 @@ HALPER is designed for constructing coherent orthologs from the outputs of halLi
 		target_summit_to_target_ortholog_end_length
 ```
 
+* -mult_keepone: if a region's summit maps to multiple positions in the target species, use the first position in file specified in -sFile; otherwise, such a region is discarded
 * -max_len: ortholog length must be less or equal to max_len
 * -max_frac: ortholog length must be less or equal to max_frac * region length 
 	* provide either max_len or max_frac
@@ -93,7 +94,7 @@ Running these examples requires the files in the examples directory and 10pluswa
 ```
 4.  Run HALPER (note that there is only one '-' for the parameter names):
 ```
-	python orthologFind.py -max_len 1000 -min_len 50 -protect_dist 5 -qFile hg38Peaks.bed -tFile hg38Peaks_halLiftovermm10.bed -sFile  hg38Peaks_summits_halLiftovermm10.bed -oFile hg38Peaks_halLiftovermm10_summitExtendedMin50Max1000Protect5.bed
+	python orthologFind.py -max_len 1000 -min_len 50 -protect_dist 5 -qFile hg38Peaks.bed -tFile hg38Peaks_halLiftovermm10.bed -sFile  hg38Peaks_summits_halLiftovermm10.bed -oFile hg38Peaks_halLiftovermm10_summitExtendedMin50Max1000Protect5.bed -mult_keepone
 ```
 * Examples of output without -narrowPeak option:
 ```
