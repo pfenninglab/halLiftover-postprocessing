@@ -120,7 +120,14 @@ Running these examples requires the files in the examples directory and 10pluswa
 
 
 ## Preparing Histone Modification Data for HALPER
-There are many reasons that starting with the summits is sub-optimal for histone modifcation data.  Unlike for TF ChIP-seq and open chromatin data, where for which the motifs are known to be clustered around motif summits, TFs are thought not to bind where there are large numbers of reads in histone modification datas but in the valleys between the regions with large numbers of reads.  In addition, the summit locations produced by MACS2, a commonly used peak caller for histone modification data, are thought to be unreliable.  A reasonable place to start with histone modification data, therefore, is the location within the region that has the largest number of species in the alignment, as this is likely to be an important part of the region.  If there are multiple such locations, which often happens, then choosing the one closest to the center makes sense because the centers of the histone modification regions tend to be more important than their edges.  Here is how to make an -sFile that contains these locations:
+There are many reasons that starting with the summits is sub-optimal for histone modifcation data.  Unlike for TF ChIP-seq and open chromatin data, where for which the motifs are known to be clustered around motif summits, TFs are thought not to bind where there are large numbers of reads in histone modification datas but in the valleys between the regions with large numbers of reads.  In addition, the summit locations produced by MACS2, a commonly used peak caller for histone modification data, are thought to be unreliable.  A reasonable place to start with histone modification data, therefore, is the location within the region that has the largest number of species in the alignment, as this is likely to be an important part of the region.  If there are multiple such locations, which often happens, then choosing the one closest to the center makes sense because the centers of the histone modification regions tend to be more important than their edges.
+
+Here are the dependencies required for making an -sFile that contains these locations:
+* hal toolkit (https://github.com/ComparativeGenomicsToolkit/hal)
+* wigToBigWig and bigWigToBedGraph (http://hgdownload.cse.ucsc.edu/admin/exe/linux.x86_64/)
+* pybedtools (https://daler.github.io/pybedtools/main.html)
+
+Here is how to make an -sFile that contains these locations:
 
 1.  Get the alignment depth for your species of interest:
 ```
@@ -157,7 +164,7 @@ python getMaxScorePositionFromWig.py --bedFileName [file with regions you will b
 ```
 This program requires the bed file to be sorted and not contain duplicated entires.  You should leave out --gz if the file with the regions is not gzipped.  This program is compatible with both python version 2 and python version 3.  Note that this script runs UCSC tools internally that sometimes fail silently; therefore, check the sorted bedgraph file when it finishes and re-run it with more memory alloted if that file is not large.
 
-6.  Use hal-liftover to map the positions where the highest scores are recorded to the target species.  This will create your -sFile for the program.
+6.  Use halLiftover to map the positions where the highest scores are recorded to the target species.  This will create your -sFile for the program.
 
 
 ## Additional Utilities
@@ -169,7 +176,7 @@ This program requires the bed file to be sorted and not contain duplicated entir
 
 ## Relevant Publications
 * Manuscript describing Cactus alignment method: Benedict Paten, Dent Earl, Ngan Nguyen, Mark Diekhans, Daniel Zerbino and David Haussler. Cactus: Algorithms for genome multiple sequence alignment. ***Genome Research***, Volume 21, Issue 9, 10 June 2011, Pages 1512-1528.
-* Manuscript describing creation of Cactus alignment for hundreds of species: Joel Armstrong, Glenn Hickey, Mark Diekhans, Alden Deran, Qi Fang, Duo Xie, ***et al***. Progressive alignment with Cactus: a multiple-genome aligner for the thousand-genome era. ***bioR\\chiiv***, 9 August 2019.
+* Manuscript describing creation of Cactus alignment for hundreds of species: Joel Armstrong, Glenn Hickey, Mark Diekhans, Alden Deran, Qi Fang, Duo Xie, ***et al***. Progressive alignment with Cactus: a multiple-genome aligner for the thousand-genome era. ***bioRxiv***, 9 August 2019.
 * Manuscript describing hal toolkit: Glenn Hickey, Benedict Paten, Dent Earl, Daniel Zerbino, and David Haussler. HAL: A Hierarchical Format for Storing and Analyzing Multiple Genome Alignments. ***Bioinformatics***, Volume 29, Issue 10, 15 May 2013, Pages 1341–1342.
 
 
