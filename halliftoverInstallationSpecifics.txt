@@ -3,7 +3,7 @@
 For the most part, this follows the instructions at [ComparativeGenomicsToolkit/hal](https://github.com/ComparativeGenomicsToolkit/hal/blob/master/README.md). Some additional clarifications have been added.
 
 
-### Downloading HAL
+### Downloading HAL Format API
 
 From the parent directory of where you want HAL installed:
 git clone git://github.com/glennhickey/hal.git
@@ -67,7 +67,7 @@ wget https://support.hdfgroup.org/ftp/HDF5/releases/hdf5-1.10/hdf5-1.10.1/src/hd
 				[[username]@[node-name] hdf5]$ ls
 				bin  include  lib  share
 				
-* hal toolkit requires gcc >= 4.9
+* HAL Format API requires gcc >= 4.9
 
 
 ### Load GCC 
