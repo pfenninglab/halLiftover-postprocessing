@@ -1,4 +1,4 @@
-# HALPER (***hal***Liftover ***P***ostprocessing for ***E***volution of ***R***egulatory Elements)
+# HALPER (***hal***Liftover ***P***ostprocessing for the ***E***volution of ***R***egulatory Elements)
 
 
 ## Running HALPER
