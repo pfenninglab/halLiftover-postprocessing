@@ -1,4 +1,4 @@
-# HALPER (***hal***Liftover ***P***ostprocessing for ***E***volution of ***R***egulatory Elements)
+# HALPER (***hal***Liftover ***P***ostprocessing for the ***E***volution of ***R***egulatory Elements)
 
 
 ## Running HALPER
@@ -16,9 +16,10 @@ HALPER is designed for constructing coherent orthologs from the outputs of halLi
 	* numpy (http://www.numpy.org/)
 
 
-## Tips for Installing hal toolkit
+## Tips for Installing the HAL Format API
 * To install, follow the instructions in this website: https://github.com/ComparativeGenomicsToolkit/hal
 	* For detailed installation tips, follow the instructions in https://github.com/pfenninglab/halLiftover-postprocessing/blob/master/halliftoverInstallationSpecifics.txt
+* HALPER has been tested using HAL Format API Release 2.1
 
 
 ## Program Parameters 
@@ -120,7 +121,7 @@ Running these examples requires the files in the examples directory and 10pluswa
 Starting to construct target species orthologs with the target species orthologs of peak summits is sub-optimal for histone modification ChIP-seq data because, in this data, TFs are thought to bind, not where there are large numbers of reads, but in the valleys between the parts of regions with large numbers of reads. A reasonable place to start with histone modification data, therefore, is the location within the region that has the largest number of species in the alignment, as this is likely to be an important part of the region. If there are multiple such locations, which often happens, then choosing the one that is closest to the center makes sense because the centers of the histone modification regions tend to be more important than their edges. This same approach can be used for other genomic regions that do not have summits.
 
 Here are the dependencies required for making an -sFile using this process:
-* hal toolkit (https://github.com/ComparativeGenomicsToolkit/hal)
+* HAL Format API (https://github.com/ComparativeGenomicsToolkit/hal)
 * wigToBigWig and bigWigToBedGraph (http://hgdownload.cse.ucsc.edu/admin/exe/linux.x86_64/)
 * pybedtools (https://daler.github.io/pybedtools/main.html)
 
@@ -174,7 +175,7 @@ This program requires the bed file to be sorted and not contain duplicated rows.
 ## Relevant Publications
 * Manuscript describing the Cactus alignment method: Benedict Paten, Dent Earl, Ngan Nguyen, Mark Diekhans, Daniel Zerbino and David Haussler. Cactus: Algorithms for genome multiple sequence alignment. Genome Research, Volume 21, Issue 9, 10 June 2011, Pages 1512-1528.
 * Manuscript describing method for creating Cactus alignments for hundreds of species: Joel Armstrong, Glenn Hickey, Mark Diekhans, Alden Deran, Qi Fang, Duo Xie, et al. Progressive alignment with Cactus: a multiple-genome aligner for the thousand-genome era. bioRxiv, 9 August 2019.
-* Manuscript describing hal toolkit: Glenn Hickey, Benedict Paten, Dent Earl, Daniel Zerbino, and David Haussler. HAL: A Hierarchical Format for Storing and Analyzing Multiple Genome Alignments. Bioinformatics, Volume 29, Issue 10, 15 May 2013, Pages 1341–1342.
+* Manuscript describing HAL Format API: Glenn Hickey, Benedict Paten, Dent Earl, Daniel Zerbino, and David Haussler. HAL: A Hierarchical Format for Storing and Analyzing Multiple Genome Alignments. Bioinformatics, Volume 29, Issue 10, 15 May 2013, Pages 1341–1342.
 
 
 ## Contributors
