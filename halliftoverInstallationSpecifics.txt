@@ -1,6 +1,6 @@
 ### Installation (Jan 2019)
 
-For the most part, this follows the instructions at [ComparativeGenomicsToolkit/hal](https://github.com/ComparativeGenomicsToolkit/hal/blob/master/README.md). Some additional clarifications have been added.
+For the most part, this follows the instructions at [ComparativeGenomicsToolkit/hal](https://github.com/ComparativeGenomicsToolkit/hal/blob/master/README.md). Some additional clarifications have been added.  These instructions have been tested using hdf5 versions 5-1.10.1 and 5-1.10.4, gcc versions 4.9.2 and 5.3.0, sonLib version 1.1.0, and HAL Format API version 2.1.
 
 
 ### Downloading HAL Format API
@@ -72,10 +72,8 @@ wget https://support.hdfgroup.org/ftp/HDF5/releases/hdf5-1.10/hdf5-1.10.1/src/hd
 
 ### Load GCC 
 
-In an interactive session, type:
-	module load gcc-4.9.2
-
-NOTE: gcc version 5 does not work. 
+Use gcc version >= 4.9.  If gcc has been installed as a module on a cluster, you can do this by running:
+	module load gcc[- gcc version]
 
 
 ### sonLib
@@ -85,7 +83,7 @@ From the same parent directory where you downloaded HAL:
 	  git clone git://github.com/benedictpaten/sonLib.git
 	  pushd sonLib && make && popd
 
-NOTE: Use the version of zlib already available on the lane cluster, not the one through anaconda.
+NOTE: The version of zlib available in anaconda does not seem to be compatible with sonLib.
 
 
 ### Building HAL
