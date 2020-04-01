@@ -5,9 +5,9 @@ import numpy as np
 import subprocess
 import os
 
-from orthologFindHelper import *
-from quickSort import quicksort
-from tupleMergeSort import *
+from scripts.orthologFindHelper import *
+from scripts.quickSort import quicksort
+from scripts.tupleMergeSort import *
 
 
 '''
