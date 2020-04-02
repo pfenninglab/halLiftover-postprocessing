@@ -127,7 +127,7 @@ Here are the dependencies required for making an -sFile using this process:
 * HAL Format API (https://github.com/ComparativeGenomicsToolkit/hal)
 * wigToBigWig and bigWigToBedGraph (http://hgdownload.cse.ucsc.edu/admin/exe/linux.x86_64/)
 * pybedtools (https://daler.github.io/pybedtools/main.html)
-	* This has been tested using pybedtools version 0.8.1
+	* This has been tested using pybedtools version 0.8.0
 
 Here is how to make an -sFile using this process:
 
