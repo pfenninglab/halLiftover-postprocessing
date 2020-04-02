@@ -21,7 +21,7 @@ HALPER is designed for constructing coherent orthologs from the outputs of halLi
 ## Tips for Installing the HAL Format API
 * To install, follow the instructions in this website: https://github.com/ComparativeGenomicsToolkit/hal
 	* For detailed installation tips, follow the instructions in https://github.com/pfenninglab/halLiftover-postprocessing/blob/master/halliftoverInstallationSpecifics.txt
-* HALPER has been tested using HAL Format API Release 2.1
+* HALPER has been tested using outputs from HAL Format API Release 2.1
 
 
 ## Program Parameters 
