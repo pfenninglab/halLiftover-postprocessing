@@ -1,4 +1,4 @@
-from orthologFindHelper import *
+from scripts.orthologFindHelper import *
 
 '''
 mergesort a list of (peak_start,peak_end,chr_name)
