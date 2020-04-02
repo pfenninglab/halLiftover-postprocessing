@@ -13,7 +13,9 @@ HALPER is designed for constructing coherent orthologs from the outputs of halLi
 * Python version 3.7 (https://www.python.org/downloads/release/python-371/)
 * Python libraries `matplotlib` and `numpy`
 	* matplotlib (https://matplotlib.org/downloads.html)
+		* HALPER has been tested using matplotlib version 2.2.3
 	* numpy (http://www.numpy.org/)
+		* HALPER has been tested using numpy versions 1.16.4 and 1.16.6
 
 
 ## Tips for Installing the HAL Format API
@@ -23,7 +25,7 @@ HALPER is designed for constructing coherent orthologs from the outputs of halLi
 
 
 ## Program Parameters 
-* -qFile: the query bed file (used as input to halLiftover) containing information on (at least): chromosome_name, start, end, region name
+* -qFile: bed file with query regions (used as input to halLiftover) containing (at least) the following information: chromosome_name, start, end, region name
 	* The 1st 4 columns **MUST** be in standard bed format
 	* The names in column 4 must be unique -- these names will be used in HALPER
 	
@@ -125,6 +127,7 @@ Here are the dependencies required for making an -sFile using this process:
 * HAL Format API (https://github.com/ComparativeGenomicsToolkit/hal)
 * wigToBigWig and bigWigToBedGraph (http://hgdownload.cse.ucsc.edu/admin/exe/linux.x86_64/)
 * pybedtools (https://daler.github.io/pybedtools/main.html)
+	* This has been tested using pybedtools version 0.8.1
 
 Here is how to make an -sFile using this process:
 
