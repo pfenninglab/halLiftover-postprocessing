@@ -95,7 +95,7 @@ Running these examples requires the files in the examples directory and 10pluswa
 ```
 3.  Run halLiftover on the peak summits to obtain their orthologs in the target species:
 ```
-	halLiftover --inBedVersion 4 10plusway-master.hal Human hg38Peaks_summits.bed Mouse hg38Peaks_summits_halLiftovermm10.bed
+	halLiftover 10plusway-master.hal Human hg38Peaks_summits.bed Mouse hg38Peaks_summits_halLiftovermm10.bed
 ```
 4.  Run HALPER (note that there is only one '-' for the parameter names):
 ```
