@@ -2,7 +2,7 @@
 
 
 ## Running HALPER
-* `python orthologFind.py` using python3
+* `python orthologFind.py` using python3 (see "Example Run of HALPER" below for an example)
 
 
 ## Introduction
