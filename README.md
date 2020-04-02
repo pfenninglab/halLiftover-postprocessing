@@ -21,7 +21,7 @@ HALPER is designed for constructing coherent orthologs from the outputs of halLi
 
 ## Tips for Installing the HAL Format API
 * To install, follow the instructions in this website: https://github.com/ComparativeGenomicsToolkit/hal
-	* For detailed installation tips, follow the instructions in https://github.com/pfenninglab/halLiftover-postprocessing/blob/master/halliftoverInstallationSpecifics.txt
+	* For detailed installation tips, follow the instructions in https://github.com/pfenninglab/halLiftover-postprocessing/blob/master/halliftoverInstallationSpecifics.md
 * HALPER has been tested using outputs from HAL Format API Release 2.1
 
 
@@ -85,9 +85,9 @@ HALPER is designed for constructing coherent orthologs from the outputs of halLi
 
 ## Example Run of HALPER
 Running these examples requires the files in the examples directory and 10plusway-master.hal, a Cactus alignment with 12 mammals that can be obtained from the authors of the paper describing Cactus (see "Relevant Publications" below).
-1.  Run halLiftover on the file from the query species to obtain the regions' orthologs in the target species:
+1.  Run halLiftover on the file from the query species (example is in narrowPeak format, so columns not in standard bed format are first removed) to obtain the regions' orthologs in the target species:
 ```
-	halLiftover --inBedVersion 4 10plusway-master.hal Human hg38Peaks.bed Mouse hg38Peaks_halLiftovermm10.bed
+	cut -f1-4 hg38Peaks.bed | halLiftover --inBedVersion 4 10plusway-master.hal Human stdin Mouse hg38Peaks_halLiftovermm10.bed
 ```
 2.  Get the peak summits (example is for a narrowPeak file, see "Preparing Histone Modification Data for HALPER" below for how to do this for histone modification ChIP-seq peaks or genomic regions without summits):
 ```
