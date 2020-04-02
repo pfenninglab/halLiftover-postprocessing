@@ -22,7 +22,7 @@ wget https://support.hdfgroup.org/ftp/HDF5/releases/hdf5-1.10/hdf5-1.10.1/src/hd
 
 	cd hdf5-1.10.1
 
-	./configure --enable-cxx --prefix [your home directory]/bin/hal/hdf5
+	./configure --enable-cxx --prefix [directory with hal]/hal/hdf5
 
 * output will end with something like this after installation:
 
@@ -88,10 +88,10 @@ NOTE: The version of zlib available in anaconda does not seem to be compatible w
 
 ### Building HAL
 * Update environment variables according to their instructions: 
-		export PATH=[your home directory]/bin/hal/hdf5/bin:${PATH}
-		export h5prefix=-prefix=[your home directory]/bin/hal/hdf5
+		export PATH=[directory with hal]/hal/hdf5/bin:${PATH}
+		export h5prefix=-prefix=[directory with hal]/hal/hdf5
 * run the following (takes awhile):
-		cd ~/bin/hal
+		cd [directory with hal]/hal
 		make 
 
 
@@ -99,18 +99,19 @@ NOTE: The version of zlib available in anaconda does not seem to be compatible w
 
 * add as given the following to your path:
 
-		export PATH=[your home directory]/bin/hal/bin:${PATH}
+		export PATH=[directory with hal]/hal/bin:${PATH}
 
-		export PYTHONPATH=[your home directory]/bin:${PYTHONPATH}
+		export PYTHONPATH=[directory with hal]/bin:${PYTHONPATH}
 
 
 ### ~/.bashrc additions that are useful for running hal:
 
 ```
-export PATH=[directory with hal]/hal/hdf5-1.10.1/hdf5/bin:${PATH}
+export PATH=[directory with hal]/hdf5/bin:${PATH}
 export h5prefix=-prefix=[directory with hal]/hal/hdf5
 export sonLibRootPath=[directory with hal]/sonLib
 export PATH=[directory with hal]/hal/bin:${PATH}
 export PYTHONPATH=[directory with hal]:${PYTHONPATH}
+export PYTHONPATH=[directory with hal]/bin:${PYTHONPATH}
 
 ```
