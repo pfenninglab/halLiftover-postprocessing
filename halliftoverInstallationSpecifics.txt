@@ -16,7 +16,7 @@ wget https://support.hdfgroup.org/ftp/HDF5/releases/hdf5-1.10/hdf5-1.10.1/src/hd
 
 * Follow instructions for a 'Local install from source into DIR (do not need root password)'
 	
-	mkdir hal/hdf5
+	mkdir [directory with hal]/hal/hdf5
 
 	tar xzf hdf5-1.10.1.tar.gz
 
@@ -53,17 +53,17 @@ wget https://support.hdfgroup.org/ftp/HDF5/releases/hdf5-1.10/hdf5-1.10.1/src/hd
 		make && make install
 
 		Output message will be something like this: 
-				make[2]: Leaving directory `[your home directory]/bin/hdf5-1.10.1/hl/examples'
-				make[2]: Entering directory `[your home directory]/bin/hdf5-1.10.1/hl/c++'
-				make[3]: Entering directory `[your home directory]/bin/hdf5-1.10.1/hl/c++/examples'
-				../../../bin/mkdirs [your home directory]/bin/hal/hdf5/share/hdf5_examples/hl/c++
-				+ /usr/bin/install -c ./ptExampleFL.cpp [your home directory]/bin/hal/hdf5/share/hdf5_examples/hl/c++/.
-				+ /usr/bin/install -c run-hlc++-ex.sh [your home directory]/bin/hal/hdf5/share/hdf5_examples/hl/c++/.
-				make[3]: Leaving directory `[your home directory]/bin/hdf5-1.10.1/hl/c++/examples'
-				make[2]: Leaving directory `[your home directory]/bin/hdf5-1.10.1/hl/c++'
-				make[1]: Leaving directory `[your home directory]/bin/hdf5-1.10.1/hl'
+				make[2]: Leaving directory `[directory with hal]/hal/hdf5-1.10.1/hl/examples'
+				make[2]: Entering directory `[directory with hal]/hal/hdf5-1.10.1/hl/c++'
+				make[3]: Entering directory `[directory with hal]/hal/hdf5-1.10.1/hl/c++/examples'
+				../../../bin/mkdirs [directory with hal]/hal/hdf5/share/hdf5_examples/hl/c++
+				+ /usr/bin/install -c ./ptExampleFL.cpp [directory with hal]/hal/hdf5/share/hdf5_examples/hl/c++/.
+				+ /usr/bin/install -c run-hlc++-ex.sh [directory with hal]/hal/hdf5/share/hdf5_examples/hl/c++/.
+				make[3]: Leaving directory `[directory with hal]/hal/hdf5-1.10.1/hl/c++/examples'
+				make[2]: Leaving directory `[directory with hal]/hal/hdf5-1.10.1/hl/c++'
+				make[1]: Leaving directory `[directory with hal]/hal/hdf5-1.10.1/hl'
 
-				[[username]@[node-name] hdf5-1.10.1]$ cd [your home directory]/bin/hal/hdf5
+				[[username]@[node-name] hdf5-1.10.1]$ cd [directory with hal]/hal/hdf5
 				[[username]@[node-name] hdf5]$ ls
 				bin  include  lib  share
 				
