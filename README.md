@@ -13,10 +13,10 @@ HALPER is designed for constructing coherent orthologs from the outputs of halLi
 * Python version 3.7 (https://www.python.org/downloads/release/python-371/)
 * Python libraries `matplotlib` and `numpy`
 	* matplotlib (https://matplotlib.org/downloads.html)
-		* HALPER has been tested using matplotlib version 2.2.3
+		* HALPER has been tested using matplotlib versions 2.2.3 and 3.2.1
 	* numpy (http://www.numpy.org/)
-		* HALPER has been tested using numpy versions 1.14.3, 1.16.4, and 1.16.6
-* HALPER has been thoroughly tested on Linux machines (CentOS 6, CentOS 7, and Ubuntu 18.04.4)
+		* HALPER has been tested using numpy versions 1.14.3, 1.16.4, 1.16.6, and 1.18.2
+* HALPER has been tested on Linux (CentOS 6, CentOS 7, and Ubuntu 18.04.4) and Windows (Windows 10)
 
 
 ## Tips for Installing the HAL Format API
