@@ -84,22 +84,22 @@ HALPER is designed for constructing coherent orthologs from the outputs of halLi
 
 
 ## Example Run of HALPER
-Running these examples requires the files in the examples directory and 10plusway-master.hal, a Cactus alignment with 12 mammals that can be obtained from the authors of the paper describing Cactus (see "Relevant Publications" below).
+Running these examples requires the files in the examples directory and 10plusway-master.hal, a Cactus alignment with 12 mammals that can be obtained from the authors of the paper describing Cactus (see "Relevant Publications" below).  One can compare the outputs of each step to the files with the corresponding names in the examples directory.
 1.  Run halLiftover on the file from the query species (example is in narrowPeak format, so columns not in standard bed format are first removed) to obtain the regions' orthologs in the target species:
 ```
-	cut -f1-4 hg38Peaks.bed | halLiftover --inBedVersion 4 10plusway-master.hal Human stdin Mouse hg38Peaks_halLiftovermm10.bed
+	cut -f1-4 [directory with halLiftover-postprocessing]/halLiftover-postprocessing/examples/hg38Peaks.bed | [directory with hal]/hal/bin/halLiftover [directory with Cactus alignment]/10plusway-master.hal Human stdin Mouse hg38Peaks_halLiftovermm10.bed
 ```
 2.  Get the peak summits (example is for a narrowPeak file, see "Preparing Histone Modification Data for HALPER" below for how to do this for histone modification ChIP-seq peaks or genomic regions without summits):
 ```
-	awk 'BEGIN{OFS="\t"}{print $1, $2+$10, $2+$10+1, $4}' hg38Peaks.bed > hg38Peaks_summits.bed
+	awk 'BEGIN{OFS="\t"}{print $1, $2+$10, $2+$10+1, $4}' [directory with halLiftover-postprocessing]/halLiftover-postprocessing/examples/hg38Peaks.bed > hg38Peaks_summits.bed
 ```
 3.  Run halLiftover on the peak summits to obtain their orthologs in the target species:
 ```
-	halLiftover 10plusway-master.hal Human hg38Peaks_summits.bed Mouse hg38Peaks_summits_halLiftovermm10.bed
+	[directory with hal]/hal/bin/halLiftover [directory with Cactus alignment]/10plusway-master.hal Human hg38Peaks_summits.bed Mouse hg38Peaks_summits_halLiftovermm10.bed
 ```
 4.  Run HALPER (note that there is only one '-' for the parameter names):
 ```
-	python orthologFind.py -max_len 1000 -min_len 50 -protect_dist 5 -qFile hg38Peaks.bed -tFile hg38Peaks_halLiftovermm10.bed -sFile  hg38Peaks_summits_halLiftovermm10.bed -oFile hg38Peaks_halLiftovermm10_summitExtendedMin50Max1000Protect5.bed -mult_keepone
+	python [directory with halLiftover-postprocessing]/orthologFind.py -max_len 1000 -min_len 50 -protect_dist 5 -qFile [directory with halLiftover-postprocessing]/halLiftover-postprocessing/examples/hg38Peaks.bed -tFile hg38Peaks_halLiftovermm10.bed -sFile  hg38Peaks_summits_halLiftovermm10.bed -oFile hg38Peaks_halLiftovermm10_summitExtendedMin50Max1000Protect5.bed -mult_keepone
 ```
 * Examples of output without -narrowPeak option:
 ```
@@ -134,7 +134,7 @@ Here is how to make an -sFile using this process:
 
 1.  Get the alignment depth for the query species:
 ```
-halAlignmentDepth --outWiggle [alignmentDepthFileName] [cactusFileName] [speciesName]
+[directory with hal]/hal/bin/halAlignmentDepth --outWiggle [alignmentDepthFileName] [cactusFileName] [speciesName]
 ```
 This can require up to 8 gigabytes for a hal file with 35 species.  Running this on 35 species can take over a week, and the output files can be at least a few gigabytes.  For a larger hal file, one can run halAlignmentDepth on each genomic region instead of on the entire genome.
 
@@ -157,17 +157,17 @@ The bedgraph files can be gzipped so that they take up less space.
 
 5.  Get the file that will be used for starting the ortholog extension for each region using the scores in the bedgraph file:
 ```
-python getMaxScorePositionFromBedgraph.py --bedFileName [file with regions you will be getting scores for, will be -qFile for next step] --bedgraphFileName [sortedAlignmentDepthBedgraphFileName] --highestScoreLocationFileName [where the positions with the highest scores will be recored, you can map this with hal-liftover to create -sFile for the next step] --gz
+python [directory with halLiftover-postprocessing]/getMaxScorePositionFromBedgraph.py --bedFileName [file with regions you will be getting scores for, will be -qFile for next step] --bedgraphFileName [sortedAlignmentDepthBedgraphFileName] --highestScoreLocationFileName [where the positions with the highest scores will be recored, you can map this with hal-liftover to create -sFile for the next step] --gz
 ```
 This program requires the bed file and the bedgraph file to be sorted and not contain duplicated entires.  Leave out --gz if the file with the regions and the alignment depth bedgraph file are not gzipped.  Note that this program is compatible with both python version 2 and python version 3 while orthologFind.py is compatible with only python verison 3.
 
 Alternatively, steps 2-5 can be replaced with the following script that combines them:
 ```
-python getMaxScorePositionFromWig.py --bedFileName [file with regions you will be getting scores for, will be -qFile for next step] --wigFileName [alignmentDepthFileName] --chromSizesFileName [chromSizesFileName] --highestScoreLocationFileName [where the positions with the highest scores will be recored, you can map this with hal-liftover to create -sFile for the next step] --gz
+python [directory with halLiftover-postprocessing]/getMaxScorePositionFromWig.py --bedFileName [file with regions you will be getting scores for, will be -qFile for next step] --wigFileName [alignmentDepthFileName] --chromSizesFileName [chromSizesFileName] --highestScoreLocationFileName [where the positions with the highest scores will be recored, you can map this with hal-liftover to create -sFile for the next step] --gz
 ```
 This program requires the bed file to be sorted and not contain duplicated rows.  Leave out --gz if the bed file is not gzipped.  This program is compatible with both python version 2 and python version 3.  Note that this script runs UCSC tools internally that sometimes fail silently; therefore, check the sorted bedgraph file when it finishes and re-run it with more memory alloted if that file is not large.
 
-6.  Use halLiftover to map the positions where the highest scores are recorded to the target species.  This will create your -sFile for the program.
+6.  Use halLiftover to map the positions where the highest scores are recorded to the target species.  This will create your -sFile for orthologFind.py.
 
 
 ## Additional Utilities
