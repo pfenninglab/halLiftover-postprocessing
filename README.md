@@ -12,11 +12,11 @@ HALPER is designed for constructing coherent orthologs from the outputs of halLi
 ## Dependencies
 * Python version 3.7 (https://www.python.org/downloads/release/python-371/)
 * Python libraries `matplotlib` and `numpy`
-	* matplotlib (https://matplotlib.org/downloads.html)
-		* HALPER has been tested using matplotlib versions 2.2.3 and 3.2.1
 	* numpy (http://www.numpy.org/)
-		* HALPER has been tested using numpy versions 1.14.3, 1.16.4, 1.16.6, and 1.18.2
-* HALPER has been tested on Linux (CentOS 6, CentOS 7, and Ubuntu 18.04.4) and Windows (Windows 10)
+		* HALPER has been tested using numpy versions 1.14.3, 1.16.0, 1.16.4, 1.16.6, and 1.18.2
+	* matplotlib (https://matplotlib.org/downloads.html)
+		* HALPER has been tested using matplotlib versions 1.5.1, 2.2.3, 3.2.1
+* HALPER has been tested on Linux (CentOS 6, CentOS 7, and Ubuntu 18.04.4), Windows (Windows 10), and Mac
 
 
 ## Tips for Installing the HAL Format API
@@ -84,7 +84,7 @@ HALPER is designed for constructing coherent orthologs from the outputs of halLi
 
 
 ## Example Run of HALPER
-Running these examples requires the files in the examples directory and 10plusway-master.hal, a Cactus alignment with 12 mammals that can be obtained from the authors of the paper describing Cactus (see "Relevant Publications" below).  One can compare the outputs of each step to the files with the corresponding names in the examples directory.
+Running these examples requires the files in the examples directory and 10plusway-master.hal, a Cactus alignment with 12 mammals that can be obtained from the authors of the paper describing Cactus (see "Relevant Publications" below).  One can compare the outputs of each step to the files with the corresponding names in the examples directory.  To run only HALPER (not halLiftover), go directly to #4.
 1.  Run halLiftover on the file from the query species (example is in narrowPeak format, so columns not in standard bed format are first removed) to obtain the regions' orthologs in the target species:
 ```
 	[directory with hal]/hal/bin/halLiftover --bedType 4 [directory with Cactus alignment]/10plusway-master.hal Human [directory with halLiftover-postprocessing]/halLiftover-postprocessing/examples/hg38Peaks.bed Mouse hg38Peaks_halLiftovermm10.bed
