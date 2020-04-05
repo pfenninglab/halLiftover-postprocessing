@@ -1,6 +1,6 @@
 ### Installation
 
-For the most part, this follows the instructions at [ComparativeGenomicsToolkit/hal](https://github.com/ComparativeGenomicsToolkit/hal/blob/master/README.md). Some additional clarifications have been added.  These instructions have been tested using hdf5 versions 5-1.10.1 and 5-1.10.4; gcc versions 4.8.5, 4.9.2, and 5.3.0; and HAL Format API versions 2.0 and 2.1.  These instructions were last updated on April 2, 2020 and are not being maintained.
+For the most part, this follows the instructions at [ComparativeGenomicsToolkit/hal](https://github.com/ComparativeGenomicsToolkit/hal/blob/master/README.md). Some additional clarifications have been added.  These instructions have been tested using hdf5 versions 5-1.10.1 and 5-1.10.4; gcc versions 4.8.5, 4.9.2, and 5.3.0; and HAL Format API version 2.1.  These instructions were last updated on April 2, 2020 and are not being maintained.
 
 
 ### Downloading HAL Format API
