@@ -25,9 +25,9 @@ def parseArgument():
 		required=True)
 	parser.add_argument('-mult_keepone', action="store_true", \
                 help='if a region\'s summit maps to multiple positions in the target species, use the first position in file specified in -sFile', \
-                required=True)
+                required=False)
 	parser.add_argument('-narrowPeak', action="store_true", help='output files in narrowPeak format', \
-                required=True)
+                required=False)
 	parser.add_argument("-codePath", required=True,\
 		help='Path to orthologFind.py')
 	parser.add_argument("-scriptFileName", required=True,\

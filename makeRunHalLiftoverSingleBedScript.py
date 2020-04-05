@@ -49,11 +49,11 @@ def makeRunHalLiftoverSingleBedScript(options):
 		outputFileName = outputFileNamePrefix + "_" + speciesToLiftDict[species] + ".bed"
 		if options.gz:
 			# The input bed file is gzipped
-			scriptFile.write(" ".join(["zcat", options.bedFileName, "|", halLiftoverCmd, "--inBedVersion 4", options.CactusFileName, \
+			scriptFile.write(" ".join(["zcat", options.bedFileName, "|", halLiftoverCmd, "--bedType 4", options.CactusFileName, \
 				options.querySpecies, "stdin", species, outputFileName]) + "\n")
 		else:
 			# The input bed file is not gzipped
-			scriptFile.write(" ".join([halLiftoverCmd, "--inBedVersion 4", options.CactusFileName, options.querySpecies, \
+			scriptFile.write(" ".join([halLiftoverCmd, "--bedType 4", options.CactusFileName, options.querySpecies, \
 				options.bedFileName, species, outputFileName]) + "\n")
 	scriptFile.close()
 
