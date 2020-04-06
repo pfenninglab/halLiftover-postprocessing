@@ -6,7 +6,7 @@
 
 
 ## Introduction
-HALPER is designed for constructing coherent orthologs from the outputs of halLiftover.  While it was originally designed for contructing orthologs of transcription factor ChIP-seq and open chromatin peaks, it can be applied to any genomic regions of interest. Since HALPER relies on halLiftover, the assembly of the query and target genomic regions must be in a Cactus alginment hal file.
+HALPER is designed for constructing contiguous orthologs from the outputs of halLiftover.  While it was originally designed for contructing orthologs of transcription factor ChIP-seq and open chromatin peaks, it can be applied to any genomic regions of interest. Since HALPER relies on halLiftover, the assembly of the query and target genomic regions must be in a Cactus alginment hal file.
 
 
 ## Dependencies
@@ -175,6 +175,7 @@ This program requires the bed file to be sorted and not contain duplicated rows.
 * makeRunHalLiftoverScript.py: Makes a script that will run halLiftover on a list of files and map the regions in each file to a list of species
 * makeOrthologFindSingleBedScript.py: Makes a script that will run orthologFind.py on a list of target, summit file combinations for a single query file
 * makeOrthologFindScript.py: Makes a script that will run orthologFind.py on a list of target, summit, query file combinations
+* makePeakOrthologMatrix.py: Uses a list of outputs of orthologFind.py run on the same query file to make a species x peak matrix, where the entry at i,j is a 1 if species i has an ortholog of peak j and a 0 otherwise
 
 
 ## Relevant Publications
