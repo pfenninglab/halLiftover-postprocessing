@@ -26,11 +26,11 @@ HALPER is designed for constructing contiguous orthologs from the outputs of hal
 
 
 ## Program Parameters 
-* -qFile: bed file with query regions (used as input to halLiftover) containing (at least) the following information: chromosome_name, start, end, region name
-	* The 1st 4 columns **MUST** be in standard bed format
+* -qFile: BED file with query regions (used as input to halLiftover) containing (at least) the following information: chromosome_name, start, end, region name
+	* The 1st 4 columns **MUST** be in standard BED format
 	* The names in column 4 must be unique -- these names will be used in HALPER
 	
-* -tFile: bed file of the file specified in -qFile mapped to the target species using halLiftover (no modifications to the output from halLiftover are necessary) 
+* -tFile: BED file of the file specified in -qFile mapped to the target species using halLiftover (no modifications to the output from halLiftover are necessary) 
 	* Line format must be: ` chr_name    peak_start    peak_end    peak_name ` (the output file from halLiftover should conform to this format)
 	* Examples:
 ```
@@ -41,7 +41,7 @@ HALPER is designed for constructing contiguous orthologs from the outputs of hal
 		chr8	55610183	55610190	peak0 
 ```
 
-* -sFile: bed file of the peak summits file specified in -qFile mapped to the target species using halLiftover
+* -sFile: BED file of the peak summits file specified in -qFile mapped to the target species using halLiftover
 	* Line format must be: ` chr_name    peak_start    peak_end    peak_name` (the output file from halLiftover should conform to this format)
 	* To obtain peak summits from a narrowPeak file, add the second column to the tenth column
 	* See "Preparing Histone Modification Data for HALPER" below for instructions for how to create the file for -sFile when using this program with histone modification ChIP-seq peaks or regions without peak summits
