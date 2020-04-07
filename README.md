@@ -10,7 +10,7 @@ HALPER is designed for constructing contiguous orthologs from the outputs of hal
 
 
 ## Dependencies
-* Python version 3.7 (https://www.python.org/downloads/release/python-371/)
+* Python version 3.6 or 3.7 (https://www.python.org/downloads/release/python-371/)
 * Python libraries `matplotlib` and `numpy`
 	* numpy (http://www.numpy.org/)
 		* HALPER has been tested using numpy versions 1.14.3, 1.16.0, 1.16.4, 1.16.6, and 1.18.2
