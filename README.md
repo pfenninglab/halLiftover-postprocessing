@@ -6,11 +6,11 @@
 
 
 ## Introduction
-HALPER is designed for constructing coherent orthologs from the outputs of halLiftover.  While it was originally designed for contructing orthologs of transcription factor ChIP-seq and open chromatin peaks, it can be applied to any genomic regions of interest. Since HALPER relies on halLiftover, the assembly of the query and target genomic regions must be in a Cactus alginment hal file.
+HALPER is designed for constructing contiguous orthologs from the outputs of halLiftover.  While it was originally designed for contructing orthologs of transcription factor ChIP-seq and open chromatin peaks, it can be applied to any genomic regions of interest. Since HALPER relies on halLiftover, the assembly of the query and target genomic regions must be in a Cactus alginment hal file.
 
 
 ## Dependencies
-* Python version 3.7 (https://www.python.org/downloads/release/python-371/)
+* Python version 3.6 or 3.7 (https://www.python.org/downloads/release/python-371/)
 * Python libraries `matplotlib` and `numpy`
 	* numpy (http://www.numpy.org/)
 		* HALPER has been tested using numpy versions 1.14.3, 1.16.0, 1.16.4, 1.16.6, and 1.18.2
@@ -26,11 +26,11 @@ HALPER is designed for constructing coherent orthologs from the outputs of halLi
 
 
 ## Program Parameters 
-* -qFile: bed file with query regions (used as input to halLiftover) containing (at least) the following information: chromosome_name, start, end, region name
-	* The 1st 4 columns **MUST** be in standard bed format
+* -qFile: BED file with query regions (used as input to halLiftover) containing (at least) the following information: chromosome_name, start, end, region name
+	* The 1st 4 columns **MUST** be in standard BED format
 	* The names in column 4 must be unique -- these names will be used in HALPER
 	
-* -tFile: bed file of the file specified in -qFile mapped to the target species using halLiftover (no modifications to the output from halLiftover are necessary) 
+* -tFile: BED file of the file specified in -qFile mapped to the target species using halLiftover (no modifications to the output from halLiftover are necessary) 
 	* Line format must be: ` chr_name    peak_start    peak_end    peak_name ` (the output file from halLiftover should conform to this format)
 	* Examples:
 ```
@@ -41,7 +41,7 @@ HALPER is designed for constructing coherent orthologs from the outputs of halLi
 		chr8	55610183	55610190	peak0 
 ```
 
-* -sFile: bed file of the peak summits file specified in -qFile mapped to the target species using halLiftover
+* -sFile: BED file of the peak summits file specified in -qFile mapped to the target species using halLiftover
 	* Line format must be: ` chr_name    peak_start    peak_end    peak_name` (the output file from halLiftover should conform to this format)
 	* To obtain peak summits from a narrowPeak file, add the second column to the tenth column
 	* See "Preparing Histone Modification Data for HALPER" below for instructions for how to create the file for -sFile when using this program with histone modification ChIP-seq peaks or regions without peak summits
@@ -175,6 +175,7 @@ This program requires the bed file to be sorted and not contain duplicated rows.
 * makeRunHalLiftoverScript.py: Makes a script that will run halLiftover on a list of files and map the regions in each file to a list of species
 * makeOrthologFindSingleBedScript.py: Makes a script that will run orthologFind.py on a list of target, summit file combinations for a single query file
 * makeOrthologFindScript.py: Makes a script that will run orthologFind.py on a list of target, summit, query file combinations
+* makePeakOrthologMatrix.py: Uses a list of outputs of orthologFind.py run on the same query file to make a species x peak matrix, where the entry at i,j is a 1 if species i has an ortholog of peak j and a 0 otherwise
 
 
 ## Relevant Publications
