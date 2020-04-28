@@ -15,7 +15,7 @@ def parseArgument():
 		help='minimum number of base pairs of the ortholog')
 	parser.add_argument('-min_frac', required=False, \
 		help='minimum percentage of original peak of the ortholog')
-	parser.add_argument('-qFileListFileName', help='list of input bed files', \
+	parser.add_argument('-qFileListFileName', help='list of input bed files, file can have other columns if the bed file name is in the first column', \
 		required=True)
 	parser.add_argument('-tFileListFileName', help='list of input mapped bed files, lines should correspond to lines of qFileListFile', \
 		required=True)
@@ -25,9 +25,9 @@ def parseArgument():
 		required=True)
 	parser.add_argument('-mult_keepone', action="store_true", \
 		help='if a region\'s summit maps to multiple positions in the target species, use the first position in file specified in -sFile', \
-                required=True)
+                required=False)
 	parser.add_argument('-narrowPeak', action="store_true", help='output files in narrowPeak format', \
-                required=True)
+                required=False)
 	parser.add_argument("-codePath", required=True,\
 		help='Path to orthologFind.py')
 	parser.add_argument("-scriptFileName", required=True,\
@@ -42,7 +42,7 @@ def makeOrthologFindScript(options):
 	sFileListFile = open(options.sFileListFileName)
 	scriptFile = open(options.scriptFileName, 'w+')
 	for qFileStr, tFileStr, sFileStr in zip(qFileListFile, tFileListFile, sFileListFile):
-		qFile = qFileStr.strip()
+		qFile = qFileStr.strip().split("\t")[0]
 		tFile = tFileStr.strip()
 		sFile = sFileStr.strip()
 		tFileNameElements = tFile.split(".")
