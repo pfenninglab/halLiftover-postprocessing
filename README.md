@@ -176,6 +176,7 @@ This program requires the bed file to be sorted and not contain duplicated rows.
 * makeOrthologFindSingleBedScript.py: Makes a script that will run orthologFind.py on a list of target, summit file combinations for a single query file
 * makeOrthologFindScript.py: Makes a script that will run orthologFind.py on a list of target, summit, query file combinations
 * makePeakOrthologMatrix.py: Uses a list of outputs of orthologFind.py run on the same query file to make a species x peak matrix, where the entry at i,j is a 1 if species i has an ortholog of peak j and a 0 otherwise
+* makePeakOrthologMatrixList.py: Uses a list of outputs of orthologFind.py run on the a list of query file to make a species x peak matrix for each query file, where the entry at i,j in a matrix is a 1 if species i has an ortholog of peak j in the query file corresponding to that matrix and a 0 otherwise
 
 
 ## Relevant Publications
