@@ -1,11 +1,10 @@
 import sys
 import argparse
-from itertools import izip
 
 def parseArgument():
         # Parse the input
         parser=argparse.ArgumentParser(description=\
-                        "Get the orthologs of each peak in a list; if there are more than 1, use the peak whose length is closest to sequenceLength")
+                        "Make a matrix that is species by peaks, where a 1 indicates that the peak ortholog is present in the species")
         parser.add_argument("--bedFileName", required=True,\
                         help='bed file with list of original peaks')
         parser.add_argument("--orthologsFileNameListFileName", required=True,\
@@ -43,6 +42,7 @@ def makePeakOrthologMatrix(options):
 				outputFile.write("\t" + "0")
 		orthologsFile.close()
 	orthologsFileNameListFile.close()
+	outputFile.close()
 
 if __name__ == "__main__":
         options = parseArgument()
