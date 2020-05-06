@@ -179,10 +179,11 @@ This program requires the bed file to be sorted and not contain duplicated rows.
 * makePeakOrthologMatrixList.py: Uses a list of outputs of orthologFind.py run on the a list of query file to make a species x peak matrix for each query file, where the entry at i,j in a matrix is a 1 if species i has an ortholog of peak j in the query file corresponding to that matrix and a 0 otherwise
 
 
-## Relevant Publications
-* Manuscript describing the Cactus alignment method: Benedict Paten, Dent Earl, Ngan Nguyen, Mark Diekhans, Daniel Zerbino and David Haussler. Cactus: Algorithms for genome multiple sequence alignment. Genome Research, Volume 21, Issue 9, 10 June 2011, Pages 1512-1528.
-* Manuscript describing method for creating Cactus alignments for hundreds of species: Joel Armstrong, Glenn Hickey, Mark Diekhans, Alden Deran, Qi Fang, Duo Xie, et al. Progressive alignment with Cactus: a multiple-genome aligner for the thousand-genome era. bioRxiv, 9 August 2019.
-* Manuscript describing HAL Format API: Glenn Hickey, Benedict Paten, Dent Earl, Daniel Zerbino, and David Haussler. HAL: A Hierarchical Format for Storing and Analyzing Multiple Genome Alignments. Bioinformatics, Volume 29, Issue 10, 15 May 2013, Pages 1341–1342.
+## Citing HALPER
+* Manuscript describing HALPER (cite this): Xiaoyu Zhang, Irene Kaplow, Morgan Wirthlin, Tyler Park, Andreas Pfenning.  HALPER facilitates the identification of regulatory element orthologs across species.  Bioinformatics, In Press.
+* Manuscript describing the Cactus alignment method (cite this if you are using a Cactus alignment): Benedict Paten, Dent Earl, Ngan Nguyen, Mark Diekhans, Daniel Zerbino and David Haussler. Cactus: Algorithms for genome multiple sequence alignment. Genome Research, Volume 21, Issue 9, 10 June 2011, Pages 1512-1528.
+* Manuscript describing method for creating Cactus alignments for hundreds of species (cite this if you are using the 600 mammals and birds Cactus alignment): Joel Armstrong, Glenn Hickey, Mark Diekhans, Alden Deran, Qi Fang, Duo Xie, et al. Progressive alignment with Cactus: a multiple-genome aligner for the thousand-genome era. bioRxiv, 9 August 2019.
+* Manuscript describing HAL Format API (cite this if you are using halLiftover or halAlignmentDepth): Glenn Hickey, Benedict Paten, Dent Earl, Daniel Zerbino, and David Haussler. HAL: A Hierarchical Format for Storing and Analyzing Multiple Genome Alignments. Bioinformatics, Volume 29, Issue 10, 15 May 2013, Pages 1341–1342.
 
 
 ## Contributors
