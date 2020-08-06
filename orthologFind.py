@@ -391,7 +391,7 @@ def main(argv):
 	parser.add_argument('-min_frac',
 		help='minimum percentage of original peak of the ortholog')
 	
-	parser.add_argument('-qFile', help='input bed file', 
+	parser.add_argument('-qFile', help='input bed file, 1st 4 columns must be in standard bed format, peak names must be unique', 
 		required=True)
 	
 	parser.add_argument('-tFile', help='input mapped bed file',
