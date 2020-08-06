@@ -28,7 +28,7 @@ HALPER is designed for constructing contiguous orthologs from the outputs of hal
 ## Program Parameters 
 * -qFile: BED file with query regions (used as input to halLiftover) containing (at least) the following information: chromosome_name, start, end, region name
 	* The 1st 4 columns **MUST** be in standard BED format
-	* The names in column 4 must be unique -- these names will be used in HALPER
+	* The names in column 4 must be **unique** -- these names will be used in HALPER
 	
 * -tFile: BED file of the file specified in -qFile mapped to the target species using halLiftover (no modifications to the output from halLiftover are necessary) 
 	* Line format must be: ` chr_name    peak_start    peak_end    peak_name ` (the output file from halLiftover should conform to this format)
@@ -176,12 +176,14 @@ This program requires the bed file to be sorted and not contain duplicated rows.
 * makeOrthologFindSingleBedScript.py: Makes a script that will run orthologFind.py on a list of target, summit file combinations for a single query file
 * makeOrthologFindScript.py: Makes a script that will run orthologFind.py on a list of target, summit, query file combinations
 * makePeakOrthologMatrix.py: Uses a list of outputs of orthologFind.py run on the same query file to make a species x peak matrix, where the entry at i,j is a 1 if species i has an ortholog of peak j and a 0 otherwise
+* makePeakOrthologMatrixList.py: Uses a list of outputs of orthologFind.py run on the a list of query file to make a species x peak matrix for each query file, where the entry at i,j in a matrix is a 1 if species i has an ortholog of peak j in the query file corresponding to that matrix and a 0 otherwise
 
 
-## Relevant Publications
-* Manuscript describing the Cactus alignment method: Benedict Paten, Dent Earl, Ngan Nguyen, Mark Diekhans, Daniel Zerbino and David Haussler. Cactus: Algorithms for genome multiple sequence alignment. Genome Research, Volume 21, Issue 9, 10 June 2011, Pages 1512-1528.
-* Manuscript describing method for creating Cactus alignments for hundreds of species: Joel Armstrong, Glenn Hickey, Mark Diekhans, Alden Deran, Qi Fang, Duo Xie, et al. Progressive alignment with Cactus: a multiple-genome aligner for the thousand-genome era. bioRxiv, 9 August 2019.
-* Manuscript describing HAL Format API: Glenn Hickey, Benedict Paten, Dent Earl, Daniel Zerbino, and David Haussler. HAL: A Hierarchical Format for Storing and Analyzing Multiple Genome Alignments. Bioinformatics, Volume 29, Issue 10, 15 May 2013, Pages 1341–1342.
+## Citing HALPER
+* Manuscript describing HALPER (cite this): Xiaoyu Zhang, Irene Kaplow, Morgan Wirthlin, Tyler Park, Andreas Pfenning.  HALPER facilitates the identification of regulatory element orthologs across species.  Bioinformatics, In Press.
+* Manuscript describing the Cactus alignment method (cite this if you are using a Cactus alignment): Benedict Paten, Dent Earl, Ngan Nguyen, Mark Diekhans, Daniel Zerbino and David Haussler. Cactus: Algorithms for genome multiple sequence alignment. Genome Research, Volume 21, Issue 9, 10 June 2011, Pages 1512-1528.
+* Manuscript describing method for creating Cactus alignments for hundreds of species (cite this if you are using the 600 mammals and birds Cactus alignment): Joel Armstrong, Glenn Hickey, Mark Diekhans, Alden Deran, Qi Fang, Duo Xie, et al. Progressive alignment with Cactus: a multiple-genome aligner for the thousand-genome era. bioRxiv, 9 August 2019.
+* Manuscript describing HAL Format API (cite this if you are using halLiftover or halAlignmentDepth): Glenn Hickey, Benedict Paten, Dent Earl, Daniel Zerbino, and David Haussler. HAL: A Hierarchical Format for Storing and Analyzing Multiple Genome Alignments. Bioinformatics, Volume 29, Issue 10, 15 May 2013, Pages 1341–1342.
 
 
 ## Contributors
