@@ -28,7 +28,7 @@ HALPER is designed for constructing contiguous orthologs from the outputs of hal
 ## Program Parameters 
 * -qFile: BED file with query regions (used as input to halLiftover) containing (at least) the following information: chromosome_name, start, end, region name
 	* The 1st 4 columns **MUST** be in standard BED format
-	* The names in column 4 must be unique -- these names will be used in HALPER
+	* The names in column 4 must be **unique** -- these names will be used in HALPER
 	
 * -tFile: BED file of the file specified in -qFile mapped to the target species using halLiftover (no modifications to the output from halLiftover are necessary) 
 	* Line format must be: ` chr_name    peak_start    peak_end    peak_name ` (the output file from halLiftover should conform to this format)
