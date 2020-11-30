@@ -1,13 +1,13 @@
 import argparse
-import sys
-import numpy as np
-import subprocess
 import os
+import subprocess
+import sys
+
+import numpy as np
 
 from scripts.orthologFindHelper import *
 from scripts.quickSort import quicksort
 from scripts.tupleMergeSort import *
-
 
 '''
 organizing mapped peak file into dictionary
