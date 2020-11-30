@@ -301,7 +301,7 @@ def make_hist_peaks(oFile,outname,bin_max):
 finding valid orthologs and then plot the histogram
 '''
 def ortholog_find(file_H,max_len,alen,min_len,blen,proct_dist,mult_keepone=False,
-				  narrowPeak=False, make_hist=True):
+				  narrowPeak=False, draw_hist=True):
 	qFileH = open(file_H[0],"r+")
 	tFileH = open(file_H[1],"r+")
 	sFileH = open(file_H[2],"r+")
@@ -370,7 +370,7 @@ def ortholog_find(file_H,max_len,alen,min_len,blen,proct_dist,mult_keepone=False
 	sFileH.close()
 	oFileH.close()
 	qFile_FH.close()
-	if make_hist:
+	if draw_hist:
 		make_hist(file_H[3],file_H[3],2500,narrowPeak=narrowPeak)
 	return 0
 
@@ -451,7 +451,7 @@ def main(argv):
 		exit(1)
 	ortholog_find(file_H,max_len,alen,min_len,blen,int(args.protect_dist),
 				  mult_keepone=args.mult_keepone,narrowPeak=args.narrowPeak,
-				  make_hist=args.noHist);
+				  draw_hist=args.noHist);
 		
 
 	
