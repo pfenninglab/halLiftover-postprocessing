@@ -1,14 +1,13 @@
 import argparse
-import sys
-import matplotlib.pyplot as plt
-import numpy as np
-import subprocess
 import os
+import subprocess
+import sys
+
+import numpy as np
 
 from scripts.orthologFindHelper import *
 from scripts.quickSort import quicksort
 from scripts.tupleMergeSort import *
-
 
 '''
 organizing mapped peak file into dictionary
@@ -246,6 +245,7 @@ x label: ortholog length
 y label: number of orthologs
 '''
 def make_hist(oFile,outname,bin_max,narrowPeak=False):
+	import matplotlib.pyplot as plt
 	oFileH = open(oFile,"r")
 	plt.figure(1)
 	hist_len = []
@@ -300,7 +300,8 @@ def make_hist_peaks(oFile,outname,bin_max):
 '''
 finding valid orthologs and then plot the histogram
 '''
-def ortholog_find(file_H,max_len,alen,min_len,blen,proct_dist,mult_keepone=False,narrowPeak=False):
+def ortholog_find(file_H,max_len,alen,min_len,blen,proct_dist,mult_keepone=False,
+				  narrowPeak=False, draw_hist=True):
 	qFileH = open(file_H[0],"r+")
 	tFileH = open(file_H[1],"r+")
 	sFileH = open(file_H[2],"r+")
@@ -369,7 +370,8 @@ def ortholog_find(file_H,max_len,alen,min_len,blen,proct_dist,mult_keepone=False
 	sFileH.close()
 	oFileH.close()
 	qFile_FH.close()
-	make_hist(file_H[3],file_H[3],2500,narrowPeak=narrowPeak)
+	if draw_hist:
+		make_hist(file_H[3],file_H[3],2500,narrowPeak=narrowPeak)
 	return 0
 
 
@@ -408,6 +410,10 @@ def main(argv):
 	parser.add_argument('-narrowPeak', action="store_true", \
 		help='output file in narrowPeak format, string columns other than 1-4 and 10 will be ., number columns other than 1-4 and 10 will be -1',
                 required=False)
+	parser.add_argument('-noHist', action="store_false",
+		help='do not create a histogram of valid orthologs.',
+		required=False)
+
 	args = parser.parse_args()
 
 	if(args.max_len is None and args.max_frac is None):
@@ -443,7 +449,9 @@ def main(argv):
 	if(not check_valid_files(args.sFile)):
 		print("Error: sFile is empty")
 		exit(1)
-	ortholog_find(file_H,max_len,alen,min_len,blen,int(args.protect_dist),mult_keepone=args.mult_keepone,narrowPeak=args.narrowPeak);
+	ortholog_find(file_H,max_len,alen,min_len,blen,int(args.protect_dist),
+				  mult_keepone=args.mult_keepone,narrowPeak=args.narrowPeak,
+				  draw_hist=args.noHist);
 		
 
 	
