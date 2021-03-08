@@ -91,7 +91,9 @@ NOTE: The version of zlib available in anaconda does not seem to be compatible w
 		
 		export h5prefix=-prefix=[directory with hal]/hal/hdf5
 * run the following (takes awhile):
+		
 		cd [directory with hal]/hal
+		
 		make 
 
 
