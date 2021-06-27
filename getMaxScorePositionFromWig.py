@@ -25,6 +25,10 @@ def parseArgument():
 		help='The input bed file is gzipped and the intermediate sorted bedgraph file will be gzipped')
 	parser.add_argument("--highestScoreLocationFileName", required=True,\
 		help='bed file where position with the highest score that is closest to the center will be written')
+	parser.add_argument("--codePath", required=False, default="",\
+                help='Path to UCSC Genome Browser utilities executables, should end with / if it is not an empty String')
+	parser.add_argument("--tempDir", required=False, default="/scratch",\
+                help='Temporary directory for pybedtools')
 	options = parser.parse_args()
 	return options
 
@@ -36,9 +40,9 @@ def getMaxScorePositionFromWig(options):
 	if not bigwigFileName:
 		# Create the name of the intermediate bigwig file
 		bigwigFileName = wigFileNamePrefix + ".bw"
-	os.system(" ".join(["wigToBigWig", options.wigFileName, options.chromSizesFileName, bigwigFileName]))
+	os.system(" ".join([options.codePath + "wigToBigWig", options.wigFileName, options.chromSizesFileName, bigwigFileName]))
 	unsortedBedgraphFileName = wigFileNamePrefix + ".bedgraph"
-	os.system(" ".join(["bigWigToBedGraph", bigwigFileName, unsortedBedgraphFileName]))
+	os.system(" ".join([options.codePath + "bigWigToBedGraph", bigwigFileName, unsortedBedgraphFileName]))
 	bedgraphFileName = options.bedgraphFileName
 	if not bedgraphFileName:
 		# Create the name of the intermediate bedgraph file
@@ -64,7 +68,7 @@ def getMaxScorePositionFromWig(options):
 	getMaxScorePositionFromBedgraph(maxScorePositionOptions)
 
 if __name__=="__main__":
-	bt.helpers.set_tempdir("/scratch")
 	options = parseArgument()
+	bt.helpers.set_tempdir(options.tempDir)
 	getMaxScorePositionFromWig(options)
 	bt.helpers.cleanup()
