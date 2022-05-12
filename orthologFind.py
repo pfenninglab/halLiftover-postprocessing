@@ -302,9 +302,9 @@ finding valid orthologs and then plot the histogram
 '''
 def ortholog_find(file_H,max_len,alen,min_len,blen,proct_dist,mult_keepone=False,
 				  narrowPeak=False, draw_hist=True):
-	qFileH = open(file_H[0],"r+")
-	tFileH = open(file_H[1],"r+")
-	sFileH = open(file_H[2],"r+")
+	qFileH = open(file_H[0],"r")
+	tFileH = open(file_H[1],"r")
+	sFileH = open(file_H[2],"r")
 	oFileH = open(file_H[3],"w+")
 	qFileH.seek(0) 
 	qFile_fix_name=file_H[0]+".fixed"
