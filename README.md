@@ -81,6 +81,7 @@ HALPER is designed for constructing contiguous orthologs from the outputs of hal
 	* provide either min_len or min_frac
 * -protect_dist: the ortholog length in each direction from the ortholog of the summit must be at least proct_dist 
 			![alt text](https://github.com/pfenninglab/multiple_alignment-python/blob/master/min_proct_dist.png)
+* -keepChrPrefix: If passed, then only keep mapped peaks where the new chromosome name starts with this prefix. E.g. `-keepChrPrefix chr` will keep only mapped peaks where the chromosome name starts with `chr`.
 
 
 ## Example Run of HALPER
