@@ -220,7 +220,7 @@ def extend_summit(q_peak_list,summit_seg):
 '''
 test if a ortholog is valid against the user parameters
 '''
-def validOrtholog(summit_ortho_info,max_len,min_len,proct_dist, peak_name):
+def validOrtholog(summit_ortho_info,max_len,min_len,proct_dist, peak_name, mapped_chr_name, keep_chr_prefix):
 	#summit_ortho_info:
 	## summit_ortho_s,summit_q_pos, summit_ortho_e,sum_len,l_len,r_len
 	sum_len = summit_ortho_info[3]
@@ -236,6 +236,9 @@ def validOrtholog(summit_ortho_info,max_len,min_len,proct_dist, peak_name):
 		return False
 	if(not(l_len >= proct_dist and r_len>=proct_dist)):
 		# print("peak "+str(peak_name)+" l_len is "+str(l_len)+" r_len is "+str(r_len))
+		return False
+	# Exclude if the mapped chr name does not start with the given prefix
+	if (keep_chr_prefix is not None) and not (mapped_chr_name.startswith(keep_chr_prefix)):
 		return False
 	return True
 
@@ -301,7 +304,7 @@ def make_hist_peaks(oFile,outname,bin_max):
 finding valid orthologs and then plot the histogram
 '''
 def ortholog_find(file_H,max_len,alen,min_len,blen,proct_dist,mult_keepone=False,
-				  narrowPeak=False, draw_hist=True):
+				  narrowPeak=False, draw_hist=True, keep_chr_prefix=None):
 	qFileH = open(file_H[0],"r")
 	tFileH = open(file_H[1],"r")
 	sFileH = open(file_H[2],"r")
@@ -360,8 +363,9 @@ def ortholog_find(file_H,max_len,alen,min_len,blen,proct_dist,mult_keepone=False
 		else:
 			# Format the output line in narrowPeak format
 			newLineList = [summit_seg[2],str(ortho_s),str(ortho_e),peak_name,"-1",".","-1","-1","-1",str(q_extent[-2])]
+		mapped_chr_name = newLineList[0]
 		newLine = fromStringListToStr(newLineList)
-		if(validOrtholog(q_extent,this_max_len,this_min_len,proct_dist,peak_name)):
+		if(validOrtholog(q_extent,this_max_len,this_min_len,proct_dist,peak_name,mapped_chr_name,keep_chr_prefix)):
 			oFileH.write(newLine)
 		else:
 			qFile_FH.write(newLine)
@@ -413,6 +417,8 @@ def main(argv):
 	parser.add_argument('-noHist', action="store_false",
 		help='do not create a histogram of valid orthologs.',
 		required=False)
+	parser.add_argument('-keepChrPrefix', required=False,
+		help='If passed, then only keep mapped peaks where the new chromosome name starts with this prefix.')
 
 	args = parser.parse_args()
 
@@ -451,7 +457,7 @@ def main(argv):
 		exit(1)
 	ortholog_find(file_H,max_len,alen,min_len,blen,int(args.protect_dist),
 				  mult_keepone=args.mult_keepone,narrowPeak=args.narrowPeak,
-				  draw_hist=args.noHist);
+				  draw_hist=args.noHist,keep_chr_prefix=args.keepChrPrefix);
 		
 
 	
