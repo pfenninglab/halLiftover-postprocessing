@@ -76,6 +76,8 @@ Use gcc version >= 4.2.  If gcc has not been installed, install it.  If gcc has 
 
 ### sonLib
 
+Add the path to your zlib library to your LD_LIBRARY_PATH.
+
 From the same parent directory where you downloaded HAL:
 
 	  git clone https://github.com/ComparativeGenomicsToolkit/sonLib.git
