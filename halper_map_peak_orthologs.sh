@@ -3,12 +3,8 @@
 # Adapted from a script by BaDoi Phan:
 # /projects/pfenninggroup/machineLearningForComputationalBiology/snATAC_cross_species_caudate/code/raw_code/hal_scripts/halper_map_peak_orthologs.sh
 
-#SBATCH --partition=pfen1
-# -w=compute-1-11 because the cactus alignment is on this node
-#SBATCH -w=compute-1-11
 #SBATCH --job-name=halliftover
 #SBATCH --ntasks-per-core=1
-#SBATCH --mem=10G
 #SBATCH --error=logs/halliftover_%A.out.txt
 #SBATCH --output=logs/halliftover_%A.out.txt
 
@@ -32,6 +28,8 @@ function usage()
     echo ""
     echo "sbatch halper_map_peak_orthologs.sh -b myPeaks.narrowPeak -o /dir/to/output/ -s sourceSpecies -t targetSpecies "
     echo ""
+    echo "On the Lane cluster, please use the following sbatch flags to use a node that already has the cactus alignment:"
+    echo "    sbatch -p pfen1 -w compute-1-11 --mem 10000 halper_map_peak_orthologs.sh [other args]"
     echo ""
     echo "Required parameters:"   
     echo "--input-bed-file  -b FILENAME     bed or narrowPeak file, can be gzipped, {.bed/.bed.gz/.narrowpeak/.narrowpeak.gz}"

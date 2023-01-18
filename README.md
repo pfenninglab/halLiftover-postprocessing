@@ -86,6 +86,9 @@ HALPER is designed for constructing contiguous orthologs from the outputs of hal
 
 ## Example Run of HALPER
 Running these examples requires the files in the examples directory and 10plusway-master.hal, a Cactus alignment with 12 mammals that can be obtained from the authors of the paper describing Cactus (see "Relevant Publications" below).  One can compare the outputs of each step to the files with the corresponding names in the examples directory.  To run only HALPER (not halLiftover), go directly to #4.
+
+To run steps 1-4 with a single command, please use `halper_map_peak_orthologs.sh`.
+
 1.  Run halLiftover on the file from the query species (example is in narrowPeak format, so columns not in standard bed format are first removed) to obtain the regions' orthologs in the target species:
 ```
 	[directory with hal]/hal/bin/halLiftover --bedType 4 [directory with Cactus alignment]/10plusway-master.hal Human [directory with halLiftover-postprocessing]/halLiftover-postprocessing/examples/hg38Peaks.bed Mouse hg38Peaks_halLiftovermm10.bed
