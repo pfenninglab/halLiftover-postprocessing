@@ -21,7 +21,7 @@ HALPER is designed for constructing contiguous orthologs from the outputs of hal
 
 ## Tips for Installing the HAL Format API
 * To install, follow the instructions in this website: https://github.com/ComparativeGenomicsToolkit/hal
-	* For detailed installation tips, follow the instructions in https://github.com/pfenninglab/halLiftover-postprocessing/blob/master/halliftoverInstallationSpecifics.md
+	* For detailed installation tips, follow the instructions in https://github.com/pfenninglab/halLiftover-postprocessing/blob/master/hal_install_instructions.md
 * HALPER has been tested using outputs from HAL Format API Release 2.1
 
 
@@ -172,6 +172,7 @@ This program requires the bed file to be sorted and not contain duplicated rows.
 
 
 ## Additional Utilities
+* halper_map_peak_orthologs.sh: Runs halLiftover and then orthlogFind.py, essentially doing steps 1-4 of "Example Run of Halper" in one step
 * makeRunHalLiftoverSingleBedScript.py: Makes a script that will run halLiftover on a single file and map the regions in it to a list of species
 * makeRunHalLiftoverScript.py: Makes a script that will run halLiftover on a list of files and map the regions in each file to a list of species
 * makeOrthologFindSingleBedScript.py: Makes a script that will run orthologFind.py on a list of target, summit file combinations for a single query file
@@ -190,5 +191,6 @@ This program requires the bed file to be sorted and not contain duplicated rows.
 ## Contributors
 * Erin Zhang (xiaoyuz1@andrew.cmu.edu)
 * Irene Kaplow (ikaplow@cs.cmu.edu)
+* Carson Sestili (csestili@andrew.cmu.edu)
 * Morgan Wirthlin (mwirthlin@cmu.edu)
 * Andreas Pfenning (apfenning@cmu.edu)
