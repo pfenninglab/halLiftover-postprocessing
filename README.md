@@ -85,9 +85,40 @@ HALPER is designed for constructing contiguous orthologs from the outputs of hal
 
 
 ## Example Run of HALPER
-Running these examples requires the files in the examples directory and 10plusway-master.hal, a Cactus alignment with 12 mammals that can be obtained from the authors of the paper describing Cactus (see "Relevant Publications" below).  One can compare the outputs of each step to the files with the corresponding names in the examples directory.  To run only HALPER (not halLiftover), go directly to #4.
+Running these examples requires the files in the examples directory and 10plusway-master.hal, a Cactus alignment with 12 mammals that can be obtained from the authors of the paper describing Cactus (see "Relevant Publications" below).  One can compare the outputs of each step to the files with the corresponding names in the examples directory.  
 
-To run steps 1-4 with a single command, please use `halper_map_peak_orthologs.sh`.
+### Running hal and HALPER with one script
+The script `halper_map_peak_orthologs.sh` runs `halLiftover` and postprocesses the results with HALPER all in one script. This is equivalent to running steps 1-4 in "Running steps manually" below.
+
+To use `halper_map_peak_orthologs.sh` on a slurm cluster:
+```
+sbatch \
+	-p [partition] \
+	--array 1-[number of target species] \
+	halper_map_peak_orthologs.sh \
+	-b [path to input .bed or .narrowPeak file] \
+	-o [path to output directory] \
+	-s [source species, e.g. Homo_sapiens] \
+	-t [comma-separated list of target species, e.g. Mus_musculus,Macaca_mulatta] \
+	-c [path to cactus alignment file]
+```
+
+Using the `--array` flag above will instruct the slurm scheduler to map orthologs for each target species in parallel.
+If you omit the `--array` flag, the target species will be processed sequentially.
+
+If you are not running on a slurm cluster, you can submit the script with `bash`:
+```
+bash halper_map_peak_orthologs.sh \
+	-b [path to input .bed or .narrowPeak file] \
+	-o [path to output directory] \
+	-s [source species, e.g. Homo_sapiens] \
+	-t [comma-separated list of target species, e.g. Mus_musculus,Macaca_mulatta] \
+	-c [path to cactus alignment file]
+```
+
+### Running steps manually
+
+To run only HALPER (not halLiftover), go directly to #4.
 
 1.  Run halLiftover on the file from the query species (example is in narrowPeak format, so columns not in standard bed format are first removed) to obtain the regions' orthologs in the target species:
 ```

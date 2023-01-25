@@ -3,6 +3,19 @@
 # Adapted from a script by BaDoi Phan:
 # /projects/pfenninggroup/machineLearningForComputationalBiology/snATAC_cross_species_caudate/code/raw_code/hal_scripts/halper_map_peak_orthologs.sh
 
+# ### NOTE slurm flags ###
+#
+# On the Lane cluster:
+# sbatch -p pool1 --mem 10000 -w compute-1-11 halper_map_peak_orthologs.sh [flags]
+# We use -w compute-1-11 because this node has a Cactus alignment in /scratch already.
+#
+# On the PSC:
+# sbatch -p RM-shared --mem 2000 halper_map_peak_orthologs.sh [flags]
+#
+# To run on multiple target species in parallel using a slurm array job, please use:
+# --array=1-[number of target species]
+# Please note this may fail on the Lane cluster due to a limited length slurm queue.
+
 #SBATCH --job-name=halliftover
 #SBATCH --ntasks-per-core=1
 #SBATCH --error=logs/halliftover_%A_%a.out.txt
