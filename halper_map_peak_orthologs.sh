@@ -5,8 +5,8 @@
 
 #SBATCH --job-name=halliftover
 #SBATCH --ntasks-per-core=1
-#SBATCH --error=logs/halliftover_%A.out.txt
-#SBATCH --output=logs/halliftover_%A.out.txt
+#SBATCH --error=logs/halliftover_%A_%a.out.txt
+#SBATCH --output=logs/halliftover_%A_%a.out.txt
 
 
 # CACTUSFILE=/projects/pfenninggroup/machineLearningForComputationalBiology/alignCactus/10plusway-master.hal
@@ -128,7 +128,8 @@ function check_params()
     elif [ ! -f "$BEDFILE" ]; then
         echo "Input bed/narrowpeak file does not exist: $BEDFILE"; exit 1
     fi
-    TARGETS=$(echo $TARGETS | tr "," "\n")
+    # Convert targets to an array for sequential or parallel processing
+    TARGETS=( $(echo $TARGETS | tr "," "\n") )
 }
 
 function check_bed()
@@ -323,6 +324,12 @@ function cleanup()
     rm -r $TMP_HAL_DIR
 }
 
+function liftover_target()
+{
+    if [[ "${SNP}" == 'TRUE' ]]; then map_snps
+    else get_summits; lift_summits; lift_peaks; run_halper; fi
+}
+
 ##############################
 # prepare bed files for input
 check_params
@@ -332,10 +339,17 @@ prepare_dirs
 
 ##########################################
 # perform liftover for each target species
-for TARGET in $TARGETS; do
-    if [[ "${SNP}" == 'TRUE' ]]; then map_snps
-    else get_summits; lift_summits; lift_peaks; run_halper; fi
-done
+# If this is not a slurm array job, then loop over targets sequentially.
+# Otherwise, process the single target that corresponds to this array task ID.
+if [ -z "$SLURM_ARRAY_TASK_ID" ]; then
+    for TARGET in "${TARGETS[@]}"; do
+        liftover_target
+    done
+else
+    # access the target that corresponds to this array ID (0-indexed)
+    TARGET=${TARGETS[$(($SLURM_ARRAY_TASK_ID - 1))]}
+    liftover_target
+fi
 
 ##################
 # final clean up
