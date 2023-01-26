@@ -50,6 +50,7 @@ function usage()
     echo "--source-species  -s SPECIES      sourceSpecies in the Cactus file e.g. {Homo_sapiens, Mus_musculus, Macaca_mulatta}"
     echo "--target-species  -t SPECIES1,SPECIES2"
     echo "                                  comma separated list of targetSpecies in the Cactus file e.g. {Human, Mouse, Rhesus, etc}"
+    echo "                                  OR path to a file with one target species per line"
     echo ""
     echo ""
     echo "Optional parameters:"   
@@ -141,8 +142,6 @@ function check_params()
     elif [ ! -f "$BEDFILE" ]; then
         echo "Input bed/narrowpeak file does not exist: $BEDFILE"; exit 1
     fi
-    # Convert targets to an array for sequential or parallel processing
-    TARGETS=( $(echo $TARGETS | tr "," "\n") )
 }
 
 function check_bed()
@@ -202,7 +201,7 @@ function format_bed()
     mv ${TMP_HAL_DIR}/${NAME}.unique3.${SOURCE}.${TMP_LABEL}.bed $UNIQUEBED; rm ${TMP_HAL_DIR}/${NAME}.unique2.${SOURCE}.${TMP_LABEL}.bed
 
     ######################################
-    # get the 6-column bed for broak peak
+    # get the 6-column bed for broad peak
     SIMPLEBED=${TMP_HAL_DIR}/${NAME}.6col.${SOURCE}.${TMP_LABEL}.bed; cut -f1-6 $UNIQUEBED > $SIMPLEBED
 }
 
@@ -352,6 +351,22 @@ prepare_dirs
 
 ##########################################
 # perform liftover for each target species
+
+# Get array of targets, either from comma-delimited string, or by reading from a file.
+if [ ! -f "$TARGETS" ]; then
+    # interpret TARGETS as a comma-delimited string and read elements into array
+    TARGETS=( $(echo $TARGETS | tr "," "\n") )
+else
+    # TARGETS is a file, read lines from it and store as array
+    echo "Reading in targets line-by-line from $TARGETS"
+    unset -v lines
+    while IFS= read -r; do
+        lines+=("$REPLY")
+    done <$TARGETS
+    [[ $REPLY ]] && lines+=("$REPLY")
+    TARGETS=("${lines[@]}")
+fi
+
 # If this is not a slurm array job, then loop over targets sequentially.
 # Otherwise, process the single target that corresponds to this array task ID.
 if [ -z "$SLURM_ARRAY_TASK_ID" ]; then
