@@ -24,8 +24,14 @@
 
 # CACTUSFILE=/projects/pfenninggroup/machineLearningForComputationalBiology/alignCactus/10plusway-master.hal
 source activate hal
+
+# Default argument values (can be overridden by args)
 CACTUSFILE=/scratch/cactus_alignments/241-mammalian-2020v2.hal
-OVERWRITE='FALSE'; NAME=''; SNP=''; MIN_LEN=50; PROTECT_DIST=10 # for halper param
+OVERWRITE='FALSE'; NAME=''; SNP=''; 
+# HALPER defaults
+MIN_LEN=50; PROTECT_DIST=10; MAX_FRAC=1.5
+
+# Constants (should not be overridden by args)
 TMP_LABEL="tmp$(date +%s)"
 # Make a temporary dir, portable on Linux and Mac
 # from https://unix.stackexchange.com/a/84980
@@ -60,6 +66,9 @@ function usage()
     echo "--snp                             Map SNPs rather than peaks (change min peak length=1/protect dist=0)."
     echo "--keepChrPrefix                   Only keep orthologs where the chromosome name starts with this prefix."
     echo "--halPath                         Path to a halLiftover binary, in case you don't want to build halLiftover."
+    echo "-max_frac                         As in orthologFind.py"
+    echo "-min_len                          As in orthologFind.py"
+    echo "-protect_dist                     As in orthologFind.py"
     echo ""
     echo ""
     echo "Note: genomes are whatever you get from running:"
@@ -112,6 +121,18 @@ while [[ $1 != "" ]]; do
                                 HALLIFTOVER_PATH=$1
                                 echo "halLiftover binary path is $HALLIFTOVER_PATH."
                                 ;;
+        -min_len )              shift
+                                MIN_LEN=$1
+                                echo "-min_len is $MIN_LEN."
+                                ;;
+        -protect_dist )         shift
+                                PROTECT_DIST=$1
+                                echo "-protect_dist is $PROTECT_DIST."
+                                ;;
+        -max_frac )             shift
+                                MAX_FRAC=$1
+                                echo "-max_frac is $MAX_FRAC."
+                                ;;                                
         -h | --help )           usage
                                 exit 1
                                 ;;
@@ -281,7 +302,7 @@ function run_halper()
     ########################################################################
     echo "Apply HALPER to identify 1-1 orthologous in the ${TARGET} genome."
     OUTFILE=${TMP_HAL_DIR}/${NAME}.${SOURCE}To${TARGET}.orthologs.${SOURCE}To${TARGET}.${TMP_LABEL}.narrowPeak
-    args="-max_frac 1.5 -min_len $MIN_LEN -protect_dist $PROTECT_DIST \
+    args="-max_frac $MAX_FRAC -min_len $MIN_LEN -protect_dist $PROTECT_DIST \
     -tFile ${TMP_HAL_DIR}/$HALLIFTEDTFILE -sFile ${TMP_HAL_DIR}/$HALLIFTEDSFILE \
     -narrowPeak -qFile $UNIQUEBED -oFile $OUTFILE"
     # Add optional arguments if they are set
