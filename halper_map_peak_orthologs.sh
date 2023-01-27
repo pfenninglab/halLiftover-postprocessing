@@ -3,10 +3,23 @@
 # Adapted from a script by BaDoi Phan:
 # /projects/pfenninggroup/machineLearningForComputationalBiology/snATAC_cross_species_caudate/code/raw_code/hal_scripts/halper_map_peak_orthologs.sh
 
+# ### NOTE slurm flags ###
+#
+# On the Lane cluster:
+# sbatch -p pool1 --mem 10000 -w compute-1-11 halper_map_peak_orthologs.sh [flags]
+# We use -w compute-1-11 because this node has a Cactus alignment in /scratch already.
+#
+# On the PSC:
+# sbatch -p RM-shared --mem 2000 halper_map_peak_orthologs.sh [flags]
+#
+# To run on multiple target species in parallel using a slurm array job, please use:
+# --array=1-[number of target species]
+# Please note this may fail on the Lane cluster due to a limited length slurm queue.
+
 #SBATCH --job-name=halliftover
 #SBATCH --ntasks-per-core=1
-#SBATCH --error=logs/halliftover_%A.out.txt
-#SBATCH --output=logs/halliftover_%A.out.txt
+#SBATCH --error=logs/halliftover_%A_%a.out.txt
+#SBATCH --output=logs/halliftover_%A_%a.out.txt
 
 
 # CACTUSFILE=/projects/pfenninggroup/machineLearningForComputationalBiology/alignCactus/10plusway-master.hal
@@ -37,6 +50,7 @@ function usage()
     echo "--source-species  -s SPECIES      sourceSpecies in the Cactus file e.g. {Homo_sapiens, Mus_musculus, Macaca_mulatta}"
     echo "--target-species  -t SPECIES1,SPECIES2"
     echo "                                  comma separated list of targetSpecies in the Cactus file e.g. {Human, Mouse, Rhesus, etc}"
+    echo "                                  OR path to a file with one target species per line"
     echo ""
     echo ""
     echo "Optional parameters:"   
@@ -128,7 +142,6 @@ function check_params()
     elif [ ! -f "$BEDFILE" ]; then
         echo "Input bed/narrowpeak file does not exist: $BEDFILE"; exit 1
     fi
-    TARGETS=$(echo $TARGETS | tr "," "\n")
 }
 
 function check_bed()
@@ -188,7 +201,7 @@ function format_bed()
     mv ${TMP_HAL_DIR}/${NAME}.unique3.${SOURCE}.${TMP_LABEL}.bed $UNIQUEBED; rm ${TMP_HAL_DIR}/${NAME}.unique2.${SOURCE}.${TMP_LABEL}.bed
 
     ######################################
-    # get the 6-column bed for broak peak
+    # get the 6-column bed for broad peak
     SIMPLEBED=${TMP_HAL_DIR}/${NAME}.6col.${SOURCE}.${TMP_LABEL}.bed; cut -f1-6 $UNIQUEBED > $SIMPLEBED
 }
 
@@ -323,6 +336,12 @@ function cleanup()
     rm -r $TMP_HAL_DIR
 }
 
+function liftover_target()
+{
+    if [[ "${SNP}" == 'TRUE' ]]; then map_snps
+    else get_summits; lift_summits; lift_peaks; run_halper; fi
+}
+
 ##############################
 # prepare bed files for input
 check_params
@@ -332,10 +351,33 @@ prepare_dirs
 
 ##########################################
 # perform liftover for each target species
-for TARGET in $TARGETS; do
-    if [[ "${SNP}" == 'TRUE' ]]; then map_snps
-    else get_summits; lift_summits; lift_peaks; run_halper; fi
-done
+
+# Get array of targets, either from comma-delimited string, or by reading from a file.
+if [ ! -f "$TARGETS" ]; then
+    # interpret TARGETS as a comma-delimited string and read elements into array
+    TARGETS=( $(echo $TARGETS | tr "," "\n") )
+else
+    # TARGETS is a file, read lines from it and store as array
+    echo "Reading in targets line-by-line from $TARGETS"
+    unset -v lines
+    while IFS= read -r; do
+        lines+=("$REPLY")
+    done <$TARGETS
+    [[ $REPLY ]] && lines+=("$REPLY")
+    TARGETS=("${lines[@]}")
+fi
+
+# If this is not a slurm array job, then loop over targets sequentially.
+# Otherwise, process the single target that corresponds to this array task ID.
+if [ -z "$SLURM_ARRAY_TASK_ID" ]; then
+    for TARGET in "${TARGETS[@]}"; do
+        liftover_target
+    done
+else
+    # access the target that corresponds to this array ID (0-indexed)
+    TARGET=${TARGETS[$(($SLURM_ARRAY_TASK_ID - 1))]}
+    liftover_target
+fi
 
 ##################
 # final clean up
