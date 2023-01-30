@@ -202,10 +202,11 @@ function format_bed()
         if [[ $(awk '{print NF; exit}' ${INPUTBED}) == 10 ]]; 
         # use summit if there's a 10th column (assume narrowpeak file)
             then echo "Appending CHR:START-END:SUMMIT to NAME column."
-            awk 'BEGIN {FS="\t"; OFS="\t"} {print $1, $2, $3, $1 ":" $2 "-" $3 ":" $10, $5, $6}' $INPUTBED > $UNIQUEBED
+            # TODO keep columns 8, 9, 10 here, and debug halper
+            awk 'BEGIN {FS="\t"; OFS="\t"} {print $1, $2, $3, $1 ":" $2 "-" $3 ":" $10, $5, $6, $7}' $INPUTBED > $UNIQUEBED
         else # if there isn't a narrowpeak summit column
             echo "Appending CHR:START-END to NAME column."
-            awk 'BEGIN {FS="\t"; OFS="\t"} {print $1, $2, $3, $1 ":" $2 "-" $3, $5, $6}' $INPUTBED > $UNIQUEBED
+            awk 'BEGIN {FS="\t"; OFS="\t"} {print $1, $2, $3, $1 ":" $2 "-" $3, $5, $6, $7}' $INPUTBED > $UNIQUEBED
         fi
     else 
         echo "Bed peak names are unique; moving onwards."
@@ -215,6 +216,7 @@ function format_bed()
     #################################################################
     # make sure the scores column is numeric, strand column is +|-|.
     echo "Formatting bed score and strand columns."
+    # NOTE this line converts float values e.g. 5.23 to 0
     awk 'BEGIN {FS="\t"; OFS="\t"} {! $5 ~ /^[[:digit:]]+$/} {$5=0} {print;}' $UNIQUEBED \
         > ${TMP_HAL_DIR}/${NAME}.unique2.${SOURCE}.${TMP_LABEL}.bed
     awk 'BEGIN {FS="\t"; OFS="\t"} {! $6 ~ /\+|\-|\./} {$6="."} {print;}' \

@@ -55,21 +55,6 @@ def num_segments_hist(dict_segtFile):
 	plt.savefig("num_frags_mapped_peaks.png")
 	plt.close()
 	return n
-	
-
-
-''' if a summit maps multiple places, see if all segments (peak_start,peak_end,chr_name)
-are adjacent  '''
-def adj_pos(arr):
-    n = len(arr)
-    quicksort(arr, 0, n - 1)
-    for i in range(1, n):
-        if(i == 0):
-            continue
-        else:
-            if(not(arr[i][0] == arr[i - 1][1] or arr[i][0] == arr[i - 1][1] + 1)):
-                return False
-
 
 '''
 As we go through line by line
@@ -88,7 +73,6 @@ def create_SFile_dict(FileH,mult_keepone):
 	# accumulating values
 	multpeak_pos_list = []
 	num_multpeak = 0
-	num_multpeak_nonad = 0
 	# specially dealing with first line
 	first_ln_list = (FileH.readline()).split("\t")
 	last_peak_name = first_ln_list[3].strip()
@@ -106,8 +90,6 @@ def create_SFile_dict(FileH,mult_keepone):
 		peak_name = strList[3].strip()
 		if peak_name != last_peak_name:
 			if(multpeak_pos_list != []):
-				if(not adj_pos(multpeak_pos_list)):
-				    num_multpeak_nonad += 1
 				multpeak_dict[last_peak_name] = multpeak_pos_list
 				multpeak_pos_list = []
 				# Delete the peak whose summit maps to multiple places
@@ -131,8 +113,6 @@ def create_SFile_dict(FileH,mult_keepone):
 		last_chrname = chr_name
 	# Repeat it one more time in case last line is a peak whose summit maps to multiple places
 	if(multpeak_pos_list != []):
-		if(not adj_pos(multpeak_pos_list)):
-			num_multpeak_nonad += 1
 		multpeak_dict[last_peak_name] = multpeak_pos_list
 		# Delete the peak whose summit maps to multiple places
 		if not mult_keepone: 
@@ -227,15 +207,10 @@ def validOrtholog(summit_ortho_info,max_len,min_len,proct_dist, peak_name, mappe
 	l_len = summit_ortho_info[4]
 	r_len = summit_ortho_info[5]
 	if(sum_len > max_len):
-		# print("max_len is"+str(max_len))
-		# print("peak "+str(peak_name)+" sum len is "+str(sum_len))
 		return False
 	if(sum_len < min_len):
-		# print("%.4f min_len" % (this_min_len))
-		# print("peak "+str(peak_name)+" sum len is "+str(sum_len))
 		return False
 	if(not(l_len >= proct_dist and r_len>=proct_dist)):
-		# print("peak "+str(peak_name)+" l_len is "+str(l_len)+" r_len is "+str(r_len))
 		return False
 	# Exclude if the mapped chr name does not start with the given prefix
 	if (keep_chr_prefix is not None) and not (mapped_chr_name.startswith(keep_chr_prefix)):
@@ -330,6 +305,9 @@ def ortholog_find(file_H,max_len,alen,min_len,blen,proct_dist,mult_keepone=False
 		peak_e=int(strList[2])
 		peak_len=peak_e-peak_s
 		peak_name=strList[3]
+		signal_value = "-1" if len(strList) < 7 else strList[6]
+		narrowPeak_pValue = "-1" if len(strList) < 8 else strList[7]
+		narrowPeak_qValue = "-1" if len(strList) < 9 else strList[8]
 		#if given fraction, calculate max_len 
 		if(not alen):
 			this_max_len = max_len*(peak_e-peak_s+1)
@@ -346,6 +324,7 @@ def ortholog_find(file_H,max_len,alen,min_len,blen,proct_dist,mult_keepone=False
 			continue
 		#
 		q_extent=extend_summit(q_peak_list,summit_seg)
+		# TODO here is where the error with columns 8-10 is happening
 		if(q_extent == ()):
 			continue
 		# summit_ortho_s,summit_q_pos,summit_ortho_e,sum_len,l_len,r_len
@@ -362,7 +341,7 @@ def ortholog_find(file_H,max_len,alen,min_len,blen,proct_dist,mult_keepone=False
 			newLineList.append(str(q_extent[-1]))
 		else:
 			# Format the output line in narrowPeak format
-			newLineList = [summit_seg[2],str(ortho_s),str(ortho_e),peak_name,"-1",".","-1","-1","-1",str(q_extent[-2])]
+			newLineList = [summit_seg[2],str(ortho_s),str(ortho_e),peak_name,"-1",".",signal_value,narrowPeak_pValue,narrowPeak_qValue,str(q_extent[-2])]
 		mapped_chr_name = newLineList[0]
 		newLine = fromStringListToStr(newLineList)
 		if(validOrtholog(q_extent,this_max_len,this_min_len,proct_dist,peak_name,mapped_chr_name,keep_chr_prefix)):
