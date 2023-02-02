@@ -324,7 +324,6 @@ def ortholog_find(file_H,max_len,alen,min_len,blen,proct_dist,mult_keepone=False
 			continue
 		#
 		q_extent=extend_summit(q_peak_list,summit_seg)
-		# TODO here is where the error with columns 8-10 is happening
 		if(q_extent == ()):
 			continue
 		# summit_ortho_s,summit_q_pos,summit_ortho_e,sum_len,l_len,r_len

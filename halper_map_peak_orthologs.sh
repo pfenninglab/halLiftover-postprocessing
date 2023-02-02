@@ -202,11 +202,10 @@ function format_bed()
         if [[ $(awk '{print NF; exit}' ${INPUTBED}) == 10 ]]; 
         # use summit if there's a 10th column (assume narrowpeak file)
             then echo "Appending CHR:START-END:SUMMIT to NAME column."
-            # TODO keep columns 8, 9, 10 here, and debug halper
-            awk 'BEGIN {FS="\t"; OFS="\t"} {print $1, $2, $3, $1 ":" $2 "-" $3 ":" $10, $5, $6, $7}' $INPUTBED > $UNIQUEBED
+            awk 'BEGIN {FS="\t"; OFS="\t"} {print $1, $2, $3, $1 ":" $2 "-" $3 ":" $10, $5, $6, $7, $8, $9, $10}' $INPUTBED > $UNIQUEBED
         else # if there isn't a narrowpeak summit column
             echo "Appending CHR:START-END to NAME column."
-            awk 'BEGIN {FS="\t"; OFS="\t"} {print $1, $2, $3, $1 ":" $2 "-" $3, $5, $6, $7}' $INPUTBED > $UNIQUEBED
+            awk 'BEGIN {FS="\t"; OFS="\t"} {print $1, $2, $3, $1 ":" $2 "-" $3, $5, $6, $7, $8, $9, $10}' $INPUTBED > $UNIQUEBED
         fi
     else 
         echo "Bed peak names are unique; moving onwards."
