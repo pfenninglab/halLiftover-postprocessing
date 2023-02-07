@@ -186,6 +186,20 @@ function run_halLiftover()
     fi
 }
 
+function num_null_values(){
+    # $1: path to file
+    # $2: column number (integer)
+    # echo the number of "-1" values in this column of this file
+
+    cut "-f$2-$2" $1 | grep "\-1" | wc -l
+}
+
+function num_columns(){
+    # $1: path to file
+    # echo number of columns
+    awk '{print NF; exit}' $1
+}
+
 function format_bed()
 {
     ##########################################
@@ -199,7 +213,7 @@ function format_bed()
     elif [[ $(awk '++A[$4] > 1 { print "true"; exit 1 }' $INPUTBED) ]]; then
         echo "Non-unique bed peak names detected. Giving unique names now."
         echo "Bed file doesn't have name column. Adding"
-        if [[ $(awk '{print NF; exit}' ${INPUTBED}) == 10 ]]; 
+        if [[ ($(num_columns $INPUTBED) == 10) && ($(num_null_values $INPUTBED 10) == 0) ]]; 
         # use summit if there's a 10th column (assume narrowpeak file)
             then echo "Appending CHR:START-END:SUMMIT to NAME column."
             awk 'BEGIN {FS="\t"; OFS="\t"} {print $1, $2, $3, $1 ":" $2 "-" $3 ":" $10, $5, $6, $7, $8, $9, $10}' $INPUTBED > $UNIQUEBED
