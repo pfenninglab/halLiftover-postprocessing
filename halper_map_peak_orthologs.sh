@@ -214,10 +214,11 @@ function format_bed()
         echo "Non-unique bed peak names detected. Giving unique names now."
         echo "Bed file doesn't have name column. Adding"
         if [[ ($(num_columns $INPUTBED) == 10) && ($(num_null_values $INPUTBED 10) == 0) ]]; 
-        # use summit if there's a 10th column (assume narrowpeak file)
+            # If there are 10 columns, and the 10th column has no null values "-1", then use the summit values.
             then echo "Appending CHR:START-END:SUMMIT to NAME column."
             awk 'BEGIN {FS="\t"; OFS="\t"} {print $1, $2, $3, $1 ":" $2 "-" $3 ":" $10, $5, $6, $7, $8, $9, $10}' $INPUTBED > $UNIQUEBED
-        else # if there isn't a narrowpeak summit column
+        else 
+            # Otherwise, don't use the summit column.
             echo "Appending CHR:START-END to NAME column."
             awk 'BEGIN {FS="\t"; OFS="\t"} {print $1, $2, $3, $1 ":" $2 "-" $3, $5, $6, $7, $8, $9, $10}' $INPUTBED > $UNIQUEBED
         fi
@@ -249,15 +250,16 @@ function get_summits()
     echo "Extracting bed/narrowpeak summits to halLiftover."
     if [[ $(awk '{print NF; exit}' ${UNIQUEBED}) -lt 3 ]]; 
         then echo "Too few columns to be a bed file."; cleanup; exit 1
-    elif [[ $(awk '{print NF; exit}' ${UNIQUEBED}) == 10 ]]; 
-        # 10 columns, assume this is a narrowpeak
+    elif [[ ($(num_columns $INPUTBED) == 10) && ($(num_null_values $INPUTBED 10) == 0) ]]; 
+        # If there are 10 columns, and the 10th column has no null values "-1", then use the summit values.
         then echo "Summits detected. Using the summits."
         awk 'BEGIN {FS="\t"; OFS="\t"} {print $1, $2+$10, $2+$10+1, $4, $5, $6}' $UNIQUEBED > $SUMMITFILE
     else [[ $(awk '{print NF; exit}' ${UNIQUEBED}) -gt 3 ]]
-        # take the mean value between start and end of each peak
+        # Otherwise, take the mean value between start and end of each peak
         echo "No summits found, taking the mean between start and end as the summits."
         awk 'BEGIN {FS="\t"; OFS="\t"} {print $1, int(($2+$3)/2), int(($2+$3)/2)+1, $4, $5, $6}' $UNIQUEBED > $SUMMITFILE
     fi
+    cp $SUMMITFILE ${OUTDIR}/summitfile.bed
 }
 
 function prepare_dirs()
