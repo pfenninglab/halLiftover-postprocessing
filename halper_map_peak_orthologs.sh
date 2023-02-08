@@ -259,7 +259,6 @@ function get_summits()
         echo "No summits found, taking the mean between start and end as the summits."
         awk 'BEGIN {FS="\t"; OFS="\t"} {print $1, int(($2+$3)/2), int(($2+$3)/2)+1, $4, $5, $6}' $UNIQUEBED > $SUMMITFILE
     fi
-    cp $SUMMITFILE ${OUTDIR}/summitfile.bed
 }
 
 function prepare_dirs()
