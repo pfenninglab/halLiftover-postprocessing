@@ -195,7 +195,8 @@ function num_null_values(){
     # $2: column number (integer)
     # echo the number of "-1" values in this column of this file
 
-    cut "-f$2-$2" $1 | grep "\-1" | wc -l
+    res=$(cut "-f$2-$2" $1 | grep "\-1" | wc -l)
+    echo $res
 }
 
 function num_columns(){
