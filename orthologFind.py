@@ -310,6 +310,7 @@ def ortholog_find(file_H,max_len,alen,min_len,blen,proct_dist,mult_keepone=False
 		peak_len=peak_e-peak_s
 		peak_name=strList[3]
 
+		score_value = "-1" if ((len(strList) < 5) or ('score' not in preserve)) else strList[4]
 		signal_value = "-1" if ((len(strList) < 7) or ('signal' not in preserve)) else strList[6]
 		narrowPeak_pValue = "-1" if ((len(strList) < 8) or ('pvalue' not in preserve)) else strList[7]
 		narrowPeak_qValue = "-1" if ((len(strList) < 9) or ('qvalue' not in preserve)) else strList[8]
@@ -346,7 +347,7 @@ def ortholog_find(file_H,max_len,alen,min_len,blen,proct_dist,mult_keepone=False
 			newLineList.append(str(q_extent[-1]))
 		else:
 			# Format the output line in narrowPeak format
-			newLineList = [summit_seg[2],str(ortho_s),str(ortho_e),peak_name,"-1",".",signal_value,narrowPeak_pValue,narrowPeak_qValue,str(q_extent[-2])]
+			newLineList = [summit_seg[2],str(ortho_s),str(ortho_e),peak_name,score_value,".",signal_value,narrowPeak_pValue,narrowPeak_qValue,str(q_extent[-2])]
 		mapped_chr_name = newLineList[0]
 		newLine = fromStringListToStr(newLineList)
 		if(validOrtholog(q_extent,this_max_len,this_min_len,proct_dist,peak_name,mapped_chr_name,keep_chr_prefix)):

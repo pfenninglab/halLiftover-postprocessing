@@ -234,11 +234,15 @@ function format_bed()
     #################################################################
     # make sure the scores column is numeric, strand column is +|-|.
     echo "Formatting bed score and strand columns."
-    # NOTE this line converts float values e.g. 5.23 to 0
-    awk 'BEGIN {FS="\t"; OFS="\t"} {! $5 ~ /^[[:digit:]]+$/} {$5=0} {print;}' $UNIQUEBED \
-        > ${TMP_HAL_DIR}/${NAME}.unique2.${SOURCE}.${TMP_LABEL}.bed
-    awk 'BEGIN {FS="\t"; OFS="\t"} {! $6 ~ /\+|\-|\./} {$6="."} {print;}' \
-        ${TMP_HAL_DIR}/${NAME}.unique2.${SOURCE}.${TMP_LABEL}.bed > ${TMP_HAL_DIR}/${NAME}.unique3.${SOURCE}.${TMP_LABEL}.bed
+
+    # Ensure that score column is numeric
+    # Adapted from https://stackoverflow.com/a/33706695
+    # Regex: 1 or more digits, 0 or 1 period, 0 or more digits
+    # If score is not numeric, then set it to 0, otherwise keep it
+    awk 'BEGIN {FS="\t"; OFS="\t"} { if($5 !~ /^[0-9]+\.{0,1}[0-9]*$/){$5 = 0} print;}' $UNIQUEBED > ${TMP_HAL_DIR}/${NAME}.unique2.${SOURCE}.${TMP_LABEL}.bed
+
+    # Ensure that strand column is "+", "-", or "."
+    awk 'BEGIN {FS="\t"; OFS="\t"} { if($6 !~ /\+|\-|\./){$6 = "."} print;}' ${TMP_HAL_DIR}/${NAME}.unique2.${SOURCE}.${TMP_LABEL}.bed > ${TMP_HAL_DIR}/${NAME}.unique3.${SOURCE}.${TMP_LABEL}.bed
     mv ${TMP_HAL_DIR}/${NAME}.unique3.${SOURCE}.${TMP_LABEL}.bed $UNIQUEBED; rm ${TMP_HAL_DIR}/${NAME}.unique2.${SOURCE}.${TMP_LABEL}.bed
 
     ######################################
@@ -334,7 +338,6 @@ function run_halper()
         PRESERVE=$(echo $PRESERVE | tr "," " ")
         args="${args} -preserve $PRESERVE"
     fi
-    echo "args: $args"
     python -m orthologFind $args
     echo "Mapped $(line_count $OUTFILE) peaks out of $(line_count $INPUTBED) total peaks."
 
