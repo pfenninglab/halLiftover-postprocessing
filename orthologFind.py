@@ -279,7 +279,11 @@ def make_hist_peaks(oFile,outname,bin_max):
 finding valid orthologs and then plot the histogram
 '''
 def ortholog_find(file_H,max_len,alen,min_len,blen,proct_dist,mult_keepone=False,
-				  narrowPeak=False, draw_hist=True, keep_chr_prefix=None):
+				  narrowPeak=False, draw_hist=True, keep_chr_prefix=None, preserve=False):
+	if preserve is None:
+		preserve = []
+	preserve = [itm.lower() for itm in preserve]
+
 	qFileH = open(file_H[0],"r")
 	tFileH = open(file_H[1],"r")
 	sFileH = open(file_H[2],"r")
@@ -305,9 +309,11 @@ def ortholog_find(file_H,max_len,alen,min_len,blen,proct_dist,mult_keepone=False
 		peak_e=int(strList[2])
 		peak_len=peak_e-peak_s
 		peak_name=strList[3]
-		signal_value = "-1" if len(strList) < 7 else strList[6]
-		narrowPeak_pValue = "-1" if len(strList) < 8 else strList[7]
-		narrowPeak_qValue = "-1" if len(strList) < 9 else strList[8]
+
+		signal_value = "-1" if ((len(strList) < 7) or ('signal' not in preserve)) else strList[6]
+		narrowPeak_pValue = "-1" if ((len(strList) < 8) or ('pvalue' not in preserve)) else strList[7]
+		narrowPeak_qValue = "-1" if ((len(strList) < 9) or ('qvalue' not in preserve)) else strList[8]
+
 		#if given fraction, calculate max_len 
 		if(not alen):
 			this_max_len = max_len*(peak_e-peak_s+1)
@@ -398,6 +404,9 @@ def main(argv):
 	parser.add_argument('-keepChrPrefix', required=False,
 		help='If passed, then only keep mapped peaks where the new chromosome name starts with this prefix.')
 
+	parser.add_argument('-preserve', required=False, nargs='+',
+		help='Column(s) from the input narrowPeak file to transfer to the output file. Options are "signal", "pValue", "qValue".')
+
 	args = parser.parse_args()
 
 	if(args.max_len is None and args.max_frac is None):
@@ -435,7 +444,8 @@ def main(argv):
 		exit(1)
 	ortholog_find(file_H,max_len,alen,min_len,blen,int(args.protect_dist),
 				  mult_keepone=args.mult_keepone,narrowPeak=args.narrowPeak,
-				  draw_hist=args.noHist,keep_chr_prefix=args.keepChrPrefix);
+				  draw_hist=args.noHist,keep_chr_prefix=args.keepChrPrefix,
+				  preserve=args.preserve);
 		
 
 	

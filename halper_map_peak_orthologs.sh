@@ -133,6 +133,10 @@ while [[ $1 != "" ]]; do
                                 MAX_FRAC=$1
                                 echo "-max_frac is $MAX_FRAC."
                                 ;;                                
+        -preserve )             shift
+                                PRESERVE=$1
+                                echo "-preserve is $PRESERVE."
+                                ;;
         -h | --help )           usage
                                 exit 1
                                 ;;
@@ -325,6 +329,12 @@ function run_halper()
     if ! [[ -z ${KEEPCHRPREFIX+x} ]]; then
         args="${args} -keepChrPrefix $KEEPCHRPREFIX"
     fi
+    if ! [[ -z ${PRESERVE+x} ]]; then
+        # change PRESERVE from comma-delimited to space-delimited for args
+        PRESERVE=$(echo $PRESERVE | tr "," " ")
+        args="${args} -preserve $PRESERVE"
+    fi
+    echo "args: $args"
     python -m orthologFind $args
     echo "Mapped $(line_count $OUTFILE) peaks out of $(line_count $INPUTBED) total peaks."
 
