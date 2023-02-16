@@ -133,6 +133,10 @@ while [[ $1 != "" ]]; do
                                 MAX_FRAC=$1
                                 echo "-max_frac is $MAX_FRAC."
                                 ;;                                
+        -preserve )             shift
+                                PRESERVE=$1
+                                echo "-preserve is $PRESERVE."
+                                ;;
         -h | --help )           usage
                                 exit 1
                                 ;;
@@ -186,6 +190,21 @@ function run_halLiftover()
     fi
 }
 
+function num_null_values(){
+    # $1: path to file
+    # $2: column number (integer)
+    # echo the number of "-1" values in this column of this file
+
+    res=$(cut "-f$2-$2" $1 | grep "\-1" | wc -l)
+    echo $res
+}
+
+function num_columns(){
+    # $1: path to file
+    # echo number of columns
+    awk '{print NF; exit}' $1
+}
+
 function format_bed()
 {
     ##########################################
@@ -199,13 +218,14 @@ function format_bed()
     elif [[ $(awk '++A[$4] > 1 { print "true"; exit 1 }' $INPUTBED) ]]; then
         echo "Non-unique bed peak names detected. Giving unique names now."
         echo "Bed file doesn't have name column. Adding"
-        if [[ $(awk '{print NF; exit}' ${INPUTBED}) == 10 ]]; 
-        # use summit if there's a 10th column (assume narrowpeak file)
+        if [[ ($(num_columns $INPUTBED) == 10) && ($(num_null_values $INPUTBED 10) == 0) ]]; 
+            # If there are 10 columns, and the 10th column has no null values "-1", then use the summit values.
             then echo "Appending CHR:START-END:SUMMIT to NAME column."
-            awk 'BEGIN {FS="\t"; OFS="\t"} {print $1, $2, $3, $1 ":" $2 "-" $3 ":" $10, $5, $6}' $INPUTBED > $UNIQUEBED
-        else # if there isn't a narrowpeak summit column
+            awk 'BEGIN {FS="\t"; OFS="\t"} {print $1, $2, $3, $1 ":" $2 "-" $3 ":" $10, $5, $6, $7, $8, $9, $10}' $INPUTBED > $UNIQUEBED
+        else 
+            # Otherwise, don't use the summit column.
             echo "Appending CHR:START-END to NAME column."
-            awk 'BEGIN {FS="\t"; OFS="\t"} {print $1, $2, $3, $1 ":" $2 "-" $3, $5, $6}' $INPUTBED > $UNIQUEBED
+            awk 'BEGIN {FS="\t"; OFS="\t"} {print $1, $2, $3, $1 ":" $2 "-" $3, $5, $6, $7, $8, $9, $10}' $INPUTBED > $UNIQUEBED
         fi
     else 
         echo "Bed peak names are unique; moving onwards."
@@ -215,10 +235,15 @@ function format_bed()
     #################################################################
     # make sure the scores column is numeric, strand column is +|-|.
     echo "Formatting bed score and strand columns."
-    awk 'BEGIN {FS="\t"; OFS="\t"} {! $5 ~ /^[[:digit:]]+$/} {$5=0} {print;}' $UNIQUEBED \
-        > ${TMP_HAL_DIR}/${NAME}.unique2.${SOURCE}.${TMP_LABEL}.bed
-    awk 'BEGIN {FS="\t"; OFS="\t"} {! $6 ~ /\+|\-|\./} {$6="."} {print;}' \
-        ${TMP_HAL_DIR}/${NAME}.unique2.${SOURCE}.${TMP_LABEL}.bed > ${TMP_HAL_DIR}/${NAME}.unique3.${SOURCE}.${TMP_LABEL}.bed
+
+    # Ensure that score column is numeric
+    # Adapted from https://stackoverflow.com/a/33706695
+    # Regex: 1 or more digits, 0 or 1 period, 0 or more digits
+    # If score is not numeric, then set it to 0, otherwise keep it
+    awk 'BEGIN {FS="\t"; OFS="\t"} { if($5 !~ /^[0-9]+\.{0,1}[0-9]*$/){$5 = 0} print;}' $UNIQUEBED > ${TMP_HAL_DIR}/${NAME}.unique2.${SOURCE}.${TMP_LABEL}.bed
+
+    # Ensure that strand column is "+", "-", or "."
+    awk 'BEGIN {FS="\t"; OFS="\t"} { if($6 !~ /\+|\-|\./){$6 = "."} print;}' ${TMP_HAL_DIR}/${NAME}.unique2.${SOURCE}.${TMP_LABEL}.bed > ${TMP_HAL_DIR}/${NAME}.unique3.${SOURCE}.${TMP_LABEL}.bed
     mv ${TMP_HAL_DIR}/${NAME}.unique3.${SOURCE}.${TMP_LABEL}.bed $UNIQUEBED; rm ${TMP_HAL_DIR}/${NAME}.unique2.${SOURCE}.${TMP_LABEL}.bed
 
     ######################################
@@ -234,12 +259,12 @@ function get_summits()
     echo "Extracting bed/narrowpeak summits to halLiftover."
     if [[ $(awk '{print NF; exit}' ${UNIQUEBED}) -lt 3 ]]; 
         then echo "Too few columns to be a bed file."; cleanup; exit 1
-    elif [[ $(awk '{print NF; exit}' ${UNIQUEBED}) == 10 ]]; 
-        # 10 columns, assume this is a narrowpeak
+    elif [[ ($(num_columns $INPUTBED) == 10) && ($(num_null_values $INPUTBED 10) == 0) ]]; 
+        # If there are 10 columns, and the 10th column has no null values "-1", then use the summit values.
         then echo "Summits detected. Using the summits."
         awk 'BEGIN {FS="\t"; OFS="\t"} {print $1, $2+$10, $2+$10+1, $4, $5, $6}' $UNIQUEBED > $SUMMITFILE
     else [[ $(awk '{print NF; exit}' ${UNIQUEBED}) -gt 3 ]]
-        # take the mean value between start and end of each peak
+        # Otherwise, take the mean value between start and end of each peak
         echo "No summits found, taking the mean between start and end as the summits."
         awk 'BEGIN {FS="\t"; OFS="\t"} {print $1, int(($2+$3)/2), int(($2+$3)/2)+1, $4, $5, $6}' $UNIQUEBED > $SUMMITFILE
     fi
@@ -308,6 +333,11 @@ function run_halper()
     # Add optional arguments if they are set
     if ! [[ -z ${KEEPCHRPREFIX+x} ]]; then
         args="${args} -keepChrPrefix $KEEPCHRPREFIX"
+    fi
+    if ! [[ -z ${PRESERVE+x} ]]; then
+        # change PRESERVE from comma-delimited to space-delimited for args
+        PRESERVE=$(echo $PRESERVE | tr "," " ")
+        args="${args} -preserve $PRESERVE"
     fi
     python -m orthologFind $args
     echo "Mapped $(line_count $OUTFILE) peaks out of $(line_count $INPUTBED) total peaks."

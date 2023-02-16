@@ -55,21 +55,6 @@ def num_segments_hist(dict_segtFile):
 	plt.savefig("num_frags_mapped_peaks.png")
 	plt.close()
 	return n
-	
-
-
-''' if a summit maps multiple places, see if all segments (peak_start,peak_end,chr_name)
-are adjacent  '''
-def adj_pos(arr):
-    n = len(arr)
-    quicksort(arr, 0, n - 1)
-    for i in range(1, n):
-        if(i == 0):
-            continue
-        else:
-            if(not(arr[i][0] == arr[i - 1][1] or arr[i][0] == arr[i - 1][1] + 1)):
-                return False
-
 
 '''
 As we go through line by line
@@ -88,7 +73,6 @@ def create_SFile_dict(FileH,mult_keepone):
 	# accumulating values
 	multpeak_pos_list = []
 	num_multpeak = 0
-	num_multpeak_nonad = 0
 	# specially dealing with first line
 	first_ln_list = (FileH.readline()).split("\t")
 	last_peak_name = first_ln_list[3].strip()
@@ -106,8 +90,6 @@ def create_SFile_dict(FileH,mult_keepone):
 		peak_name = strList[3].strip()
 		if peak_name != last_peak_name:
 			if(multpeak_pos_list != []):
-				if(not adj_pos(multpeak_pos_list)):
-				    num_multpeak_nonad += 1
 				multpeak_dict[last_peak_name] = multpeak_pos_list
 				multpeak_pos_list = []
 				# Delete the peak whose summit maps to multiple places
@@ -131,8 +113,6 @@ def create_SFile_dict(FileH,mult_keepone):
 		last_chrname = chr_name
 	# Repeat it one more time in case last line is a peak whose summit maps to multiple places
 	if(multpeak_pos_list != []):
-		if(not adj_pos(multpeak_pos_list)):
-			num_multpeak_nonad += 1
 		multpeak_dict[last_peak_name] = multpeak_pos_list
 		# Delete the peak whose summit maps to multiple places
 		if not mult_keepone: 
@@ -227,15 +207,10 @@ def validOrtholog(summit_ortho_info,max_len,min_len,proct_dist, peak_name, mappe
 	l_len = summit_ortho_info[4]
 	r_len = summit_ortho_info[5]
 	if(sum_len > max_len):
-		# print("max_len is"+str(max_len))
-		# print("peak "+str(peak_name)+" sum len is "+str(sum_len))
 		return False
 	if(sum_len < min_len):
-		# print("%.4f min_len" % (this_min_len))
-		# print("peak "+str(peak_name)+" sum len is "+str(sum_len))
 		return False
 	if(not(l_len >= proct_dist and r_len>=proct_dist)):
-		# print("peak "+str(peak_name)+" l_len is "+str(l_len)+" r_len is "+str(r_len))
 		return False
 	# Exclude if the mapped chr name does not start with the given prefix
 	if (keep_chr_prefix is not None) and not (mapped_chr_name.startswith(keep_chr_prefix)):
@@ -304,7 +279,11 @@ def make_hist_peaks(oFile,outname,bin_max):
 finding valid orthologs and then plot the histogram
 '''
 def ortholog_find(file_H,max_len,alen,min_len,blen,proct_dist,mult_keepone=False,
-				  narrowPeak=False, draw_hist=True, keep_chr_prefix=None):
+				  narrowPeak=False, draw_hist=True, keep_chr_prefix=None, preserve=False):
+	if preserve is None:
+		preserve = []
+	preserve = [itm.lower() for itm in preserve]
+
 	qFileH = open(file_H[0],"r")
 	tFileH = open(file_H[1],"r")
 	sFileH = open(file_H[2],"r")
@@ -330,6 +309,12 @@ def ortholog_find(file_H,max_len,alen,min_len,blen,proct_dist,mult_keepone=False
 		peak_e=int(strList[2])
 		peak_len=peak_e-peak_s
 		peak_name=strList[3]
+
+		score_value = "-1" if ((len(strList) < 5) or ('score' not in preserve)) else strList[4]
+		signal_value = "-1" if ((len(strList) < 7) or ('signal' not in preserve)) else strList[6]
+		narrowPeak_pValue = "-1" if ((len(strList) < 8) or ('pvalue' not in preserve)) else strList[7]
+		narrowPeak_qValue = "-1" if ((len(strList) < 9) or ('qvalue' not in preserve)) else strList[8]
+
 		#if given fraction, calculate max_len 
 		if(not alen):
 			this_max_len = max_len*(peak_e-peak_s+1)
@@ -362,7 +347,7 @@ def ortholog_find(file_H,max_len,alen,min_len,blen,proct_dist,mult_keepone=False
 			newLineList.append(str(q_extent[-1]))
 		else:
 			# Format the output line in narrowPeak format
-			newLineList = [summit_seg[2],str(ortho_s),str(ortho_e),peak_name,"-1",".","-1","-1","-1",str(q_extent[-2])]
+			newLineList = [summit_seg[2],str(ortho_s),str(ortho_e),peak_name,score_value,".",signal_value,narrowPeak_pValue,narrowPeak_qValue,str(q_extent[-2])]
 		mapped_chr_name = newLineList[0]
 		newLine = fromStringListToStr(newLineList)
 		if(validOrtholog(q_extent,this_max_len,this_min_len,proct_dist,peak_name,mapped_chr_name,keep_chr_prefix)):
@@ -420,6 +405,9 @@ def main(argv):
 	parser.add_argument('-keepChrPrefix', required=False,
 		help='If passed, then only keep mapped peaks where the new chromosome name starts with this prefix.')
 
+	parser.add_argument('-preserve', required=False, nargs='+',
+		help='Column(s) from the input narrowPeak file to transfer to the output file. Options are "signal", "pValue", "qValue".')
+
 	args = parser.parse_args()
 
 	if(args.max_len is None and args.max_frac is None):
@@ -457,7 +445,8 @@ def main(argv):
 		exit(1)
 	ortholog_find(file_H,max_len,alen,min_len,blen,int(args.protect_dist),
 				  mult_keepone=args.mult_keepone,narrowPeak=args.narrowPeak,
-				  draw_hist=args.noHist,keep_chr_prefix=args.keepChrPrefix);
+				  draw_hist=args.noHist,keep_chr_prefix=args.keepChrPrefix,
+				  preserve=args.preserve);
 		
 
 	
