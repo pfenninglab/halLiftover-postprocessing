@@ -82,6 +82,7 @@ HALPER is designed for constructing contiguous orthologs from the outputs of hal
 * -protect_dist: the ortholog length in each direction from the ortholog of the summit must be at least proct_dist 
 			![alt text](https://github.com/pfenninglab/multiple_alignment-python/blob/master/min_proct_dist.png)
 * -keepChrPrefix: If passed, then only keep mapped peaks where the new chromosome name starts with this prefix. E.g. `-keepChrPrefix chr` will keep only mapped peaks where the chromosome name starts with `chr`.
+* -preserve: This is for narrowPeak file inputs.  This preserves the requested column from the narrowPeak file in the output.  Options are "signal" (column 7), "pValue" (column 8), and "qValue" (column 9).
 
 
 ## Example Run of HALPER
@@ -226,5 +227,4 @@ This program requires the bed file to be sorted and not contain duplicated rows.
 * Erin Zhang (xiaoyuz1@andrew.cmu.edu)
 * Irene Kaplow (ikaplow@cs.cmu.edu)
 * Heather Harper Sestili (hharper@cmu.edu)
-* Morgan Wirthlin (mwirthlin@cmu.edu)
 * Andreas Pfenning (apfenning@cmu.edu)
