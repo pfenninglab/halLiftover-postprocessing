@@ -89,7 +89,7 @@ HALPER is designed for constructing contiguous orthologs from the outputs of hal
 Running these examples requires the files in the examples directory and 10plusway-master.hal, a Cactus alignment with 12 mammals that can be obtained from the authors of the paper describing Cactus (see "Relevant Publications" below).  One can compare the outputs of each step to the files with the corresponding names in the examples directory.  
 
 ### Running hal and HALPER with one script
-The script `halper_map_peak_orthologs.sh` runs `halLiftover` and postprocesses the results with HALPER all in one script. This is equivalent to running steps 1-4 in "Running steps manually" below.
+The script `halper_map_peak_orthologs.sh` runs `halLiftover` and postprocesses the results with HALPER all in one script. This is equivalent to running steps 1-4 in "Running steps manually" below.  This script requires installing hal in its own conda environment called "hal" and modifiying paths as described in https://github.com/pfenninglab/halLiftover-postprocessing/blob/master/hal_install_instructions.md.
 
 To use `halper_map_peak_orthologs.sh` on a slurm cluster:
 ```
