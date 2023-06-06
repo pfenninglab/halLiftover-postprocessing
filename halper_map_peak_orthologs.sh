@@ -23,7 +23,8 @@
 
 
 # CACTUSFILE=/projects/pfenninggroup/machineLearningForComputationalBiology/alignCactus/10plusway-master.hal
-source activate hal
+source ~/.bashrc
+conda activate hal
 
 # Default argument values (can be overridden by args)
 CACTUSFILE=/scratch/cactus_alignments/241-mammalian-2020v2.hal
