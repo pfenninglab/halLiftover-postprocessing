@@ -18,7 +18,7 @@
 
 #SBATCH --job-name=halliftover
 #SBATCH --ntasks-per-core=1
-#SBATCH --error=logs/halliftover_%A_%a.out.txt
+#SBATCH --error=logs/halliftover_%A_%a.err.txt
 #SBATCH --output=logs/halliftover_%A_%a.out.txt
 
 
