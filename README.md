@@ -106,6 +106,7 @@ sbatch \
 
 Using the `--array` flag above will instruct the slurm scheduler to map orthologs for each target species in parallel.
 If you omit the `--array` flag, the target species will be processed sequentially.
+To generate the error and output files, this needs to be run from a directory that contains a sub-directory called "logs."
 
 If you are not running on a slurm cluster, you can submit the script with `bash`:
 ```
