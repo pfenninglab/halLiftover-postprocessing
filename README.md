@@ -6,7 +6,7 @@
 
 
 ## Introduction
-HALPER is designed for constructing contiguous orthologs from the outputs of halLiftover.  While it was originally designed for contructing orthologs of transcription factor ChIP-seq and open chromatin peaks, it can be applied to any genomic regions of interest. Since HALPER relies on halLiftover, the assembly of the query and target genomic regions must be in a Cactus alginment hal file.
+HALPER is designed for constructing contiguous orthologs from the outputs of halLiftover (https://github.com/ComparativeGenomicsToolkit/hal).  While it was originally designed for contructing orthologs of transcription factor ChIP-seq and open chromatin peaks, it can be applied to any genomic regions of interest. Since HALPER relies on halLiftover, the assembly of the query and target genomic regions must be in a Cactus alginment hal file.
 
 
 ## Dependencies
