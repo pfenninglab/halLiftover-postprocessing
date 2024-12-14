@@ -227,5 +227,6 @@ This program requires the bed file to be sorted and not contain duplicated rows.
 ## Contributors
 * Erin Zhang (xiaoyuz1@andrew.cmu.edu)
 * Irene Kaplow (ikaplow@cs.cmu.edu)
+* BaDoi Phan (bnphan@andrew.cmu.edu)
 * Heather Harper Sestili (hharper@cmu.edu)
 * Andreas Pfenning (apfenning@cmu.edu)
