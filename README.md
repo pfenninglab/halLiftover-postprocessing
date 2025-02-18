@@ -74,10 +74,10 @@ HALPER is designed for constructing contiguous orthologs from the outputs of hal
 
 * -mult_keepone: if a region's summit maps to multiple positions in the target species, use the first position in file specified in -sFile; otherwise, such a region is discarded
 * -max_len: ortholog length must be less or equal to max_len
-* -max_frac: ortholog length must be less or equal to max_frac * region length 
+* -max_frac: ortholog length must be less or equal to max_frac * region length (for example, if -max_frac is 2, then orthologs in the target speces that are more than twice the length of the query species region will be removed)
 	* provide either max_len or max_frac
 * -min_len: ortholog length must be greater or equal to min_len
-* -min_frac: ortholog length must be greater or equal to min_frac * region length 
+* -min_frac: ortholog length must be greater or equal to min_frac * region length (for example, if -min_frac is 0.5, then orthologs in the target speces that are less than half the length of the query species region will be removed)
 	* provide either min_len or min_frac
 * -protect_dist: the ortholog length in each direction from the ortholog of the summit must be at least proct_dist 
 			![alt text](https://github.com/pfenninglab/multiple_alignment-python/blob/master/min_proct_dist.png)
