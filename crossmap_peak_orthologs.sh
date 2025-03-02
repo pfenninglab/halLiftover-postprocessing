@@ -1,12 +1,12 @@
 #!/bin/bash
-# CrossMap.py_peak_orthologs.sh: Map peaks between genome versions using CrossMap.py and HALPER.
+# CrossMap_peak_orthologs.sh: Map peaks between genome versions using CrossMap.py and HALPER.
 # This script uses CrossMap.py to map peaks from one genome assembly to another,
 # followed by HALPER to identify 1-1 orthologous regions.
 
 #SBATCH --job-name=CrossMap.py
 #SBATCH --ntasks-per-core=1
-#SBATCH --error=logs/CrossMap.py_%A_%a.err.txt
-#SBATCH --output=logs/CrossMap.py_%A_%a.out.txt
+#SBATCH --error=logs/CrossMap_%A_%a.err.txt
+#SBATCH --output=logs/CrossMap_%A_%a.out.txt
 
 # Default argument values (can be overridden by args)
 OVERWRITE='FALSE'; NAME=''; SNP='FALSE'; PARALLEL='16';
@@ -20,12 +20,12 @@ TMP_DIR=$(mktemp -d 2>/dev/null || mktemp -d -t 'mytmpdir')
 
 function usage()
 {
-    echo "CrossMap.py_peak_orthologs.sh takes in a bed/narrowpeak file"
+    echo "CrossMap_peak_orthologs.sh takes in a bed/narrowpeak file"
     echo "and uses CrossMap.py + HALPER to map to the orthologous regions in a target genome."
     echo "Summits of narrowpeak files will be used to anchor peaks."
     echo "Example run call:"
     echo ""
-    echo "sbatch CrossMap.py_peak_orthologs.sh -b myPeaks.narrowPeak -o /dir/to/output/ -c rheMac10ToRheMac8.over.chain"
+    echo "sbatch CrossMap_peak_orthologs.sh -b myPeaks.narrowPeak -o /dir/to/output/ -c rheMac10ToRheMac8.over.chain"
     echo ""
     echo "Required parameters:"   
     echo "--input-bed-file  -b FILENAME     bed or narrowPeak file, can be gzipped, {.bed/.bed.gz/.narrowpeak/.narrowpeak.gz}"
@@ -230,34 +230,34 @@ function prepare_dirs()
 function map_summits()
 {
     echo "Mapping summits using chain file."
-    CrossMap.py_SUMMIT_FILE=${TMP_DIR}/${NAME}.summits.CrossMap.py.unsorted.bed
-    CrossMap.py_SUMMIT_SORTED=${TMP_DIR}/${NAME}.summits.CrossMap.py.sorted.bed
+    CrossMap_SUMMIT_FILE=${TMP_DIR}/${NAME}.summits.CrossMap.py.unsorted.bed
+    CrossMap_SUMMIT_SORTED=${TMP_DIR}/${NAME}.summits.CrossMap.py.sorted.bed
     
     if [[ ! -f ${OUTDIR}/${NAME}.summits.CrossMap.py.sorted.bed.gz || $OVERWRITE == 'TRUE' ]]; then
         # Map summits using CrossMap.py
-        CrossMap.py bed $CHAINFILE $SUMMITFILE $CrossMap.py_SUMMIT_FILE
-        sort --parallel $PARALLEL -k 1,1 -k2,2n $CrossMap.py_SUMMIT_FILE > $CrossMap.py_SUMMIT_SORTED
+        CrossMap.py bed $CHAINFILE $SUMMITFILE $CrossMap_SUMMIT_FILE
+        sort --parallel $PARALLEL -k 1,1 -k2,2n $CrossMap_SUMMIT_FILE > $CrossMap_SUMMIT_SORTED
     else
         # Using previously mapped summits
         echo "Using previously mapped summits."
-        gunzip -c ${OUTDIR}/${NAME}.summits.CrossMap.py.sorted.bed.gz > $CrossMap.py_SUMMIT_SORTED
+        gunzip -c ${OUTDIR}/${NAME}.summits.CrossMap.py.sorted.bed.gz > $CrossMap_SUMMIT_SORTED
     fi
 }
 
 function map_peaks()
 {
     echo "Mapping peaks using chain file."
-    CrossMap.py_PEAK_FILE=${TMP_DIR}/${NAME}.peaks.CrossMap.py.unsorted.bed
-    CrossMap.py_PEAK_SORTED=${TMP_DIR}/${NAME}.peaks.CrossMap.py.sorted.bed
+    CrossMap_PEAK_FILE=${TMP_DIR}/${NAME}.peaks.CrossMap.py.unsorted.bed
+    CrossMap_PEAK_SORTED=${TMP_DIR}/${NAME}.peaks.CrossMap.py.sorted.bed
     
     if [[ ! -f ${OUTDIR}/${NAME}.peaks.CrossMap.py.sorted.bed.gz || $OVERWRITE == 'TRUE' ]]; then
         # Map peaks using CrossMap.py
-        CrossMap.py bed $CHAINFILE $SIMPLEBED $CrossMap.py_PEAK_FILE
-        sort --parallel $PARALLEL -k 1,1 -k2,2n $CrossMap.py_PEAK_FILE > $CrossMap.py_PEAK_SORTED
+        CrossMap.py bed $CHAINFILE $SIMPLEBED $CrossMap_PEAK_FILE
+        sort --parallel $PARALLEL -k 1,1 -k2,2n $CrossMap_PEAK_FILE > $CrossMap_PEAK_SORTED
     else
         # Using previously mapped peaks
         echo "Using previously mapped peaks."
-        gunzip -c ${OUTDIR}/${NAME}.peaks.CrossMap.py.sorted.bed.gz > $CrossMap.py_PEAK_SORTED
+        gunzip -c ${OUTDIR}/${NAME}.peaks.CrossMap.py.sorted.bed.gz > $CrossMap_PEAK_SORTED
     fi
 }
 
@@ -268,7 +268,7 @@ function run_halper()
     FINAL_OUTFILE=${TMP_DIR}/${NAME}.${TGT_GENOME}.HALPER.narrowPeak
     
     args="-max_frac $MAX_FRAC -min_len $MIN_LEN -protect_dist $PROTECT_DIST \
-    -tFile $CrossMap.py_PEAK_SORTED -sFile $CrossMap.py_SUMMIT_SORTED \
+    -tFile $CrossMap_PEAK_SORTED -sFile $CrossMap_SUMMIT_SORTED \
     -narrowPeak -qFile $UNIQUEBED -oFile $OUTFILE"
     
     # Add optional arguments if they are set
@@ -285,11 +285,11 @@ function run_halper()
     sort -k 1,1 -k2,2n $OUTFILE | uniq -u > $FINAL_OUTFILE
     
     # Archive and copy the results
-    gzip --force $CrossMap.py_PEAK_SORTED $CrossMap.py_SUMMIT_SORTED $FINAL_OUTFILE
+    gzip --force $CrossMap_PEAK_SORTED $CrossMap_SUMMIT_SORTED $FINAL_OUTFILE
     
     # Copy the final files to the output directory
-    rsync -aq ${CrossMap.py_PEAK_SORTED}.gz ${OUTDIR}/${NAME}.peaks.CrossMap.py.sorted.bed.gz
-    rsync -aq ${CrossMap.py_SUMMIT_SORTED}.gz ${OUTDIR}/${NAME}.summits.CrossMap.py.sorted.bed.gz
+    rsync -aq ${CrossMap_PEAK_SORTED}.gz ${OUTDIR}/${NAME}.peaks.CrossMap.py.sorted.bed.gz
+    rsync -aq ${CrossMap_SUMMIT_SORTED}.gz ${OUTDIR}/${NAME}.summits.CrossMap.py.sorted.bed.gz
     rsync -aq ${FINAL_OUTFILE}.gz ${OUTDIR}/${NAME}.${TGT_GENOME}.HALPER.narrowPeak.gz
     
     echo "Successfully saved outputs to ${OUTDIR}"
@@ -304,22 +304,22 @@ function line_count()
 function map_snps()
 {
     echo "Mapping SNP locations using chain file."
-    CrossMap.py_PEAK_FILE=${TMP_DIR}/${NAME}.snps.CrossMap.py.unsorted.bed
-    CrossMap.py_PEAK_SORTED=${TMP_DIR}/${NAME}.snps.CrossMap.py.sorted.bed
+    CrossMap_PEAK_FILE=${TMP_DIR}/${NAME}.snps.CrossMap.py.unsorted.bed
+    CrossMap_PEAK_SORTED=${TMP_DIR}/${NAME}.snps.CrossMap.py.sorted.bed
     
     if [[ ! -f ${OUTDIR}/${NAME}.snps.CrossMap.py.sorted.bed.gz || $OVERWRITE == 'TRUE' ]]; then
         # Map SNPs using CrossMap.py
-        CrossMap.py bed $CHAINFILE $SIMPLEBED $CrossMap.py_PEAK_FILE
-        sort --parallel $PARALLEL -k 1,1 -k2,2n $CrossMap.py_PEAK_FILE > $CrossMap.py_PEAK_SORTED
+        CrossMap.py bed $CHAINFILE $SIMPLEBED $CrossMap_PEAK_FILE
+        sort --parallel $PARALLEL -k 1,1 -k2,2n $CrossMap_PEAK_FILE > $CrossMap_PEAK_SORTED
     else
         # Using previously mapped SNPs
         echo "Using previously mapped SNPs."
-        gunzip -c ${OUTDIR}/${NAME}.snps.CrossMap.py.sorted.bed.gz > $CrossMap.py_PEAK_SORTED
+        gunzip -c ${OUTDIR}/${NAME}.snps.CrossMap.py.sorted.bed.gz > $CrossMap_PEAK_SORTED
     fi
     
-    echo "Mapped $(line_count ${CrossMap.py_PEAK_SORTED}) SNPs out of $(line_count $INPUTBED) total SNPs."
-    gzip --force ${CrossMap.py_PEAK_SORTED}
-    rsync -aq ${CrossMap.py_PEAK_SORTED}.gz ${OUTDIR}/${NAME}.snps.CrossMap.py.sorted.bed.gz
+    echo "Mapped $(line_count ${CrossMap_PEAK_SORTED}) SNPs out of $(line_count $INPUTBED) total SNPs."
+    gzip --force ${CrossMap_PEAK_SORTED}
+    rsync -aq ${CrossMap_PEAK_SORTED}.gz ${OUTDIR}/${NAME}.snps.CrossMap.py.sorted.bed.gz
     echo "Successfully saved SNP mapping to ${OUTDIR}/${NAME}.snps.CrossMap.py.sorted.bed.gz"
 }
 
