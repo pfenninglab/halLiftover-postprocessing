@@ -230,34 +230,34 @@ function prepare_dirs()
 function map_summits()
 {
     echo "Mapping summits using chain file."
-    CrossMap_SUMMIT_FILE=${TMP_DIR}/${NAME}.summits.CrossMap.py.unsorted.bed
-    CrossMap_SUMMIT_SORTED=${TMP_DIR}/${NAME}.summits.CrossMap.py.sorted.bed
+    CrossMap_SUMMIT_FILE=${TMP_DIR}/${NAME}.summits.CrossMap.unsorted.bed
+    CrossMap_SUMMIT_SORTED=${TMP_DIR}/${NAME}.summits.CrossMap.sorted.bed
     
-    if [[ ! -f ${OUTDIR}/${NAME}.summits.CrossMap.py.sorted.bed.gz || $OVERWRITE == 'TRUE' ]]; then
+    if [[ ! -f ${OUTDIR}/${NAME}.summits.CrossMap.sorted.bed.gz || $OVERWRITE == 'TRUE' ]]; then
         # Map summits using CrossMap.py
         CrossMap.py bed $CHAINFILE $SUMMITFILE $CrossMap_SUMMIT_FILE
         sort --parallel $PARALLEL -k 1,1 -k2,2n $CrossMap_SUMMIT_FILE > $CrossMap_SUMMIT_SORTED
     else
         # Using previously mapped summits
         echo "Using previously mapped summits."
-        gunzip -c ${OUTDIR}/${NAME}.summits.CrossMap.py.sorted.bed.gz > $CrossMap_SUMMIT_SORTED
+        gunzip -c ${OUTDIR}/${NAME}.summits.CrossMap.sorted.bed.gz > $CrossMap_SUMMIT_SORTED
     fi
 }
 
 function map_peaks()
 {
     echo "Mapping peaks using chain file."
-    CrossMap_PEAK_FILE=${TMP_DIR}/${NAME}.peaks.CrossMap.py.unsorted.bed
-    CrossMap_PEAK_SORTED=${TMP_DIR}/${NAME}.peaks.CrossMap.py.sorted.bed
+    CrossMap_PEAK_FILE=${TMP_DIR}/${NAME}.peaks.CrossMap.unsorted.bed
+    CrossMap_PEAK_SORTED=${TMP_DIR}/${NAME}.peaks.CrossMap.sorted.bed
     
-    if [[ ! -f ${OUTDIR}/${NAME}.peaks.CrossMap.py.sorted.bed.gz || $OVERWRITE == 'TRUE' ]]; then
+    if [[ ! -f ${OUTDIR}/${NAME}.peaks.CrossMap.sorted.bed.gz || $OVERWRITE == 'TRUE' ]]; then
         # Map peaks using CrossMap.py
         CrossMap.py bed $CHAINFILE $SIMPLEBED $CrossMap_PEAK_FILE
         sort --parallel $PARALLEL -k 1,1 -k2,2n $CrossMap_PEAK_FILE > $CrossMap_PEAK_SORTED
     else
         # Using previously mapped peaks
         echo "Using previously mapped peaks."
-        gunzip -c ${OUTDIR}/${NAME}.peaks.CrossMap.py.sorted.bed.gz > $CrossMap_PEAK_SORTED
+        gunzip -c ${OUTDIR}/${NAME}.peaks.CrossMap.sorted.bed.gz > $CrossMap_PEAK_SORTED
     fi
 }
 
@@ -288,8 +288,8 @@ function run_halper()
     gzip --force $CrossMap_PEAK_SORTED $CrossMap_SUMMIT_SORTED $FINAL_OUTFILE
     
     # Copy the final files to the output directory
-    rsync -aq ${CrossMap_PEAK_SORTED}.gz ${OUTDIR}/${NAME}.peaks.CrossMap.py.sorted.bed.gz
-    rsync -aq ${CrossMap_SUMMIT_SORTED}.gz ${OUTDIR}/${NAME}.summits.CrossMap.py.sorted.bed.gz
+    rsync -aq ${CrossMap_PEAK_SORTED}.gz ${OUTDIR}/${NAME}.peaks.CrossMap.sorted.bed.gz
+    rsync -aq ${CrossMap_SUMMIT_SORTED}.gz ${OUTDIR}/${NAME}.summits.CrossMap.sorted.bed.gz
     rsync -aq ${FINAL_OUTFILE}.gz ${OUTDIR}/${NAME}.${TGT_GENOME}.HALPER.narrowPeak.gz
     
     echo "Successfully saved outputs to ${OUTDIR}"
@@ -304,23 +304,23 @@ function line_count()
 function map_snps()
 {
     echo "Mapping SNP locations using chain file."
-    CrossMap_PEAK_FILE=${TMP_DIR}/${NAME}.snps.CrossMap.py.unsorted.bed
-    CrossMap_PEAK_SORTED=${TMP_DIR}/${NAME}.snps.CrossMap.py.sorted.bed
+    CrossMap_PEAK_FILE=${TMP_DIR}/${NAME}.snps.CrossMap.unsorted.bed
+    CrossMap_PEAK_SORTED=${TMP_DIR}/${NAME}.snps.CrossMap.sorted.bed
     
-    if [[ ! -f ${OUTDIR}/${NAME}.snps.CrossMap.py.sorted.bed.gz || $OVERWRITE == 'TRUE' ]]; then
+    if [[ ! -f ${OUTDIR}/${NAME}.snps.CrossMap.sorted.bed.gz || $OVERWRITE == 'TRUE' ]]; then
         # Map SNPs using CrossMap.py
         CrossMap.py bed $CHAINFILE $SIMPLEBED $CrossMap_PEAK_FILE
         sort --parallel $PARALLEL -k 1,1 -k2,2n $CrossMap_PEAK_FILE > $CrossMap_PEAK_SORTED
     else
         # Using previously mapped SNPs
         echo "Using previously mapped SNPs."
-        gunzip -c ${OUTDIR}/${NAME}.snps.CrossMap.py.sorted.bed.gz > $CrossMap_PEAK_SORTED
+        gunzip -c ${OUTDIR}/${NAME}.snps.CrossMap.sorted.bed.gz > $CrossMap_PEAK_SORTED
     fi
     
     echo "Mapped $(line_count ${CrossMap_PEAK_SORTED}) SNPs out of $(line_count $INPUTBED) total SNPs."
     gzip --force ${CrossMap_PEAK_SORTED}
-    rsync -aq ${CrossMap_PEAK_SORTED}.gz ${OUTDIR}/${NAME}.snps.CrossMap.py.sorted.bed.gz
-    echo "Successfully saved SNP mapping to ${OUTDIR}/${NAME}.snps.CrossMap.py.sorted.bed.gz"
+    rsync -aq ${CrossMap_PEAK_SORTED}.gz ${OUTDIR}/${NAME}.snps.CrossMap.sorted.bed.gz
+    echo "Successfully saved SNP mapping to ${OUTDIR}/${NAME}.snps.CrossMap.sorted.bed.gz"
 }
 
 function cleanup()
