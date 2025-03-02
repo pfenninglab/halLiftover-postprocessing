@@ -3,6 +3,8 @@
 
 ## Running HALPER
 * `python orthologFind.py` using python3 (see "Example Run of HALPER" below for an example)
+* `bash halper_map_peak_orthologs.sh` using the command line wrapper for cross-species mapping (see "Running halLiftover and HALPER with one script" below)
+* `bash crossmap_peak_orthologs.sh` using the command line wrapper for same-species mapping (see "Running cross-map liftover and HALPER with one script" below)
 
 
 ## Introduction
@@ -117,6 +119,38 @@ bash halper_map_peak_orthologs.sh \
 	-t [comma-separated list of target species, e.g. Mus_musculus,Macaca_mulatta] \
 	-c [path to cactus alignment file]
 ```
+
+### Running cross-map liftover and HALPER with one script
+- Additionally requires CrossMap (https://crossmap.sourceforge.net/)
+
+The script takes a bed/narrowPeak file and maps it between genome assemblies using CrossMap, followed by HALPER processing to identify 1-1 orthologous regions.
+
+To use on a slurm cluster:
+
+```bash
+sbatch \
+    -p [partition] \
+    crossmap_peak_orthologs.sh \
+    -b [path to input .bed or .narrowPeak file] \
+    -o [path to output directory] \
+    -c [path to chain file, e.g. rheMac10ToRheMac8.over.chain]
+```
+
+or on a Unix computer 
+```
+bash crossmap_peak_orthologs.sh \
+    -b [path to input .bed or .narrowPeak file] \
+    -o [path to output directory] \
+    -c [path to chain file, e.g. rheMac10ToRheMac8.over.chain]
+```
+
+Additional Options:
+`-n, --name-base NAME`: Set the base name for output files
+`-f, --force-overwrite`: Override existing intermediate files
+`--snp`: Map SNPs rather than peaks (sets min_len=1 and protect_dist=0)
+`-p, --parallel THREADS`: Number of threads for sorting (default: 16)
+
+For full options list run bash crossmap_peak_orthologs.sh -h
 
 ### Running steps manually
 
