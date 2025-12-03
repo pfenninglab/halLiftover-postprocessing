@@ -18,12 +18,13 @@
 
 #SBATCH --job-name=halliftover
 #SBATCH --ntasks-per-core=1
-#SBATCH --error=logs/halliftover_%A_%a.out.txt
+#SBATCH --error=logs/halliftover_%A_%a.err.txt
 #SBATCH --output=logs/halliftover_%A_%a.out.txt
 
 
 # CACTUSFILE=/projects/pfenninggroup/machineLearningForComputationalBiology/alignCactus/10plusway-master.hal
-source activate hal
+source ~/.bashrc
+conda activate hal
 
 # Default argument values (can be overridden by args)
 CACTUSFILE=/scratch/cactus_alignments/241-mammalian-2020v2.hal

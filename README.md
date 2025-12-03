@@ -3,10 +3,12 @@
 
 ## Running HALPER
 * `python orthologFind.py` using python3 (see "Example Run of HALPER" below for an example)
+* `bash halper_map_peak_orthologs.sh` using the command line wrapper for cross-species mapping (see "Running halLiftover and HALPER with one script" below)
+* `bash crossmap_peak_orthologs.sh` using the command line wrapper for same-species mapping (see "Running cross-map liftover and HALPER with one script" below)
 
 
 ## Introduction
-HALPER is designed for constructing contiguous orthologs from the outputs of halLiftover.  While it was originally designed for contructing orthologs of transcription factor ChIP-seq and open chromatin peaks, it can be applied to any genomic regions of interest. Since HALPER relies on halLiftover, the assembly of the query and target genomic regions must be in a Cactus alginment hal file.
+HALPER is designed for constructing contiguous orthologs from the outputs of halLiftover (https://github.com/ComparativeGenomicsToolkit/hal).  While it was originally designed for contructing orthologs of transcription factor ChIP-seq and open chromatin peaks, it can be applied to any genomic regions of interest. Since HALPER relies on halLiftover, the assembly of the query and target genomic regions must be in a Cactus alginment hal file.
 
 
 ## Dependencies
@@ -74,10 +76,10 @@ HALPER is designed for constructing contiguous orthologs from the outputs of hal
 
 * -mult_keepone: if a region's summit maps to multiple positions in the target species, use the first position in file specified in -sFile; otherwise, such a region is discarded
 * -max_len: ortholog length must be less or equal to max_len
-* -max_frac: ortholog length must be less or equal to max_frac * region length 
+* -max_frac: ortholog length must be less or equal to max_frac * region length (for example, if -max_frac is 2, then orthologs in the target speces that are more than twice the length of the query species region will be removed)
 	* provide either max_len or max_frac
 * -min_len: ortholog length must be greater or equal to min_len
-* -min_frac: ortholog length must be greater or equal to min_frac * region length 
+* -min_frac: ortholog length must be greater or equal to min_frac * region length (for example, if -min_frac is 0.5, then orthologs in the target speces that are less than half the length of the query species region will be removed)
 	* provide either min_len or min_frac
 * -protect_dist: the ortholog length in each direction from the ortholog of the summit must be at least proct_dist 
 			![alt text](https://github.com/pfenninglab/multiple_alignment-python/blob/master/min_proct_dist.png)
@@ -88,8 +90,8 @@ HALPER is designed for constructing contiguous orthologs from the outputs of hal
 ## Example Run of HALPER
 Running these examples requires the files in the examples directory and 10plusway-master.hal, a Cactus alignment with 12 mammals that can be obtained from the authors of the paper describing Cactus (see "Relevant Publications" below).  One can compare the outputs of each step to the files with the corresponding names in the examples directory.  
 
-### Running hal and HALPER with one script
-The script `halper_map_peak_orthologs.sh` runs `halLiftover` and postprocesses the results with HALPER all in one script. This is equivalent to running steps 1-4 in "Running steps manually" below.
+### Running halLiftover and HALPER with one script
+The script `halper_map_peak_orthologs.sh` runs `halLiftover` and postprocesses the results with HALPER all in one script. This is equivalent to running steps 1-4 in "Running steps manually" below.  This script requires installing the dependencies in their own conda environment called "hal" and modifiying paths as described in https://github.com/pfenninglab/halLiftover-postprocessing/blob/master/hal_install_instructions.md.
 
 To use `halper_map_peak_orthologs.sh` on a slurm cluster:
 ```
@@ -106,6 +108,7 @@ sbatch \
 
 Using the `--array` flag above will instruct the slurm scheduler to map orthologs for each target species in parallel.
 If you omit the `--array` flag, the target species will be processed sequentially.
+To generate the error and output files, this needs to be run from a directory that contains a sub-directory called "logs."
 
 If you are not running on a slurm cluster, you can submit the script with `bash`:
 ```
@@ -116,6 +119,38 @@ bash halper_map_peak_orthologs.sh \
 	-t [comma-separated list of target species, e.g. Mus_musculus,Macaca_mulatta] \
 	-c [path to cactus alignment file]
 ```
+
+### Running cross-map liftover and HALPER with one script
+- Additionally requires CrossMap (https://crossmap.sourceforge.net/)
+
+The script takes a bed/narrowPeak file and maps it between genome assemblies using CrossMap, followed by HALPER processing to identify 1-1 orthologous regions.
+
+To use on a slurm cluster:
+
+```bash
+sbatch \
+    -p [partition] \
+    crossmap_peak_orthologs.sh \
+    -b [path to input .bed or .narrowPeak file] \
+    -o [path to output directory] \
+    -c [path to chain file, e.g. rheMac10ToRheMac8.over.chain]
+```
+
+or on a Unix computer 
+```
+bash crossmap_peak_orthologs.sh \
+    -b [path to input .bed or .narrowPeak file] \
+    -o [path to output directory] \
+    -c [path to chain file, e.g. rheMac10ToRheMac8.over.chain]
+```
+
+Additional Options:
+`-n, --name-base NAME`: Set the base name for output files
+`-f, --force-overwrite`: Override existing intermediate files
+`--snp`: Map SNPs rather than peaks (sets min_len=1 and protect_dist=0)
+`-p, --parallel THREADS`: Number of threads for sorting (default: 16)
+
+For full options list run bash crossmap_peak_orthologs.sh -h
 
 ### Running steps manually
 
@@ -226,5 +261,6 @@ This program requires the bed file to be sorted and not contain duplicated rows.
 ## Contributors
 * Erin Zhang (xiaoyuz1@andrew.cmu.edu)
 * Irene Kaplow (ikaplow@cs.cmu.edu)
+* BaDoi Phan (bnphan@andrew.cmu.edu)
 * Heather Harper Sestili (hharper@cmu.edu)
 * Andreas Pfenning (apfenning@cmu.edu)
