@@ -31,7 +31,7 @@ def makePeakOrthologMatrix(options):
 		orthologsFileName = line.strip()
 		outputFile.write(orthologsFileName)
 		orthologsFile = open(orthologsFileName)
-		orthologsPeakList = [line.strip().split("\t")[3] for line in orthologsFile]
+		orthologsPeakList = {line.strip().split("\t")[3] for line in orthologsFile} # Suggestion from Nelson Johansen
 		for peak in peakList:
 			# Iterate through the peaks and fill out the matrix based on which peaks have orthologs in the species
 			if peak in orthologsPeakList:
